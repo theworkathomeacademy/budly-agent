@@ -1,0 +1,16 @@
+{
+  "weights": {
+    "mission_alignment": 25,
+    "engagement_quality": 20,
+    "consistency": 15,
+    "willingness_to_learn": 15,
+    "audience_fit": 15,
+    "affiliate_experience": 10
+  },
+  "thresholds": {
+    "archive_or_monitor": [0, 39],
+    "nurture": [40, 69],
+    "invite_to_apply": [70, 100]
+  }
+}
+

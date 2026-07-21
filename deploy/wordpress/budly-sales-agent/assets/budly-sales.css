@@ -1,0 +1,91 @@
+.budly-shell{--forest:#234b32;--leaf:#4f7b58;--paper:#fffdf7;--cream:#f4f0e4;--line:#d9ddcf;display:grid;grid-template-columns:.82fr 1.18fr;min-height:680px;max-width:1100px;margin:32px auto;border-radius:26px;overflow:hidden;background:var(--paper);box-shadow:0 22px 65px #13271a33;color:#17261d;font:16px/1.5 Georgia,serif}.budly-brand{padding:64px;background:linear-gradient(150deg,#1f472e,#102c1c);color:#f7f1df;display:flex;flex-direction:column;justify-content:center}.budly-eyebrow{text-transform:uppercase;letter-spacing:.18em;color:#d8ba70;font:700 12px Arial,sans-serif}.budly-brand h2{font-size:52px;line-height:1.03;color:#f7f1df;margin:18px 0}.budly-brand>a{color:#f4d791;margin-top:34px}.budly-promise{margin-top:20px;color:#d8ba70}.budly-promise span{color:#eef1ea;margin-left:8px}.budly-chat{display:flex;flex-direction:column;min-height:680px}.budly-chat header{height:82px;padding:17px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;font-family:Arial,sans-serif}.budly-avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--forest);color:white;font:bold 20px Georgia}.budly-chat header>span:nth-child(2){display:flex;flex-direction:column}.budly-chat small{color:#657168}.budly-chat header button{margin-left:auto;border:0;background:none;color:var(--forest)}.budly-messages{flex:1;padding:25px;display:flex;flex-direction:column;gap:13px;overflow:auto;max-height:520px}.budly-message{max-width:82%;padding:13px 17px;border-radius:18px}.budly-bot{align-self:flex-start;background:#edf0e8}.budly-user{align-self:flex-end;background:var(--forest);color:white}.budly-label{text-transform:uppercase;letter-spacing:.1em;color:var(--leaf);font:700 11px Arial,sans-serif;margin-bottom:5px}.budly-composer{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px}.budly-composer>div{flex:1;display:grid;gap:7px}.budly-composer input,.budly-composer select{width:100%;padding:12px;border:1px solid #c8cdbf;border-radius:11px;background:white}.budly-composer button,.budly-card a{border:0;border-radius:11px;padding:12px 16px;background:var(--forest);color:white;text-decoration:none;font-weight:700}.budly-fine{font:11px Arial,sans-serif;color:#657168;padding:0 24px 16px;margin:0}.budly-card{align-self:flex-start;max-width:90%;border:1px solid var(--line);border-radius:16px;padding:18px;background:white}.budly-card h3{margin:3px 0}.budly-price{font:bold 18px Arial,sans-serif;color:var(--forest)}.budly-policies{max-width:820px;margin:auto}.budly-policies h2{margin-top:30px;padding-top:18px;border-top:1px solid #ddd}@media(max-width:760px){.budly-shell{display:block;margin:0;border-radius:0}.budly-brand{padding:28px}.budly-brand h2{font-size:34px}.budly-brand>p,.budly-promise{display:none}.budly-chat{min-height:72vh}.budly-message{max-width:92%}}
+.budly-floating-button {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px 11px 11px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 999px;
+  background: #173c2d;
+  color: #fff !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+  font-family: inherit;
+  line-height: 1.1;
+  text-decoration: none !important;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.budly-floating-button:hover,
+.budly-floating-button:focus-visible {
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 34px rgba(0, 0, 0, .3);
+}
+
+.budly-floating-button strong,
+.budly-floating-button small {
+  display: block;
+}
+
+.budly-floating-button small {
+  margin-top: 3px;
+  color: #dce9df;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.budly-floating-avatar {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5ba55;
+  color: #173c2d;
+  font-weight: 800;
+}
+
+@media (max-width: 520px) {
+  .budly-floating-button {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+.budly-starters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.budly-starters button {
+  min-height: 46px;
+  padding: 9px 11px;
+  border: 1px solid #c9d8ce;
+  border-radius: 12px;
+  background: #f5faf6;
+  color: #173c2d;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+
+.budly-starters button:hover,
+.budly-starters button:focus-visible {
+  border-color: #4f7c64;
+  background: #e9f3ec;
+}
+
+@media (max-width: 600px) {
+  .budly-starters {
+    grid-template-columns: 1fr;
+  }
+}

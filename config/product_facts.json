@@ -1,0 +1,89 @@
+{
+  "source": "https://cccultivate.com/wp-json/wc/store/v1/products",
+  "verified_on": "2026-07-16",
+  "currency": "USD",
+  "price_unit": "cents",
+  "catalog_scope": "32 products visible in the public shop",
+  "unlisted_store_records_excluded": [
+    "therapeutic-body-butter-friends-family",
+    "holiday-health-healing",
+    "cbd-tincture-spray"
+  ],
+  "compliance": {
+    "medical_or_therapeutic_claims_approved": false,
+    "ingredients_complete": false,
+    "subscription_terms_complete": false,
+    "rule": "Use safe_summary and factual_features only. Never repeat therapeutic marketing claims as medical facts. Escalate medical, dosage, legal, refund, wholesale, and NFT investment-return questions."
+  },
+  "profiles": {
+    "wellness": {
+      "intended_customer": "Adults comparing CBD self-care formats",
+      "safe_summary": "A CBD self-care product; discuss format, package facts, price, and purchase cadence without promising a health outcome.",
+      "approved_benefits": [],
+      "exclusions": ["No diagnosis, treatment, cure, dosage, drug-interaction, pregnancy, or medication advice", "No guaranteed outcome"],
+      "compliance_status": "needs_claims_and_label_review"
+    },
+    "culinary": {
+      "intended_customer": "Adults seeking a CBD cooking ingredient",
+      "safe_summary": "Full-spectrum CBD infused coconut cooking oil offered in several sizes; discuss package facts and culinary format only.",
+      "approved_benefits": [],
+      "exclusions": ["No dosage or medical advice", "Do not infer serving guidance beyond an approved label"],
+      "compliance_status": "needs_label_review"
+    },
+    "education": {
+      "intended_customer": "Adults seeking cannabis-focused educational material",
+      "safe_summary": "An educational product; explain its stated subject, format, and price without presenting it as medical, legal, or professional certification advice.",
+      "approved_benefits": ["Educational content about the stated subject"],
+      "exclusions": ["No medical or legal advice", "No guarantee of cultivation, culinary, financial, or business results"],
+      "compliance_status": "sales_safe_with_guardrails"
+    },
+    "membership": {
+      "intended_customer": "Adults exploring a digital character membership and its listed tiers",
+      "safe_summary": "A tiered digital character membership collectible; explain only documented membership access and perks.",
+      "approved_benefits": [],
+      "exclusions": ["Never describe as an investment or promise appreciation, profit, resale value, or returns", "Tier perks and blockchain terms require written approval before quoting"],
+      "compliance_status": "needs_membership_terms_review"
+    },
+    "wholesale": {
+      "intended_customer": "Qualified business buyers seeking bulk CBD products",
+      "safe_summary": "A bulk product requiring human qualification and confirmation of specifications, labeling, pricing, fulfillment, and terms.",
+      "approved_benefits": [],
+      "exclusions": ["No automated quote, discount, exclusivity, white-label promise, shipping promise, or contract commitment"],
+      "compliance_status": "human_sales_required"
+    }
+  },
+  "products": {
+    "wakenbake-lounge-cannabis-botanical-collection-volume-1": {"profile":"education","price_min":1499,"price_max":4999,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["DIY Download & Print","Paperback","Collector's Edition"],"factual_features":["Volume 1 covers 25 named strains","Botanical art and coloring format"]},
+    "infused-basics": {"profile":"education","price_min":4000,"price_max":4000,"store_type":"simple","purchasable":true,"in_stock":true,"variants":[],"factual_features":["Beginner-focused cannabis infusion and cooking guide"]},
+    "therapeutic-oil-tincture-monthly": {"profile":"wellness","price_min":4500,"price_max":4500,"store_type":"external","purchasable":false,"in_stock":true,"subscription_terms":"Monthly cadence shown; cancellation, renewal, shipping, and external checkout terms need verification","factual_features":["Oil tincture format","Store copy states 1 oz and 2000 mg CBD for the one-time counterpart"]},
+    "therapeutic-oil-tincture-1-time": {"profile":"wellness","price_min":5500,"price_max":5500,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["One-time purchase","1 oz spray","Store states 2000 mg CBD distillate in MCT oil"]},
+    "therapeutic-body-butter-monthly": {"profile":"wellness","price_min":6500,"price_max":6500,"store_type":"external","purchasable":false,"in_stock":true,"subscription_terms":"Monthly cadence shown; cancellation, renewal, shipping, and external checkout terms need verification","factual_features":["Body butter format","Store describes natural ingredients but a complete label is not available in the feed"]},
+    "therapeutic-body-butter": {"profile":"wellness","price_min":7500,"price_max":7500,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["One-time purchase","Store lists cocoa, kokum, and shea butters; coconut and hemp seed oils; CBD distillate"]},
+    "therapeutic-combo-monthly-subscription": {"profile":"wellness","price_min":11000,"price_max":11000,"store_type":"external","purchasable":false,"in_stock":true,"subscription_terms":"Monthly cadence shown; cancellation, renewal, shipping, and external checkout terms need verification","factual_features":["Oil tincture and body butter bundle"]},
+    "therapeutic-combo-one-time-purchase": {"profile":"wellness","price_min":12500,"price_max":12500,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["One-time oil tincture and body butter bundle","Store states 2000 mg oil and 1750 mg body butter"]},
+    "white-label-oil-per-1oz-min-10oz": {"profile":"wholesale","price_min":15000,"price_max":15000,"store_type":"simple","purchasable":true,"in_stock":true,"minimum":"10 oz","factual_features":["Store copy states $15 per oz and $150 for 10 oz"]},
+    "white-label-cbd-combo-per-1oz": {"profile":"wholesale","price_min":28000,"price_max":28000,"store_type":"simple","purchasable":true,"in_stock":true,"minimum":"8 oz increments","factual_features":["Body butter and tincture oil combo","Store copy states $35 per oz for both"]},
+    "white-label-butter-per-1oz-min-16oz": {"profile":"wholesale","price_min":32000,"price_max":32000,"store_type":"simple","purchasable":true,"in_stock":true,"minimum":"16 oz","factual_features":["Store copy states $20 per oz and $320 for 16 oz"]},
+    "bulk-butter": {"profile":"wholesale","price_min":100000,"price_max":100000,"store_type":"simple","purchasable":true,"in_stock":true,"minimum":"100 oz increments","factual_features":["Store copy states $10 per oz and 500 mg CBD per ounce"]},
+    "infused-cooking-oil-4oz": {"profile":"culinary","price_min":30000,"price_max":30000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["4 oz coconut oil","Store states 2000 mg full-spectrum CBD per oz and 333 mg per tsp"]},
+    "infused-cooking-oil-8oz": {"profile":"culinary","price_min":50000,"price_max":50000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["8 oz coconut oil","Store states 2000 mg full-spectrum CBD per oz and 333 mg per tsp"]},
+    "infused-cooking-oil-12oz": {"profile":"culinary","price_min":65000,"price_max":65000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["12 oz coconut oil","Store states 2000 mg full-spectrum CBD per oz and 333 mg per tsp"]},
+    "infused-cooking-oil-16oz": {"profile":"culinary","price_min":75000,"price_max":75000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["16 oz coconut oil","Store states 2000 mg full-spectrum CBD per oz and 333 mg per tsp"]},
+    "culinary-cannabis-payment-plan": {"profile":"education","price_min":30000,"price_max":30000,"store_type":"external","purchasable":false,"in_stock":true,"payment_terms":"Store copy says four installments; total, schedule, refund, and external checkout terms need verification","factual_features":["Culinary cannabis course payment plan"]},
+    "grow-cannabis-home-payment-plan": {"profile":"education","price_min":42500,"price_max":42500,"store_type":"external","purchasable":false,"in_stock":true,"payment_terms":"Store copy says four installments; total, schedule, refund, and external checkout terms need verification","factual_features":["Home cultivation course payment plan"]},
+    "cook-grow-with-me-payment-plan": {"profile":"education","price_min":67500,"price_max":67500,"store_type":"external","purchasable":false,"in_stock":true,"payment_terms":"Store copy says four installments; total, schedule, refund, and external checkout terms need verification","factual_features":["Combined culinary and cultivation course payment plan"]},
+    "culinary-cannabis": {"profile":"education","price_min":100000,"price_max":100000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["Course covers decarboxylation, infusion techniques, and recipes"]},
+    "grow-cannabis-home": {"profile":"education","price_min":150000,"price_max":150000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["Course covers plant lifecycle and setting up a home grow space"]},
+    "cook-grow-with-me": {"profile":"education","price_min":250000,"price_max":250000,"store_type":"simple","purchasable":true,"in_stock":true,"factual_features":["Combined cultivation and culinary cannabis course"]},
+    "azurea-skye": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "cookie-cutter": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "dizel": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "the-monarch": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "the-original-guardian": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "the-don": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "gamma-blaze": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "berry-bliss": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "torque": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]},
+    "the-chemist": {"profile":"membership","price_min":500000,"price_max":4000000,"store_type":"variable","purchasable":true,"in_stock":true,"variants":["Bronze","Copper","Titanium","Platinum"]}
+  }
+}

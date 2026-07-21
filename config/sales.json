@@ -1,0 +1,25 @@
+{
+  "agent_name": "Budly Sales",
+  "brand": "Wake'n'Bake Lounge",
+  "company": "Compassionate Care Cultivators",
+  "primary_goal": "Help an informed customer take the next appropriate purchase step without pressure or unsupported claims.",
+  "brand_site_url": "https://www.wakenbakelounge.com/",
+  "sales_site_url": "https://cccultivate.com/",
+  "checkout_url": "https://cccultivate.com/cart/",
+  "catalog_url": "https://cccultivate.com/shop/",
+  "human_sales_email": "budlysupport@gmail.com",
+  "currency": "USD",
+  "discovery_fields": [
+    "shopping_goal",
+    "experience_level",
+    "preferred_format",
+    "budget_range",
+    "purchase_timeline"
+  ],
+  "prohibited_claims": [
+    "diagnoses, treats, cures, or prevents a disease",
+    "guaranteed outcome",
+    "risk-free product use",
+    "legal in every jurisdiction"
+  ]
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Budly, the Wake'n'Bake Lounge shopping guide">
+  <title>Budly Sales | Wake'n'Bake Lounge</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <aside class="brand-panel">
+      <p class="eyebrow">Wake'n'Bake Lounge</p>
+      <h1>A calmer way to find your fit.</h1>
+      <p>Meet Budly—your education-first shopping guide for wellness, culinary products, learning, memberships, and wholesale inquiries.</p>
+      <div class="promise"><span>✓</span><p>No pressure. No invented claims. One clear next step.</p></div>
+      <a href="https://cccultivate.com/shop/" target="_blank" rel="noopener">Browse the full shop ↗</a>
+    </aside>
+
+    <section class="chat-card" aria-label="Chat with Budly">
+      <header class="chat-header">
+        <div class="avatar" aria-hidden="true">B</div>
+        <div><strong>Budly Sales</strong><span><i></i> Ready to help</span></div>
+        <button id="restart" class="quiet" type="button" hidden>Start over</button>
+      </header>
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <form id="composer" class="composer">
+        <div id="fields" class="fields"></div>
+        <button id="send" type="submit">Continue</button>
+      </form>
+      <p class="fine-print">For adults. Budly provides product information, not medical or legal advice. <a href="/policies.html">Customer policies</a></p>
+    </section>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>

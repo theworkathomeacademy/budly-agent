@@ -1,0 +1,335 @@
+{
+  "status": "links_verified_details_pending_review",
+  "source": {
+    "store": "https://cccultivate.com/shop/",
+    "brand_site": "https://www.wakenbakelounge.com/",
+    "verified_on": "2026-07-16",
+    "notes": "Names and URLs were verified from the two live WooCommerce shop pages. Prices, descriptions, claims, availability, variants, and policies are not approved merely because a product link exists."
+  },
+  "products": [
+    {
+      "id": "wakenbake-lounge-cannabis-botanical-collection-volume-1",
+      "name": "Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1",
+      "url": "https://cccultivate.com/product/wakenbake-lounge-cannabis-botanical-collection-volume-1/",
+      "category": "education",
+      "sale_type": "variable",
+      "active": true,
+      "tags": ["book", "botanical", "collection", "education"],
+      "formats": ["digital", "print"]
+    },
+    {
+      "id": "infused-basics",
+      "name": "Infused Basics: The Beginner's Guide to Infuse Everything Edible",
+      "url": "https://cccultivate.com/product/infused-basics/",
+      "category": "education",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["beginner", "infusion", "edible", "cooking", "education"],
+      "formats": ["digital", "print"]
+    },
+    {
+      "id": "therapeutic-oil-tincture-monthly",
+      "name": "Therapeutic Oil Tincture monthly",
+      "url": "https://cccultivate.com/product/therapeutic-oil-tincture-monthly/",
+      "category": "wellness_product",
+      "sale_type": "subscription",
+      "active": true,
+      "tags": ["oil", "tincture", "monthly", "subscription"],
+      "formats": ["oil", "tincture"]
+    },
+    {
+      "id": "therapeutic-oil-tincture-1-time",
+      "name": "Therapeutic Oil Tincture 1-time",
+      "url": "https://cccultivate.com/product/therapeutic-oil-tincture-1-time/",
+      "category": "wellness_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["oil", "tincture", "one-time"],
+      "formats": ["oil", "tincture"]
+    },
+    {
+      "id": "therapeutic-body-butter-monthly",
+      "name": "Therapeutic Body Butter monthly",
+      "url": "https://cccultivate.com/product/therapeutic-body-butter-monthly/",
+      "category": "wellness_product",
+      "sale_type": "subscription",
+      "active": true,
+      "tags": ["body", "butter", "topical", "monthly", "subscription"],
+      "formats": ["body butter", "topical"]
+    },
+    {
+      "id": "therapeutic-body-butter",
+      "name": "Therapeutic Body Butter 1-time",
+      "url": "https://cccultivate.com/product/therapeutic-body-butter/",
+      "category": "wellness_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["body", "butter", "topical", "one-time"],
+      "formats": ["body butter", "topical"]
+    },
+    {
+      "id": "therapeutic-combo-monthly-subscription",
+      "name": "Therapeutic Combo | Monthly Subscription",
+      "url": "https://cccultivate.com/product/therapeutic-combo-monthly-subscription/",
+      "category": "wellness_product",
+      "sale_type": "subscription",
+      "active": true,
+      "tags": ["combo", "oil", "body butter", "monthly", "subscription"],
+      "formats": ["combo"]
+    },
+    {
+      "id": "therapeutic-combo-one-time-purchase",
+      "name": "Therapeutic Combo | One-Time Purchase",
+      "url": "https://cccultivate.com/product/therapeutic-combo-one-time-purchase/",
+      "category": "wellness_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["combo", "oil", "body butter", "one-time"],
+      "formats": ["combo"]
+    },
+    {
+      "id": "white-label-oil-per-1oz-min-10oz",
+      "name": "Bulk Oil per 1oz min. 10oz",
+      "url": "https://cccultivate.com/product/white-label-oil-per-1oz-min-10oz/",
+      "category": "wholesale",
+      "sale_type": "bulk",
+      "active": true,
+      "requires_human_sales": true,
+      "tags": ["bulk", "oil", "white label", "wholesale"],
+      "formats": ["oil"]
+    },
+    {
+      "id": "white-label-cbd-combo-per-1oz",
+      "name": "Bulk CBD Combo per 8oz",
+      "url": "https://cccultivate.com/product/white-label-cbd-combo-per-1oz/",
+      "category": "wholesale",
+      "sale_type": "bulk",
+      "active": true,
+      "requires_human_sales": true,
+      "tags": ["bulk", "cbd", "combo", "white label", "wholesale"],
+      "formats": ["combo"]
+    },
+    {
+      "id": "infused-cooking-oil-4oz",
+      "name": "Infused Cooking Oil 4oz",
+      "url": "https://cccultivate.com/product/infused-cooking-oil-4oz/",
+      "category": "culinary_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["infused", "cooking", "oil", "4oz"],
+      "formats": ["cooking oil"]
+    },
+    {
+      "id": "culinary-cannabis-payment-plan",
+      "name": "Culinary Cannabis Payment Plan",
+      "url": "https://cccultivate.com/product/culinary-cannabis-payment-plan/",
+      "category": "course",
+      "sale_type": "payment_plan",
+      "active": true,
+      "tags": ["culinary", "cannabis", "course", "cooking", "payment plan"],
+      "formats": ["course"]
+    },
+    {
+      "id": "white-label-butter-per-1oz-min-16oz",
+      "name": "Bulk Butter per 1oz min 16oz",
+      "url": "https://cccultivate.com/product/white-label-butter-per-1oz-min-16oz/",
+      "category": "wholesale",
+      "sale_type": "bulk",
+      "active": true,
+      "requires_human_sales": true,
+      "tags": ["bulk", "butter", "white label", "wholesale"],
+      "formats": ["butter"]
+    },
+    {
+      "id": "grow-cannabis-home-payment-plan",
+      "name": "Grow Cannabis @ Home Payment Plan",
+      "url": "https://cccultivate.com/product/grow-cannabis-home-payment-plan/",
+      "category": "course",
+      "sale_type": "payment_plan",
+      "active": true,
+      "tags": ["grow", "home", "course", "payment plan"],
+      "formats": ["course"]
+    },
+    {
+      "id": "infused-cooking-oil-8oz",
+      "name": "Infused Cooking Oil 8oz",
+      "url": "https://cccultivate.com/product/infused-cooking-oil-8oz/",
+      "category": "culinary_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["infused", "cooking", "oil", "8oz"],
+      "formats": ["cooking oil"]
+    },
+    {
+      "id": "infused-cooking-oil-12oz",
+      "name": "Infused Cooking Oil 12oz",
+      "url": "https://cccultivate.com/product/infused-cooking-oil-12oz/",
+      "category": "culinary_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["infused", "cooking", "oil", "12oz"],
+      "formats": ["cooking oil"]
+    },
+    {
+      "id": "cook-grow-with-me-payment-plan",
+      "name": "Cook & Grow With Me Payment Plan",
+      "url": "https://cccultivate.com/product/cook-grow-with-me-payment-plan/",
+      "category": "course",
+      "sale_type": "payment_plan",
+      "active": true,
+      "tags": ["cook", "grow", "course", "payment plan"],
+      "formats": ["course"]
+    },
+    {
+      "id": "infused-cooking-oil-16oz",
+      "name": "Infused Cooking Oil 16oz",
+      "url": "https://cccultivate.com/product/infused-cooking-oil-16oz/",
+      "category": "culinary_product",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["infused", "cooking", "oil", "16oz"],
+      "formats": ["cooking oil"]
+    },
+    {
+      "id": "bulk-butter",
+      "name": "Bulk Butter",
+      "url": "https://cccultivate.com/product/bulk-butter/",
+      "category": "wholesale",
+      "sale_type": "bulk",
+      "active": true,
+      "requires_human_sales": true,
+      "tags": ["bulk", "butter", "wholesale"],
+      "formats": ["butter"]
+    },
+    {
+      "id": "culinary-cannabis",
+      "name": "Culinary Cannabis",
+      "url": "https://cccultivate.com/product/culinary-cannabis/",
+      "category": "course",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["culinary", "cannabis", "course", "cooking"],
+      "formats": ["course"]
+    },
+    {
+      "id": "grow-cannabis-home",
+      "name": "Grow Cannabis @ Home",
+      "url": "https://cccultivate.com/product/grow-cannabis-home/",
+      "category": "course",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["grow", "home", "course"],
+      "formats": ["course"]
+    },
+    {
+      "id": "cook-grow-with-me",
+      "name": "Cook & Grow With Me",
+      "url": "https://cccultivate.com/product/cook-grow-with-me/",
+      "category": "course",
+      "sale_type": "one_time",
+      "active": true,
+      "tags": ["cook", "grow", "course"],
+      "formats": ["course"]
+    },
+    {
+      "id": "azurea-skye",
+      "name": "Azurea Skye - NFT Membership",
+      "url": "https://cccultivate.com/product/azurea-skye/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["azurea skye", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "cookie-cutter",
+      "name": "Cookie Cutter - NFT Membership",
+      "url": "https://cccultivate.com/product/cookie-cutter/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["cookie cutter", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "dizel",
+      "name": "Dizel - NFT Membership",
+      "url": "https://cccultivate.com/product/dizel/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["dizel", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "the-monarch",
+      "name": "The Monarch - NFT Membership",
+      "url": "https://cccultivate.com/product/the-monarch/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["the monarch", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "the-original-guardian",
+      "name": "The Original Guardian - NFT Membership",
+      "url": "https://cccultivate.com/product/the-original-guardian/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["original guardian", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "the-don",
+      "name": "The Don - NFT Membership",
+      "url": "https://cccultivate.com/product/the-godfather-og-nft-membership/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["the don", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "gamma-blaze",
+      "name": "Gamma Blaze - NFT Membership",
+      "url": "https://cccultivate.com/product/bruce-banner-3-nft-membership/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["gamma blaze", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "berry-bliss",
+      "name": "Berry Bliss - NFT Membership",
+      "url": "https://cccultivate.com/product/strawberry-banana-nft-membership/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["berry bliss", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "torque",
+      "name": "Torque - NFT Membership",
+      "url": "https://cccultivate.com/product/875/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["torque", "nft", "membership"],
+      "formats": ["digital membership"]
+    },
+    {
+      "id": "the-chemist",
+      "name": "The Chemist - NFT Membership",
+      "url": "https://cccultivate.com/product/the-chemist-nft-membership/",
+      "category": "nft_membership",
+      "sale_type": "membership",
+      "active": true,
+      "tags": ["the chemist", "nft", "membership"],
+      "formats": ["digital membership"]
+    }
+  ]
+}

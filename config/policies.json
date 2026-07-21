@@ -1,0 +1,17 @@
+{
+  "status": "owner_approved",
+  "approved_on": "2026-07-17",
+  "support_email": "budlysupport@gmail.com",
+  "support_response_target": "within 3 business days",
+  "policies": {
+    "cbd_personal_care_and_cooking": {"summary": "CBD, body-care, and cooking products are final sale because they are consumable or personal-care items.", "exceptions": ["Damaged order", "Incorrect order"]},
+    "damaged_or_incorrect_orders": {"summary": "Contact support within 7 days of delivery with the order number and photos. Replacement or refund requests are reviewed individually.", "contact": "budlysupport@gmail.com", "contact_deadline_days": 7, "required_information": ["Order number", "Photos of the item and packaging"]},
+    "physical_books": {"summary": "Physical books may be returned within 14 days if unused and in their original condition.", "return_window_days": 14, "return_shipping": "Customer pays return shipping unless the order was damaged or incorrect."},
+    "digital_products": {"summary": "Digital products and downloaded books are final sale after delivery or download."},
+    "courses": {"summary": "A course refund may be requested before course access is delivered. Courses are final sale after access, materials, or participation begins."},
+    "subscriptions": {"summary": "Subscriptions renew monthly until canceled. Customers can cancel through their account profile or email support if they are unable to cancel there.", "self_service": "Cancel through the customer account profile.", "assisted_cancellation": "If profile cancellation is unavailable or unsuccessful, email budlysupport@gmail.com.", "deadline": "Cancel before the next renewal.", "processed_orders": "Orders already processed are not automatically refundable."},
+    "shipping": {"summary": "Shipping rates and available destinations appear at checkout. Delivery dates are estimates and are not guaranteed.", "unsupported_destination": "If an order cannot be fulfilled to the selected destination, the affected order is refunded."},
+    "nft_memberships": {"summary": "Membership begins when the transaction finishes processing. Customers have 7 days to cancel for a full refund if the membership has not been used.", "activation": "Membership begins as soon as the transaction finishes processing.", "refund_window_days": 7, "usage_rule": "Using a membership discount counts as using the membership and disqualifies the purchase from a refund.", "financial_disclaimer": "Membership does not promise financial return, resale value, or appreciation.", "benefits_rule": "Membership benefits are limited to the terms displayed at purchase."},
+    "wholesale": {"summary": "Prices, minimums, shipping, labeling, and commercial terms that can be fulfilled through the website may be completed there. Anything outside the website's available options may require support assistance.", "contact": "For assistance, email budlysupport@gmail.com."}
+  }
+}
