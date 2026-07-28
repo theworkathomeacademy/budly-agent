@@ -89,3 +89,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+.budly-composer button.budly-secondary {
+  border: 1px solid #c9d8ce;
+  background: #f5faf6;
+  color: #173c2d;
+}
+
+.budly-composer button:disabled {
+  cursor: wait;
+  opacity: .62;
+}
+.budly-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.budly-choice-grid button,.budly-inline-actions button{min-height:44px}.budly-inline-actions{display:flex;gap:8px;margin-top:10px}.budly-memory-card h4{margin-bottom:2px}.budly-memory-card small{display:block;color:#657168}.budly-composer button.budly-danger-secondary{border:1px solid #9b3434;background:#fff6f6;color:#7b2020}.budly-composer label{display:grid;gap:5px;font-family:Arial,sans-serif}.budly-composer label:has(input[type=checkbox]){display:flex;align-items:flex-start;gap:9px}.budly-composer input[type=checkbox]{width:auto;margin-top:4px}.budly-composer input:focus-visible,.budly-composer button:focus-visible,.budly-card button:focus-visible{outline:3px solid #d8ba70;outline-offset:2px}.budly-card button{border:1px solid #c9d8ce;border-radius:9px;padding:8px 12px;background:#f5faf6;color:#173c2d;font-weight:700;cursor:pointer}
+@media(max-width:600px){.budly-choice-grid{grid-template-columns:1fr}.budly-composer{display:grid;grid-template-columns:1fr}.budly-composer>button{width:100%}.budly-composer button,.budly-card button{min-height:48px}}
+@media(prefers-reduced-motion:reduce){.budly-floating-button{transition:none}.budly-floating-button:hover,.budly-floating-button:focus-visible{transform:none}}

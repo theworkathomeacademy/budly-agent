@@ -72,9 +72,113 @@ function budly_sales_identity_hash($value) {
     return $value ? hash_hmac('sha256', strtolower(trim($value)), wp_salt('auth')) : '';
 }
 
+function budly_sales_recall_rate_limit($scope, $limit, $window) {
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : 'unknown';
+    $key = 'budly_recall_rate_' . md5($scope . '|' . $ip);
+    $attempts = (int) get_transient($key);
+    if ($attempts >= $limit) { return false; }
+    set_transient($key, $attempts + 1, $window);
+    return true;
+}
+
+function budly_sales_request_recall_code() {
+    check_ajax_referer('budly_sales_recall', 'nonce');
+    if (!budly_sales_recall_rate_limit('request', 5, 15 * MINUTE_IN_SECONDS)) {
+        wp_send_json_error(array('message' => 'Too many attempts. Please wait 15 minutes and try again.'), 429);
+    }
+    $email = sanitize_email(isset($_POST['email']) ? wp_unslash($_POST['email']) : '');
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'), 400);
+    }
+    global $wpdb;
+    $tables = budly_sales_tracking_tables();
+    $email_hash = budly_sales_identity_hash($email);
+    $customer_id = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM {$tables['customers']} WHERE email_hash = %s AND memory_consent = 1",
+        $email_hash
+    ));
+    if ($customer_id) {
+        $code = (string) wp_rand(100000, 999999);
+        set_transient('budly_recall_code_' . $email_hash, array(
+            'hash' => wp_hash_password($code),
+            'customer_id' => $customer_id,
+            'attempts' => 0,
+        ), 10 * MINUTE_IN_SECONDS);
+        wp_mail(
+            $email,
+            'Your Budly verification code',
+            "Your Budly verification code is {$code}. It expires in 10 minutes.\n\nIf you did not request this code, you can ignore this email.",
+            array('Reply-To: Budly Support <budlysupport@gmail.com>')
+        );
+    }
+    wp_send_json_success(array(
+        'message' => 'If Budly has a consented profile for that email, a six-digit code is on its way. Check spam if it does not arrive shortly.',
+    ));
+}
+// Legacy recall is intentionally not registered. Secure recall is REST/session based.
+
+function budly_sales_verify_recall_code() {
+    check_ajax_referer('budly_sales_recall', 'nonce');
+    if (!budly_sales_recall_rate_limit('verify', 10, 15 * MINUTE_IN_SECONDS)) {
+        wp_send_json_error(array('message' => 'Too many attempts. Please wait 15 minutes and try again.'), 429);
+    }
+    $email = sanitize_email(isset($_POST['email']) ? wp_unslash($_POST['email']) : '');
+    $code = preg_replace('/[^0-9]/', '', isset($_POST['code']) ? wp_unslash($_POST['code']) : '');
+    if (!is_email($email) || strlen($code) !== 6) {
+        wp_send_json_error(array('message' => 'Enter the six-digit code from your email.'), 400);
+    }
+    $email_hash = budly_sales_identity_hash($email);
+    $key = 'budly_recall_code_' . $email_hash;
+    $record = get_transient($key);
+    if (!is_array($record) || empty($record['hash']) || empty($record['customer_id'])) {
+        wp_send_json_error(array('message' => 'That code is invalid or expired. Request a new code.'), 403);
+    }
+    $record['attempts'] = isset($record['attempts']) ? (int) $record['attempts'] + 1 : 1;
+    if ($record['attempts'] > 5) {
+        delete_transient($key);
+        wp_send_json_error(array('message' => 'That code is invalid or expired. Request a new code.'), 403);
+    }
+    if (!wp_check_password($code, $record['hash'])) {
+        set_transient($key, $record, 10 * MINUTE_IN_SECONDS);
+        wp_send_json_error(array('message' => 'That code is invalid or expired. Request a new code.'), 403);
+    }
+    delete_transient($key);
+    global $wpdb;
+    $tables = budly_sales_tracking_tables();
+    $customer = $wpdb->get_row($wpdb->prepare(
+        "SELECT id,name,email,phone FROM {$tables['customers']} WHERE id = %d AND email_hash = %s AND memory_consent = 1",
+        (int) $record['customer_id'],
+        $email_hash
+    ));
+    if (!$customer) {
+        wp_send_json_error(array('message' => 'No consented Budly profile is available for that email.'), 404);
+    }
+    $rows = $wpdb->get_results($wpdb->prepare(
+        "SELECT created_at,journey,summary FROM {$tables['conversations']} WHERE customer_id = %d ORDER BY id DESC LIMIT 5",
+        (int) $customer->id
+    ), ARRAY_A);
+    $history = array_map(function ($row) {
+        return array(
+            'created_at' => sanitize_text_field($row['created_at']),
+            'journey' => sanitize_text_field($row['journey']),
+            'summary' => sanitize_textarea_field($row['summary']),
+        );
+    }, $rows ?: array());
+    wp_send_json_success(array(
+        'profile' => array('name'=>$customer->name,'email'=>$customer->email,'phone'=>$customer->phone),
+        'history' => $history,
+        'message' => $history ? 'Welcome back. I found your recent Budly conversations.' : 'Welcome back. Your profile is verified.',
+    ));
+}
+// Legacy verification is intentionally not registered. Do not restore these AJAX actions.
+
 function budly_sales_track_event() {
     check_ajax_referer('budly_sales_track', 'nonce');
-    $allowed = array('budly_button_clicked','conversation_started','starter_selected','journey_selected','recommendation_shown','product_clicked','human_support_requested','conversation_completed');
+    $rate_key = 'budly_track_' . hash_hmac('sha256', isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown', wp_salt('nonce'));
+    $rate_count = (int) get_transient($rate_key);
+    if ($rate_count >= 120) { wp_send_json_error(array('message'=>'Please wait before sending more activity.'), 429); }
+    set_transient($rate_key, $rate_count + 1, 10 * MINUTE_IN_SECONDS);
+    $allowed = array('budly_button_clicked','conversation_started','identity_verified','history_recalled','starter_selected','journey_selected','recommendation_shown','product_clicked','human_support_requested','conversation_completed');
     $event = sanitize_key(isset($_POST['event']) ? wp_unslash($_POST['event']) : '');
     if (!in_array($event, $allowed, true)) {
         wp_send_json_error(array('message' => 'Unsupported event.'), 400);
@@ -83,13 +187,8 @@ function budly_sales_track_event() {
     if (!$session || strlen($session) > 64) {
         wp_send_json_error(array('message' => 'Invalid session.'), 400);
     }
-    $email = sanitize_email(isset($_POST['email']) ? wp_unslash($_POST['email']) : '');
-    $phone = budly_sales_normalize_phone(isset($_POST['phone']) ? wp_unslash($_POST['phone']) : '');
-    $name = sanitize_text_field(isset($_POST['name']) ? wp_unslash($_POST['name']) : '');
     $journey = sanitize_text_field(isset($_POST['journey']) ? wp_unslash($_POST['journey']) : '');
     $product_url = esc_url_raw(isset($_POST['product_url']) ? wp_unslash($_POST['product_url']) : '');
-    $summary = sanitize_textarea_field(isset($_POST['summary']) ? wp_unslash($_POST['summary']) : '');
-    $memory_consent = !empty($_POST['memory_consent']);
     $metadata = sanitize_textarea_field(isset($_POST['metadata']) ? wp_unslash($_POST['metadata']) : '');
     global $wpdb;
     $tables = budly_sales_tracking_tables();
@@ -99,27 +198,22 @@ function budly_sales_track_event() {
         'session_id' => $session,
         'journey' => $journey,
         'product_url' => $product_url,
-        'email_hash' => budly_sales_identity_hash($email),
-        'phone_hash' => budly_sales_identity_hash($phone),
+        // Public analytics must never establish identity, consent, or memory.
+        'email_hash' => '',
+        'phone_hash' => '',
         'metadata' => $metadata,
     ));
-    if ($memory_consent && $email && is_email($email)) {
-        $email_hash = budly_sales_identity_hash($email);
-        $customer_id = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$tables['customers']} WHERE email_hash = %s", $email_hash));
-        $values = array('updated_at'=>current_time('mysql', true),'name'=>$name,'email'=>$email,'phone'=>$phone,'phone_hash'=>budly_sales_identity_hash($phone),'memory_consent'=>1);
-        if ($customer_id) {
-            $wpdb->update($tables['customers'], $values, array('id'=>$customer_id));
-        } else {
-            $values['created_at'] = current_time('mysql', true);
-            $values['email_hash'] = $email_hash;
-            $wpdb->insert($tables['customers'], $values);
-            $customer_id = (int) $wpdb->insert_id;
-        }
-        if ($summary && $event === 'conversation_completed') {
-            $wpdb->insert($tables['conversations'], array('created_at'=>current_time('mysql', true),'customer_id'=>$customer_id,'session_id'=>$session,'journey'=>$journey,'summary'=>$summary));
-        }
-    }
-    budly_sales_send_to_sheet(array('event'=>$event,'session'=>$session,'name'=>$memory_consent?$name:'','email'=>$memory_consent?$email:'','phone'=>$memory_consent?$phone:'','journey'=>$journey,'product_url'=>$product_url,'summary'=>($memory_consent&&$event==='conversation_completed')?$summary:'','created_at'=>gmdate('c')));
+    budly_sales_send_to_sheet(array(
+        'event'=>$event,
+        'session'=>$session,
+        'name'=>'',
+        'email'=>'',
+        'phone'=>'',
+        'journey'=>$journey,
+        'product_url'=>$product_url,
+        'summary'=>'',
+        'created_at'=>gmdate('c'),
+    ));
     wp_send_json_success(array('recorded'=>true));
 }
 add_action('wp_ajax_budly_sales_track', 'budly_sales_track_event');
@@ -152,7 +246,7 @@ function budly_sales_tracking_dashboard() {
     $recent = $wpdb->get_results("SELECT created_at,event_name,journey,session_id FROM {$tables['events']} ORDER BY id DESC LIMIT 25");
     ?>
     <div class="wrap"><h1>Budly Sales Tracking</h1>
-      <p>First-party totals. Conversation content is stored only when the customer explicitly chooses memory consent.</p>
+      <p>First-party aggregate sales events only. This tracking system cannot establish customer identity, consent, or secure memory.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap"><?php foreach ($counts as $key=>$value): ?><div style="background:#fff;border:1px solid #ccd0d4;padding:16px;min-width:150px"><strong><?php echo esc_html(ucwords(str_replace('_',' ',$key))); ?></strong><div style="font-size:30px"><?php echo esc_html($value); ?></div></div><?php endforeach; ?></div>
       <h2>Google Sheets connection</h2><form method="post"><?php wp_nonce_field('budly_sales_settings'); ?><p><label>Apps Script webhook URL<br><input type="url" name="sheet_webhook" value="<?php echo esc_attr(get_option('budly_sales_sheet_webhook','')); ?>" class="regular-text" placeholder="https://script.google.com/macros/s/.../exec"></label></p><p><button class="button button-primary" name="budly_save_settings" value="1">Save connection</button></p></form>
       <p><a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=budly_sales_export'),'budly_sales_export')); ?>">Export CSV</a></p>

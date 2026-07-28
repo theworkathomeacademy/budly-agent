@@ -3,4 +3,5 @@ __pycache__/
 .env
 data/*.db
 tmp/
-
+deploy/wordpress/budly-sales-live-1.2.0.zip
+deploy/wordpress/budly-sales-live-1.2.0-active.zip
