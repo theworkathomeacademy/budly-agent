@@ -1,6 +1,7 @@
 # BROS Program Index v1.0
 Version: 1.0
-Status: Draft for Ratification
+Status: Ratified
+Ratification Date: July 28, 2026
 Document Classification: Program Governance Index
 Authority: BROS Constitution and BROS Foundation Library
 Ratification Authority: Project Owner and Architect of Record
@@ -226,6 +227,7 @@ Equivalent architectural authority operating under the BROS Constitution and all
 ## 13. Ratification
 Document Title: BROS Program Index
 Version: 1.0
-Status: Draft for Ratification
+Status: Ratified
+Ratification Date: July 28, 2026
 Document Classification: Program Governance Index
 Authority: BROS Constitution and BROS Foundation Library
