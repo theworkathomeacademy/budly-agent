@@ -6,7 +6,8 @@ if (!defined('ABSPATH')) { exit; }
 final class Config {
     const API_NAMESPACE = 'budly-identity/v1';
     const API_VERSION = '1.0';
-    const SCHEMA_VERSION = '1.1.0';
+    const SCHEMA_VERSION = '1.2.0';
+    const BROS_RULE_VERSION = 'bros-rules-1.3.4.1';
     const CONSENT_VERSION = '1.0';
     const SESSION_COOKIE = 'budly_memory_session';
     const SESSION_IDLE_SECONDS = 1800;
@@ -34,6 +35,7 @@ final class Config {
             'customers', 'preferences', 'conversation_memory', 'consent',
             'consent_history', 'verification_requests', 'sessions', 'audit',
             'schema_migrations', 'agents', 'memory_contexts', 'idempotency',
+            'decision_evidence', 'rule_configurations',
         );
         if (!in_array($logical_name, $allowed, true)) {
             throw new \InvalidArgumentException('Unknown secure-memory table.');

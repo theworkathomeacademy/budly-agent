@@ -10,5 +10,6 @@ final class AdminPage{
  <h2>Session revocation</h2><form data-revoke-session><label>Session ID <input name="session_id" required></label> <?php submit_button('Revoke session','secondary','submit',false);?></form><form data-revoke-all><label>Customer public ID <input name="customer_id" required></label> <?php submit_button('Revoke all customer sessions','secondary','submit',false);?></form>
  <h2>Email delivery test</h2><form data-test-email><label>Test recipient <input name="email" type="email" required></label> <?php submit_button('Send transactional test','secondary','submit',false);?></form>
  <h2>Cleanup</h2><p>Cleanup removes only expired temporary authentication, session, context, and idempotency records. It preserves customer memory, consent, consent history, and audit records.</p><form data-run-cleanup><?php submit_button('Run bounded cleanup now','secondary','submit',false);?></form>
+ <h2>Governed decisions</h2><p>Active rule versions, recent qualifications, recommendations, no-match outcomes, and escalations are available through the protected administration API.</p><div data-admin-decisions>Loading governed decision evidence…</div>
  <h2>Recent security audit</h2><div data-admin-audit>Loading audit events…</div><p data-admin-message role="status" aria-live="polite"></p></div><?php }
 }

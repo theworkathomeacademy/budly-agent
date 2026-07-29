@@ -18,7 +18,7 @@ class Phase5SecurityContractTests(unittest.TestCase):
             "retention_policy", "corrected_at", "customer_content",
         ):
             self.assertIn(required, migration)
-        self.assertIn("SCHEMA_VERSION = '1.1.0'", config)
+        self.assertIn("SCHEMA_VERSION = '1.2.0'", config)
         self.assertIn("SUMMARY_MAX_BYTES", config)
         self.assertIn("MEMORY_MAX_ACTIVE_PER_CUSTOMER", config)
         self.assertIn("MEMORY_DEFAULT_RETENTION_DAYS", config)

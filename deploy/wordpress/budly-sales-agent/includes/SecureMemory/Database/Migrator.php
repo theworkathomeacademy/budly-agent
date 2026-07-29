@@ -85,6 +85,27 @@ final class Migrator {
             response_json longtext NOT NULL, created_at datetime NOT NULL, expires_at datetime NOT NULL,
             PRIMARY KEY (id), UNIQUE KEY request_identity (customer_id,endpoint,idempotency_key), KEY expires_at (expires_at)
         ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('rule_configurations') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, configuration_id varchar(40) NOT NULL,
+            configuration_type varchar(40) NOT NULL, version varchar(60) NOT NULL, status varchar(20) NOT NULL,
+            configuration_json longtext NOT NULL, activated_by bigint(20) unsigned NULL,
+            activated_at datetime NULL, created_at datetime NOT NULL, PRIMARY KEY (id),
+            UNIQUE KEY configuration_id (configuration_id), UNIQUE KEY type_version (configuration_type,version),
+            KEY active_configuration (configuration_type,status)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('decision_evidence') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, decision_id varchar(40) NOT NULL,
+            decision_type varchar(30) NOT NULL, customer_reference varchar(80) NOT NULL DEFAULT '',
+            session_id varchar(40) NOT NULL DEFAULT '', conversation_id varchar(64) NOT NULL DEFAULT '',
+            journey varchar(80) NOT NULL DEFAULT '', objective text NULL, inputs_json longtext NOT NULL,
+            rule_version varchar(60) NOT NULL, eligible_products_json longtext NOT NULL,
+            excluded_products_json longtext NOT NULL, outcome varchar(30) NOT NULL,
+            selected_product_id varchar(100) NULL, confidence varchar(30) NULL,
+            escalation_reference varchar(80) NULL, resulting_action varchar(80) NOT NULL,
+            created_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY decision_id (decision_id),
+            KEY decision_time (decision_type,created_at), KEY outcome_time (outcome,created_at),
+            KEY customer_time (customer_reference,created_at)
+        ) $charset;";
 
         foreach ($tables as $sql) { dbDelta($sql); }
         $migration_table = Config::table('schema_migrations');

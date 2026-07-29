@@ -225,7 +225,7 @@ class WordPressPackageTests(unittest.TestCase):
         self.assertNotIn("add_action('wp_ajax_nopriv_budly_sales_verify_recall'", tracking)
         self.assertNotIn("recallNonce", plugin)
         self.assertIn("Secure recall is REST/session based", tracking)
-        self.assertIn("Version: 1.3.0", plugin)
+        self.assertIn("Version: 1.3.4", plugin)
 
     def test_recall_interface_preserves_privacy(self):
         js = (PLUGIN / "assets" / "budly-sales.js").read_text(encoding="utf-8")
