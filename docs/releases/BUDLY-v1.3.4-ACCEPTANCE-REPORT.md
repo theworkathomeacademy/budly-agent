@@ -4,7 +4,7 @@ Release result: Partial
 Application: `1.3.4`  
 Schema: `1.2.0`  
 Baseline: `493bedb`  
-Environment: Windows, Python 3.12, SQLite source tests; WordPress/PHP/MySQL runtime unavailable
+Environment: LocalWP staging; WordPress 7.0.2, PHP 8.2.29, MySQL 8.4.0, nginx 1.26.1
 
 ## Applicable tests
 
@@ -34,8 +34,11 @@ Final automated result is populated from the release run: 106 tests passed, 0 fa
 ## Defects and residual risks
 
 - Repository baseline evidence reports 96 tests while the handoff states 100.
-- Live staging MySQL forward migration, reconciliation, and restore rehearsal remain blocked by the absent runtime.
+- Staging migration 1.1.0 to 1.2.0 passed. Table structure and indexes were inspected; two repeat runs preserved counts and exactly seven active configurations.
+- Reconciliation preserved customers (2), consent (3), consent history (30), memory (12), sessions (107), verification requests (463), and audit history. Normal cleanup expired 57 transient idempotency rows.
+- Verified backups exist outside Git. An isolated restore recovered schema 1.1.0 and all 27 backed-up tables.
 - The new WordPress decision tables/admin feed are foundational interfaces; the accepted WordPress customer journey does not yet invoke a server-side recommendation evidence writer. The active governed evidence writer is the Python deterministic application core.
+- The ten live WordPress evidence scenarios and authenticated administrator retrieval remain unaccepted. Logged-out access fails closed.
 - No production deployment occurred.
 
 ## Deferred acceptance

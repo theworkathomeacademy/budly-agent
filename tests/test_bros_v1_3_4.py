@@ -108,6 +108,8 @@ class WordpressV134ContractTests(unittest.TestCase):
         self.assertIn("SCHEMA_VERSION = '1.2.0'", config)
         self.assertIn("decision_evidence", migration)
         self.assertIn("rule_configurations", migration)
+        self.assertIn("qualification-1.3.4.1", migration)
+        self.assertIn("catalog-allowlist-2026-07-16", migration)
 
     def test_admin_visibility_includes_versions_and_decisions(self):
         service = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Admin/AdminService.php").read_text(encoding="utf-8")

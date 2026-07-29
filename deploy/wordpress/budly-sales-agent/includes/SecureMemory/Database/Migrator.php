@@ -126,5 +126,30 @@ final class Migrator {
                 'namespaces_json'=>wp_json_encode(array('shared','sales')), 'created_at'=>$now, 'updated_at'=>$now,
             ));
         }
+        $configuration_table = Config::table('rule_configurations');
+        $configuration_versions = array(
+            'qualification'=>'qualification-1.3.4.1',
+            'recommendation'=>'recommendation-1.3.4.1',
+            'catalog'=>'catalog-allowlist-2026-07-16',
+            'journeys'=>'journey-routing-1.3.4.1',
+            'escalation'=>'escalation-1.3.4.1',
+            'consent'=>'secure-memory-consent-1.0',
+            'retention'=>'secure-memory-retention-1.1.0',
+        );
+        foreach ($configuration_versions as $type=>$version) {
+            $existing_configuration = $wpdb->get_var($wpdb->prepare(
+                "SELECT configuration_id FROM {$configuration_table} WHERE configuration_type=%s AND version=%s LIMIT 1",
+                $type, $version
+            ));
+            if (!$existing_configuration) {
+                $now = current_time('mysql', true);
+                $wpdb->insert($configuration_table, array(
+                    'configuration_id'=>\Budly\SecureMemory\Validation::opaque_id('cfg'),
+                    'configuration_type'=>$type, 'version'=>$version, 'status'=>'active',
+                    'configuration_json'=>wp_json_encode(array('version'=>$version,'release'=>'1.3.4')),
+                    'activated_by'=>null, 'activated_at'=>$now, 'created_at'=>$now,
+                ));
+            }
+        }
     }
 }
