@@ -39,7 +39,6 @@ The Google Drive Program Index and Technical Blueprint were verified as ratified
 
 - Full BROS v1.7 CRM, lifecycle, workflow, intelligence, reporting, and dashboard suite
 - Commercial rules not yet ratified
-- WordPress browser-journey server-side decision writer and its live evidence scenarios
 - Production Gate F work and production deployment
 
 ## Migration identifiers
@@ -58,4 +57,4 @@ Baseline repository evidence: 96 passed, 0 failed, 0 skipped. The handoff stated
 
 ## Known limitations
 
-The WordPress/MySQL migration, reconciliation, configuration seed, backup, and isolated restore rehearsal passed in LocalWP staging on 2026-07-29. Acceptance remains Partial because the browser journey does not write server-validated decision evidence and authenticated administrator retrieval is not accepted end-to-end. Gate F remains blocked. No production authorization is implied.
+The migration, reconciliation, configuration seed, backup, isolated restore, server-authoritative writer, ten governed scenarios, and authenticated administrator endpoint acceptance passed in LocalWP staging on 2026-07-29. Gates A-E pass. Gate F remains blocked; no production authorization is implied.

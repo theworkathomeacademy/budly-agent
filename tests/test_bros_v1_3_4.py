@@ -116,10 +116,60 @@ class WordpressV134ContractTests(unittest.TestCase):
         repository = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Admin/AdminRepository.php").read_text(encoding="utf-8")
         self.assertIn("application_version", service)
         self.assertIn("active_configurations", service)
-        self.assertIn("recent_decisions", repository)
+        self.assertIn("function decisions(", repository)
         routes = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Api/Routes.php").read_text(encoding="utf-8")
         self.assertIn("/admin/decisions", routes)
         self.assertIn("admin_permission()", routes)
+
+    def test_server_authoritative_writer_contract(self):
+        root = self.ROOT / "deploy/wordpress/budly-sales-agent"
+        service = (root / "includes/SecureMemory/Decision/DecisionService.php").read_text(encoding="utf-8")
+        routes = (root / "includes/SecureMemory/Api/Routes.php").read_text(encoding="utf-8")
+        browser = (root / "assets/budly-sales.js").read_text(encoding="utf-8")
+        self.assertIn("/decisions/evaluate", routes)
+        self.assertIn("wp_verify_nonce", routes)
+        self.assertIn("Idempotency-Key", routes)
+        self.assertIn("csrf_is_valid", routes)
+        self.assertIn("decision.recommendation", service)
+        self.assertIn("not_allowlisted", service)
+        self.assertIn("governedDecision", browser)
+        self.assertNotIn("client_score", service)
+
+    def test_ten_governed_scenario_contracts(self):
+        service = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Decision/DecisionService.php").read_text(encoding="utf-8")
+        expected = {
+            "qualified recommendation": "'recommended'",
+            "nurture": "'nurture'",
+            "safe no-match": "'no_match'",
+            "allowlist exclusion": "'not_allowlisted'",
+            "low-confidence clarification": "'clarification_required'",
+            "human escalation": "'human_review'",
+            "sensitive-domain request": "'[sensitive request withheld]'",
+            "consent restriction": "'consent_restricted'",
+            "returning verified customer": "'verified'=>$verified",
+            "anonymous visitor": "'visitor'",
+        }
+        for scenario, marker in expected.items():
+            with self.subTest(scenario=scenario):
+                self.assertIn(marker, service)
+
+    def test_admin_decision_endpoint_is_bounded_filterable_and_audited(self):
+        root = self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory"
+        routes = (root / "Api/Routes.php").read_text(encoding="utf-8")
+        repository = (root / "Admin/AdminRepository.php").read_text(encoding="utf-8")
+        self.assertIn("per_page", routes)
+        self.assertIn("unsupported decision filter", routes)
+        self.assertIn("admin.decisions_access", routes)
+        self.assertIn("ORDER BY created_at DESC,id DESC", repository)
+        service = (root / "Admin/AdminService.php").read_text(encoding="utf-8")
+        self.assertIn("min(100", service)
+
+    def test_decision_response_minimizes_sensitive_fields(self):
+        service = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Decision/DecisionService.php").read_text(encoding="utf-8")
+        response = service.split("return array('decision_id'=>$decision", 1)[1]
+        self.assertNotIn("'objective'=>", response)
+        self.assertNotIn("'inputs_json'=>", response)
+        self.assertNotIn("'customer_reference'=>", response)
 
 
 if __name__ == "__main__":

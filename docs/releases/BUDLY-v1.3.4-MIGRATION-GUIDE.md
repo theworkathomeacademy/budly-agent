@@ -31,3 +31,5 @@ Existing tables, identifiers, consent, memory, sessions, and audit rows are not 
 LocalWP staging migrated successfully on 2026-07-29 using WordPress 7.0.2, PHP 8.2.29, MySQL 8.4.0, nginx 1.26.1, and prefix `wp_`. Both new tables were inspected and two repeat migrations produced no duplicates. Seven governed configurations were seeded exactly once.
 
 Durable counts were unchanged: customers 2, consent 3, consent history 30, conversation memory 12, sessions 107, and verification requests 463. Audit increased from 1239 to 1240 for cleanup evidence. Cleanup expired 57 transient idempotency rows. The external database dump (707,983 bytes) and v1.3.0 plugin archive (60,537 bytes) were readable and checksummed. An isolated restore recovered schema 1.1.0 and 27 tables.
+
+The final decision-writer package is code-only. Re-deployment preserved schema 1.2.0, exactly seven active configuration rows, and all existing customer, consent, session, memory, and audit records.

@@ -25,6 +25,8 @@ use Budly\SecureMemory\Admin\AdminRepository;
 use Budly\SecureMemory\Admin\AdminService;
 use Budly\SecureMemory\Sessions\SessionRepository;
 use Budly\SecureMemory\Cleanup\CleanupService;
+use Budly\SecureMemory\Decision\DecisionRepository;
+use Budly\SecureMemory\Decision\DecisionService;
 
 if (!defined('ABSPATH')) { exit; }
 
@@ -51,6 +53,7 @@ final class Routes {
         register_rest_route(Config::API_NAMESPACE, '/memory/(?P<memory_id>mem_[A-Za-z0-9_-]+)', array('methods'=>'DELETE','callback'=>array(__CLASS__,'delete_memory_item'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/memory/export', array('methods'=>'GET','callback'=>array(__CLASS__,'export_memory'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/memory', array('methods'=>'DELETE','callback'=>array(__CLASS__,'delete_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/decisions/evaluate', array('methods'=>'POST','callback'=>array(__CLASS__,'evaluate_decision'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/health', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_health'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/audit', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_audit'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/decisions', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_decisions'),'permission_callback'=>'__return_true'));
@@ -72,6 +75,7 @@ final class Routes {
     private static function preference_service() { return new PreferenceService(new ProfileRepository(), self::consents(), new AuditService(new Repository())); }
     private static function memory_service() { return new MemoryService(new MemoryRepository(),new ConsentRepository(),self::consents(),new AgentRegistry(),self::profile_service(),SessionService::instance(),new AuditService(new Repository())); }
     private static function admin_service(){return new AdminService(new AdminRepository(),new SessionRepository(),new WordPressMailTransport(),new AuditService(new Repository()));}
+    private static function decision_service(){return new DecisionService(new DecisionRepository(),new ConsentRepository(),new AuditService(new Repository()));}
     public static function admin_permission(){return current_user_can('manage_options');}
 
     public static function request_code(\WP_REST_Request $request) {
@@ -144,6 +148,31 @@ final class Routes {
     public static function export_memory(\WP_REST_Request $request){$session=SessionGuard::require_session($request,false);if($session instanceof \WP_REST_Response)return $session;return Response::success(self::memory_service()->export($session));}
     public static function delete_memory(\WP_REST_Request $request){return self::customer_json_mutation($request,'memory/delete-all',function($session,$params){return self::memory_service()->delete_all($session,$params);});}
 
+    public static function evaluate_decision(\WP_REST_Request $request){
+        $nonce=$request->get_header('X-WP-Nonce');
+        if(!$nonce||!wp_verify_nonce($nonce,'wp_rest'))return Response::error(Errors::CSRF_VALIDATION_FAILED,'The request security token is invalid.',403);
+        $params=Validation::json_request($request);if(is_wp_error($params))return Response::error($params->get_error_code(),$params->get_error_message(),(int)$params->get_error_data()['status']);
+        $ip=isset($_SERVER['REMOTE_ADDR'])?sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])):'unknown';
+        $rate_key='budly_decision_rate_'.hash_hmac('sha256',$ip,wp_salt('nonce'));$count=(int)get_transient($rate_key);
+        if($count>=60){(new AuditService(new Repository()))->record('decision.rate_limited','visitor','anonymous','failure','warning');return Response::error(Errors::RATE_LIMITED,'Decision requests are temporarily limited.',429);}
+        set_transient($rate_key,$count+1,HOUR_IN_SECONDS);
+        $session=array();
+        if(!empty($_COOKIE[Config::SESSION_COOKIE])){
+            $session=SessionService::instance()->validate(true);
+            if(!empty($session['error']))return Response::error(Errors::AUTHENTICATION_REQUIRED,'The customer session is invalid or expired.',401);
+            if(!SessionService::instance()->csrf_is_valid($session,$request->get_header('X-Budly-CSRF')))return Response::error(Errors::CSRF_VALIDATION_FAILED,'The customer security token is invalid.',403);
+        }
+        $key=$request->get_header('Idempotency-Key');if(!preg_match('/^[A-Za-z0-9._:-]{16,80}$/',$key))return Response::error(Errors::INVALID_REQUEST,'A valid idempotency key is required.',422);
+        $customer=(int)($session['customer_id']??0);$session_id=$session['session_id']??'anonymous';$idem=new IdempotencyService();
+        $replay=$idem->replay($customer,'decisions/evaluate',$key,$params);
+        if(is_array($replay)&&!empty($replay['__conflict']))return Response::error(Errors::RESOURCE_CONFLICT,'The idempotency key was used for a different request.',409);
+        if(is_array($replay))return self::service_response($replay);
+        if(!$idem->claim($customer,$session_id,'decisions/evaluate',$key,$params))return Response::error(Errors::RESOURCE_CONFLICT,'The decision request is already being processed.',409);
+        try{$result=self::decision_service()->evaluate($params,$session);}catch(\Throwable $e){$idem->release($customer,'decisions/evaluate',$key,$params);return Response::error(Errors::SERVICE_UNAVAILABLE,'Decision evidence is temporarily unavailable.',503);}
+        if(empty($result['error']))$idem->remember($customer,$session_id,'decisions/evaluate',$key,$params,$result);else $idem->release($customer,'decisions/evaluate',$key,$params);
+        return self::service_response($result);
+    }
+
     private static function customer_json_mutation(\WP_REST_Request $request,$endpoint,$callback){
         $session=SessionGuard::require_session($request,true);if($session instanceof \WP_REST_Response)return $session;
         $params=Validation::json_request($request);if(is_wp_error($params))return Response::error($params->get_error_code(),$params->get_error_message(),(int)$params->get_error_data()['status']);
@@ -156,7 +185,15 @@ final class Routes {
     private static function service_response(array $result){if(!empty($result['error']))return Response::error($result['error'],$result['message'],$result['status']);return Response::success($result);}
     private static function admin_mutation(\WP_REST_Request $request,$callback){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);$nonce=$request->get_header('X-WP-Nonce');if(!$nonce||!wp_verify_nonce($nonce,'wp_rest'))return Response::error(Errors::CSRF_VALIDATION_FAILED,'The administrator security token is invalid.',403);$params=Validation::json_request($request);if(is_wp_error($params))return Response::error($params->get_error_code(),$params->get_error_message(),(int)$params->get_error_data()['status']);return self::service_response(call_user_func($callback,$params));}
     public static function admin_health(\WP_REST_Request $request){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);return Response::success(self::admin_service()->health());}
-    public static function admin_decisions(\WP_REST_Request $request){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);return Response::success(self::admin_service()->decision_evidence((int)$request->get_param('limit')));}
+    public static function admin_decisions(\WP_REST_Request $request){
+        $audit=new AuditService(new Repository());
+        if(!self::admin_permission()){$audit->record('admin.decisions_access','wordpress_user',(string)get_current_user_id(),'failure','warning');return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);}
+        $allowed=array('decision_type','outcome','journey','customer_reference','page','per_page');foreach(array_keys($request->get_query_params()) as $key){if(!in_array($key,$allowed,true)){$audit->record('admin.decisions_access','administrator',(string)get_current_user_id(),'failure','warning',array('metadata'=>array('reason'=>'invalid_filter')));return Response::error(Errors::INVALID_REQUEST,'An unsupported decision filter was supplied.',422);}}
+        $filters=array();foreach(array('decision_type','outcome','journey','customer_reference') as $key){$value=$request->get_param($key);if($value!==null){$value=sanitize_text_field((string)$value);if(strlen($value)>80)return Response::error(Errors::INVALID_REQUEST,'A decision filter is invalid.',422);$filters[$key]=$value;}}
+        $result=self::admin_service()->decision_evidence($filters,(int)($request->get_param('page')?:1),(int)($request->get_param('per_page')?:25));
+        $audit->record('admin.decisions_access','administrator',(string)get_current_user_id(),'success','informational',array('metadata'=>array('page'=>$result['page'],'per_page'=>$result['per_page'],'result_count'=>count($result['items']))));
+        return Response::success($result);
+    }
     public static function admin_audit(\WP_REST_Request $request){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);$filters=array();foreach(array('event_type','severity','actor_type','result','date_from','date_to') as $key){$value=$request->get_param($key);if($value!==null)$filters[$key]=sanitize_text_field((string)$value);}return Response::success(self::admin_service()->audit_log($filters,(int)($request->get_param('page')?:1),(int)($request->get_param('per_page')?:25)));}
     public static function admin_revoke_session(\WP_REST_Request $request){return self::admin_mutation($request,function($p){$id=isset($p['session_id'])?sanitize_text_field($p['session_id']):'';return self::admin_service()->revoke_session($id);});}
     public static function admin_revoke_all(\WP_REST_Request $request){return self::admin_mutation($request,function($p){$id=isset($p['customer_id'])?sanitize_text_field($p['customer_id']):'';return self::admin_service()->revoke_all($id);});}

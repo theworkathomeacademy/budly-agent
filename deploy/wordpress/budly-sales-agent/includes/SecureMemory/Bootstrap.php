@@ -18,6 +18,7 @@ final class Bootstrap {
             'Authorization/AgentRegistry.php','Idempotency/IdempotencyService.php',
             'Profile/ProfileRepository.php','Profile/ProfileService.php','Profile/PreferenceService.php',
             'Memory/MemoryPolicy.php','Memory/MemoryRepository.php','Memory/MemoryService.php',
+            'Decision/DecisionRepository.php','Decision/DecisionService.php',
             'Admin/AdminRepository.php','Admin/AdminService.php','Admin/AdminPage.php',
             'Cleanup/CleanupService.php',
             'Security/RequestSecurity.php',

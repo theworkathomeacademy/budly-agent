@@ -62,6 +62,8 @@ function budly_sales_enqueue() {
         'supportEmail' => 'budlysupport@gmail.com',
         'shopUrl' => home_url('/shop/'),
         'storeApiUrl' => home_url('/wp-json/wc/store/v1/products?per_page=100'),
+        'decisionUrl' => esc_url_raw(rest_url('budly-identity/v1/decisions/evaluate')),
+        'decisionNonce' => wp_create_nonce('wp_rest'),
         'policiesUrl' => $policy_page ? $policy_page : home_url('/customer-policies/'),
         'trackNonce' => wp_create_nonce('budly_sales_track'),
     ));

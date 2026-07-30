@@ -13,3 +13,5 @@ Rollback is recovery-oriented because MySQL `dbDelta` is forward-only.
 SQLite recovery: stop the application, preserve the v1.3.4 database for evidence, restore the pre-migration database copy, and run v1.3.0 code. The additive tables do not prevent v1.3.0 reads.
 
 Rollback acceptance requires the original 96-test suite to pass and Gates A-E controls to remain operational. Production rollback is outside this staging-only package.
+
+The final writer is code-only. Plugin rollback disables its write route; appended decision and audit evidence remains dormant and no reverse DDL is required.
