@@ -6,6 +6,18 @@ This directory contains the approved and authoritative specifications for Phase 
 
 **Secure Returning-Customer Memory**
 
+## Implementation records
+
+- [Requirements traceability matrix](requirements-traceability-matrix.md)
+- [Implementation map](phase-3-implementation-map.md)
+- [Progress and gates](phase-3-progress.md)
+- [API inventory](phase-3-api-inventory.md)
+- [Database schema and migration recovery](phase-3-database-schema.md)
+- [Security controls and residual risks](phase-3-security-and-threat-controls.md)
+- [Installation, administration and operations](phase-3-operations.md)
+- [Runtime acceptance plan](phase-3-runtime-acceptance.md)
+- [Runtime-validation candidate report](phase-3-final-implementation-report.md)
+
 These documents govern the implementation, security, customer experience, API design, testing, deployment, and acceptance of the system.
 
 ## Authoritative Documents

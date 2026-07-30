@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Budly Sales Agent
  * Description: Zero-cost guided sales assistant for Wake'n'Bake Lounge and CCCultivate.
- * Version: 1.1.0
+ * Version: 1.3.4
  * Author: Compassionate Care Cultivators
  * Requires at least: 6.2
  * Requires PHP: 7.4
@@ -11,12 +11,15 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-define('BUDLY_SALES_VERSION', '1.1.0');
+define('BUDLY_SALES_VERSION', '1.3.4');
 define('BUDLY_SALES_DIR', plugin_dir_path(__FILE__));
 define('BUDLY_SALES_URL', plugin_dir_url(__FILE__));
 require_once BUDLY_SALES_DIR . 'includes/tracking.php';
+require_once BUDLY_SALES_DIR . 'includes/SecureMemory/Bootstrap.php';
+\Budly\SecureMemory\Bootstrap::register();
 
 function budly_sales_activate() {
+    \Budly\SecureMemory\Bootstrap::activate();
     budly_sales_install_tracking_tables();
     $pages = array(
         'chat' => array('Ask Budly', '[budly_sales_agent]'),
@@ -41,10 +44,17 @@ function budly_sales_activate() {
     flush_rewrite_rules();
 }
 register_activation_hook(__FILE__, 'budly_sales_activate');
+register_deactivation_hook(__FILE__, array('Budly\\SecureMemory\\Bootstrap', 'deactivate'));
 
 function budly_sales_enqueue() {
     wp_enqueue_style('budly-sales', BUDLY_SALES_URL . 'assets/budly-sales.css', array(), BUDLY_SALES_VERSION);
-    wp_enqueue_script('budly-sales', BUDLY_SALES_URL . 'assets/budly-sales.js', array(), BUDLY_SALES_VERSION, true);
+    wp_enqueue_script('budly-secure-memory', BUDLY_SALES_URL . 'assets/budly-secure-memory.js', array(), BUDLY_SALES_VERSION, true);
+    wp_enqueue_script('budly-sales', BUDLY_SALES_URL . 'assets/budly-sales.js', array('budly-secure-memory'), BUDLY_SALES_VERSION, true);
+    wp_localize_script('budly-secure-memory', 'BudlyMemoryConfig', array(
+        'restBase' => esc_url_raw(rest_url('budly-identity/v1')),
+        'agentId' => 'sales-agent',
+        'consentVersion' => '1.0',
+    ));
     $policy_page = get_permalink((int) get_option('budly_sales_policies_page_id'));
     wp_localize_script('budly-sales', 'BudlySalesConfig', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -52,6 +62,8 @@ function budly_sales_enqueue() {
         'supportEmail' => 'budlysupport@gmail.com',
         'shopUrl' => home_url('/shop/'),
         'storeApiUrl' => home_url('/wp-json/wc/store/v1/products?per_page=100'),
+        'decisionUrl' => esc_url_raw(rest_url('budly-identity/v1/decisions/evaluate')),
+        'decisionNonce' => wp_create_nonce('wp_rest'),
         'policiesUrl' => $policy_page ? $policy_page : home_url('/customer-policies/'),
         'trackNonce' => wp_create_nonce('budly_sales_track'),
     ));

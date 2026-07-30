@@ -17,6 +17,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "data" / "sales.db"
+APPLICATION_VERSION = "1.3.4"
+SCHEMA_VERSION = "1.2.0"
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 RISK_PATTERNS = {
     "medical": ("diagnose", "treat my", "cure", "dosage", "dose", "replace my medication"),
@@ -56,8 +58,6 @@ class OpportunitySignals:
 
 
 class SalesAgent:
-    weights = {"need_fit": 35, "purchase_intent": 30, "timeline": 20, "engagement": 15}
-
     def __init__(self, db_path: str | Path | None = None) -> None:
         self.db_path = Path(db_path or os.getenv("SALES_DB_PATH") or DEFAULT_DB)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -66,6 +66,9 @@ class SalesAgent:
         self.product_facts = self._load_json(ROOT / "config" / "product_facts.json")
         self.journeys = self._load_json(ROOT / "config" / "sales_journeys.json")
         self.policies = self._load_json(ROOT / "config" / "policies.json")
+        self.rules = self._load_json(ROOT / "config" / "bros_v1_3_4.json")
+        self._validate_rules()
+        self.weights = self.rules["qualification"]["weights"]
         self._enrich_catalog()
         self.system_prompt = (ROOT / "prompts" / "sales_system.txt").read_text(encoding="utf-8")
         self._initialize_database()
@@ -92,6 +95,16 @@ class SalesAgent:
     @staticmethod
     def _load_json(path: Path) -> dict[str, Any]:
         return json.loads(path.read_text(encoding="utf-8"))
+
+    def _validate_rules(self) -> None:
+        qualification = self.rules.get("qualification", {})
+        weights = qualification.get("weights", {})
+        required = {"need_fit", "purchase_intent", "timeline", "engagement"}
+        if self.rules.get("status") != "active" or set(weights) != required or sum(weights.values()) != 100:
+            raise ValueError("Active BROS qualification rules are invalid")
+        thresholds = qualification.get("thresholds", {})
+        if not 0 <= thresholds.get("nurture", -1) < thresholds.get("qualified", -1) <= 100:
+            raise ValueError("BROS qualification thresholds are invalid")
 
     @contextmanager
     def _connect(self):
@@ -137,8 +150,42 @@ class SalesAgent:
                     status TEXT NOT NULL,
                     created_at TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS decision_evidence (
+                    id TEXT PRIMARY KEY,
+                    decision_type TEXT NOT NULL,
+                    customer_id TEXT,
+                    session_id TEXT,
+                    conversation_id TEXT,
+                    journey TEXT,
+                    objective TEXT NOT NULL,
+                    inputs_json TEXT NOT NULL,
+                    rule_version TEXT NOT NULL,
+                    eligible_products_json TEXT NOT NULL,
+                    excluded_products_json TEXT NOT NULL,
+                    outcome TEXT NOT NULL,
+                    selected_product_id TEXT,
+                    confidence TEXT,
+                    escalation_id TEXT,
+                    resulting_action TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS decision_customer_time
+                    ON decision_evidence(customer_id, created_at);
+                CREATE INDEX IF NOT EXISTS decision_outcome_time
+                    ON decision_evidence(outcome, created_at);
+                CREATE TABLE IF NOT EXISTS active_configurations (
+                    config_type TEXT PRIMARY KEY,
+                    version TEXT NOT NULL,
+                    activated_at TEXT NOT NULL
+                );
                 """
             )
+            for config_type in ("qualification", "recommendation", "catalog", "journeys", "escalation", "consent", "retention"):
+                version = self.rules[config_type]["version"]
+                db.execute(
+                    "INSERT OR IGNORE INTO active_configurations(config_type,version,activated_at) VALUES (?,?,?)",
+                    (config_type, version, self._now()),
+                )
 
     @staticmethod
     def _now() -> str:
@@ -157,6 +204,64 @@ class SalesAgent:
                 "INSERT INTO audit_events VALUES (?, ?, ?, ?, ?)",
                 (str(uuid.uuid4()), customer_id, event_type, json.dumps(payload, sort_keys=True), self._now()),
             )
+
+    def _record_decision(
+        self,
+        decision_type: str,
+        customer_id: str,
+        *,
+        objective: str,
+        inputs: dict[str, Any],
+        rule_version: str,
+        outcome: str,
+        journey: str = "",
+        eligible_products: list[str] | None = None,
+        excluded_products: list[dict[str, str]] | None = None,
+        selected_product_id: str | None = None,
+        confidence: str | None = None,
+        escalation_id: str | None = None,
+        resulting_action: str,
+        session_id: str | None = None,
+        conversation_id: str | None = None,
+    ) -> str:
+        decision_id = str(uuid.uuid4())
+        with self._connect() as db:
+            db.execute(
+                """INSERT INTO decision_evidence VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    decision_id, decision_type, customer_id, session_id, conversation_id, journey,
+                    objective[:1000], json.dumps(inputs, sort_keys=True),
+                    rule_version, json.dumps(eligible_products or [], sort_keys=True),
+                    json.dumps(excluded_products or [], sort_keys=True), outcome,
+                    selected_product_id, confidence, escalation_id, resulting_action, self._now(),
+                ),
+            )
+        self._audit(customer_id, f"decision.{decision_type}", {
+            "decision_id": decision_id,
+            "outcome": outcome,
+            "rule_version": rule_version,
+            "resulting_action": resulting_action,
+        })
+        return decision_id
+
+    def decision_evidence(self, customer_id: str) -> list[dict[str, Any]]:
+        with self._connect() as db:
+            rows = db.execute(
+                "SELECT * FROM decision_evidence WHERE customer_id=? ORDER BY created_at,id",
+                (customer_id,),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def diagnostics(self) -> dict[str, Any]:
+        with self._connect() as db:
+            configs = db.execute(
+                "SELECT config_type,version FROM active_configurations ORDER BY config_type"
+            ).fetchall()
+        return {
+            "application_version": APPLICATION_VERSION,
+            "schema_version": SCHEMA_VERSION,
+            "rule_versions": {row["config_type"]: row["version"] for row in configs},
+        }
 
     def intake(self, *, name: str, email: str, source: str = "direct") -> dict[str, Any]:
         if not name.strip():
@@ -205,7 +310,12 @@ class SalesAgent:
         signals.validate()
         values = asdict(signals)
         score = round(sum((values[key] / 5) * weight for key, weight in self.weights.items()))
-        stage = "qualified" if score >= 70 else "nurture" if score >= 40 else "low_intent"
+        thresholds = self.rules["qualification"]["thresholds"]
+        stage = (
+            "qualified" if score >= thresholds["qualified"]
+            else "nurture" if score >= thresholds["nurture"]
+            else "low_intent"
+        )
         with self._connect() as db:
             changed = db.execute(
                 "UPDATE customers SET score=?, stage=?, updated_at=? WHERE id=?",
@@ -213,7 +323,20 @@ class SalesAgent:
             ).rowcount
         if not changed:
             raise KeyError("Customer not found")
-        self._audit(customer_id, "opportunity_scored", {"signals": values, "score": score, "stage": stage})
+        customer = self.get_customer(customer_id)
+        discovery = json.loads(customer["discovery_json"] or "{}")
+        self._record_decision(
+            "qualification", customer_id,
+            objective=discovery.get("shopping_goal", ""),
+            inputs={"signals": values, "weights": self.weights},
+            rule_version=self.rules["qualification"]["version"],
+            outcome=stage,
+            resulting_action="advance_to_recommendation" if stage == "qualified" else "continue_education",
+        )
+        self._audit(customer_id, "opportunity_scored", {
+            "signals": values, "score": score, "stage": stage,
+            "rule_version": self.rules["qualification"]["version"],
+        })
         return self.get_customer(customer_id)
 
     @staticmethod
@@ -236,6 +359,11 @@ class SalesAgent:
                 (self._now(), customer_id),
             )
         self._audit(customer_id, "human_escalation_created", {"id": escalation_id, "category": category})
+        self._record_decision(
+            "escalation", customer_id, objective=summary, inputs={"category": category},
+            rule_version=self.rules["escalation"]["version"], outcome="human_review",
+            escalation_id=escalation_id, resulting_action="human_handoff",
+        )
         return escalation_id
 
     def recommend(self, customer_id: str) -> dict[str, Any] | None:
@@ -243,11 +371,17 @@ class SalesAgent:
         discovery = json.loads(customer["discovery_json"] or "{}")
         goal_words = set(re.findall(r"[a-z0-9]+", discovery.get("shopping_goal", "").lower()))
         preferred = discovery.get("preferred_format", "").lower()
-        active = [
-            p
-            for p in self.catalog.get("products", [])
-            if p.get("active") is True and p.get("requires_human_sales") is not True
-        ]
+        all_products = self.catalog.get("products", [])
+        active = [p for p in all_products if p.get("active") is True and p.get("requires_human_sales") is not True]
+        excluded = []
+        for product in all_products:
+            reason = None
+            if product.get("active") is not True:
+                reason = "inactive_or_not_allowlisted"
+            elif product.get("requires_human_sales") is True:
+                reason = "human_sales_required"
+            if reason:
+                excluded.append({"product_id": str(product.get("id", "")), "reason": reason})
         ranked = []
         for product in active:
             tags = {str(tag).lower() for tag in product.get("tags", [])}
@@ -260,16 +394,44 @@ class SalesAgent:
             if preferred and preferred in {str(x).lower() for x in product.get("formats", [])}:
                 score += 3
             ranked.append((score, str(product.get("id", "")), product))
-        if not ranked or max(item[0] for item in ranked) <= 0:
-            self._audit(customer_id, "no_catalog_match", {"catalog_size": len(active)})
+        minimum = self.rules["recommendation"]["minimum_score"]
+        if not ranked or max(item[0] for item in ranked) < minimum:
+            self._record_decision(
+                "recommendation", customer_id,
+                objective=discovery.get("shopping_goal", ""), inputs={"discovery": discovery},
+                rule_version=self.rules["recommendation"]["version"], outcome="no_match",
+                eligible_products=[str(p["id"]) for p in active], excluded_products=excluded,
+                confidence="insufficient", resulting_action="request_clarification_or_human_help",
+            )
+            self._audit(customer_id, "no_catalog_match", {
+                "catalog_size": len(active), "rule_version": self.rules["recommendation"]["version"]
+            })
             return None
-        _, _, product = max(ranked, key=lambda item: (item[0], item[1]))
+        winning_score, _, product = max(ranked, key=lambda item: (item[0], item[1]))
+        confidence_levels = self.rules["recommendation"]["confidence"]
+        confidence = (
+            "high" if winning_score >= confidence_levels["high"]
+            else "medium" if winning_score >= confidence_levels["medium"]
+            else "low"
+        )
         with self._connect() as db:
             db.execute(
                 "UPDATE customers SET recommended_product_id=?, stage='solution_presented', updated_at=? WHERE id=?",
                 (product["id"], self._now(), customer_id),
             )
-        self._audit(customer_id, "product_recommended", {"product_id": product["id"]})
+        self._record_decision(
+            "recommendation", customer_id,
+            objective=discovery.get("shopping_goal", ""),
+            inputs={"discovery": discovery, "winning_score": winning_score},
+            rule_version=self.rules["recommendation"]["version"], outcome="recommended",
+            eligible_products=[str(p["id"]) for p in active], excluded_products=excluded,
+            selected_product_id=str(product["id"]), confidence=confidence,
+            resulting_action="present_allowlisted_product",
+        )
+        self._audit(customer_id, "product_recommended", {
+            "product_id": product["id"], "confidence": confidence,
+            "rule_version": self.rules["recommendation"]["version"],
+        })
         return product
 
     def select_journey(self, customer_id: str) -> dict[str, Any]:
