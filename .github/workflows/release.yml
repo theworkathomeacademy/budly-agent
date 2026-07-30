@@ -31,7 +31,7 @@ jobs:
           python scripts/build_plugin.py --output dist/budly-sales-agent-1.4.0.zip --source-commit "$GITHUB_SHA"
           python scripts/build_plugin.py --output dist/rebuild.zip --source-commit "$GITHUB_SHA"
           cmp dist/budly-sales-agent-1.4.0.zip dist/rebuild.zip
-          sha256sum -c dist/budly-sales-agent-1.4.0.zip.sha256
+          (cd dist && sha256sum -c budly-sales-agent-1.4.0.zip.sha256)
       - uses: actions/upload-artifact@v4
         with:
           name: budly-v1.4-release

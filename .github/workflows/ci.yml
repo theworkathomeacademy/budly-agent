@@ -42,7 +42,7 @@ jobs:
           python scripts/build_plugin.py --output dist/first.zip --source-commit "$GITHUB_SHA"
           python scripts/build_plugin.py --output dist/second.zip --source-commit "$GITHUB_SHA"
           cmp dist/first.zip dist/second.zip
-          sha256sum -c dist/first.zip.sha256
+          (cd dist && sha256sum -c first.zip.sha256)
       - uses: actions/upload-artifact@v4
         with:
           name: budly-v1.4-ci-package
