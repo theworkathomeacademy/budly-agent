@@ -15,5 +15,9 @@
 | Human-controlled release | Build Authorization; Release Plan | PR review and no automatic production deploy | workflow permissions and checklist |
 | Documentation integrity | v1.4 design | required root and release documents | repository validator |
 | No customer-facing expansion | v1.4 handoff | application behavior preserved | inherited regression suite |
+| Runtime activation and staging | Acceptance Suite | exact ZIP installed in LocalWP | 15/15 staging matrix |
+| Durable reconciliation | Build Authorization | before/after table counts | customers, consent, history, configurations and schema unchanged |
+| Immutable rollback | Release Plan; ISR-001 | accepted R1 GitHub release asset | published hash and 44/44 file match |
+| Restoration | Release Plan | exact v1.4 candidate reinstalled | 44/44 file match and critical smoke pass |
 
 No v1.5, v1.6, or v1.7 functionality is included.

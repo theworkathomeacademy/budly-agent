@@ -11,4 +11,4 @@
 | ISR-001 | Conforms: v1.3.4-R1 remains immutable and is the branch baseline |
 | Original v1.4 handoff/design | Conforms: all named engineering deliverables and quality gates are implemented |
 
-No architectural discrepancy was silently resolved. Clean-environment CI, including PHP 8.2 lint, passed in run `30541492617`. The only current acceptance limitation is the v1.4 staging activation/rollback rehearsal. Gate F remains blocked.
+No architectural discrepancy was silently resolved. Clean-environment CI, including PHP 8.2 lint, passed. Fifteen staging subtests, durable reconciliation, exact R1 rollback, and exact v1.4 restoration passed. Gates A-E pass. Gate F remains blocked because production deployment, production inventory comparison, hosting outage/monitoring evidence, and independent production-readiness authorization remain outside this release.

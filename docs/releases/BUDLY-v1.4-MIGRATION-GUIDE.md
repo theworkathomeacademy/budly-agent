@@ -13,3 +13,7 @@ For an authorized non-production environment:
 7. Run the inherited staging smoke suite.
 
 No destructive migration or production execution is authorized.
+
+## Staging result
+
+Activation preserved schema 1.2.0, both schema-migration rows, seven governed configurations, two customers, three consent rows, thirty consent-history rows, and all preexisting memory, decision, and audit evidence. No v1.4 migration ran. Acceptance added only labeled synthetic verification/session/memory/decision/idempotency/audit records; these were retained as test evidence.
