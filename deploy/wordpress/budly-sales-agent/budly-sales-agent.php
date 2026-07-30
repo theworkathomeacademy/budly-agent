@@ -46,6 +46,46 @@ function budly_sales_activate() {
 register_activation_hook(__FILE__, 'budly_sales_activate');
 register_deactivation_hook(__FILE__, array('Budly\\SecureMemory\\Bootstrap', 'deactivate'));
 
+/**
+ * Repair the dedicated Ask Budly page once per application version.
+ *
+ * The historical production package included this recovery for installations
+ * whose theme template rendered an empty page. It is deliberately limited to
+ * the plugin-owned page and does not alter any other content.
+ */
+function budly_sales_repair_chat_page() {
+    if (get_option('budly_sales_repaired_version') === BUDLY_SALES_VERSION) {
+        return;
+    }
+    $page_id = (int) get_option('budly_sales_chat_page_id');
+    $page = $page_id ? get_post($page_id) : get_page_by_path('ask-budly');
+    if ($page instanceof WP_Post) {
+        update_option('budly_sales_chat_page_id', $page->ID);
+        update_post_meta($page->ID, '_wp_page_template', 'default');
+        $content = trim((string) $page->post_content);
+        if ($content === '' || strpos($content, '[budly_sales_agent]') === false) {
+            wp_update_post(array('ID' => $page->ID, 'post_content' => '[budly_sales_agent]'));
+        }
+    }
+    update_option('budly_sales_repaired_version', BUDLY_SALES_VERSION, false);
+}
+add_action('admin_init', 'budly_sales_repair_chat_page');
+
+function budly_sales_dedicated_page_template($template) {
+    if (is_admin()) {
+        return $template;
+    }
+    $page_id = (int) get_option('budly_sales_chat_page_id');
+    if (($page_id && is_page($page_id)) || is_page('ask-budly')) {
+        $plugin_template = BUDLY_SALES_DIR . 'templates/ask-budly-page.php';
+        if (is_readable($plugin_template)) {
+            return $plugin_template;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'budly_sales_dedicated_page_template', 99);
+
 function budly_sales_enqueue() {
     wp_enqueue_style('budly-sales', BUDLY_SALES_URL . 'assets/budly-sales.css', array(), BUDLY_SALES_VERSION);
     wp_enqueue_script('budly-secure-memory', BUDLY_SALES_URL . 'assets/budly-secure-memory.js', array(), BUDLY_SALES_VERSION, true);
@@ -96,20 +136,37 @@ function budly_sales_shortcode() {
     budly_sales_enqueue();
     $policy_page = get_permalink((int) get_option('budly_sales_policies_page_id'));
     ob_start(); ?>
-    <div class="budly-shell" data-budly-sales>
-      <aside class="budly-brand">
-        <p class="budly-eyebrow">Wake'n'Bake Lounge</p>
-        <h2>A calmer way to find your fit.</h2>
-        <p>Meet Budly—your education-first shopping guide for wellness, culinary products, learning, memberships, and wholesale inquiries.</p>
-        <div class="budly-promise">✓ <span>No pressure. No invented claims. One clear next step.</span></div>
-        <a href="<?php echo esc_url(home_url('/shop/')); ?>">Browse the full shop ↗</a>
-      </aside>
-      <section class="budly-chat" aria-label="Chat with Budly">
-        <header><span class="budly-avatar">B</span><span><strong>Budly Sales</strong><small>● Ready to help</small></span><button type="button" data-budly-restart hidden>Start over</button></header>
-        <div class="budly-messages" data-budly-messages aria-live="polite"></div>
-        <form class="budly-composer" data-budly-form><div data-budly-fields></div><button type="submit" data-budly-send>Continue</button></form>
-        <p class="budly-fine">For adults. Product information only—not medical or legal advice. <a href="<?php echo esc_url($policy_page ? $policy_page : home_url('/customer-policies/')); ?>">Customer policies</a></p>
-      </section>
+    <div class="budly-experience" data-budly-sales>
+      <header class="budly-hero-heading">
+        <div class="budly-title-ornament" aria-hidden="true"><span></span><b>◆</b><span></span></div>
+        <div class="budly-title-row"><i></i><h1>ASK BUDLY</h1><i></i></div>
+        <p>Your Virtual Guide to Cannabis, CBD &amp; Culinary Wellness</p>
+        <div class="budly-tagline-row"><i></i><h2>A Calmer Way To Find Your Fit</h2><i></i></div>
+      </header>
+      <div class="budly-main-grid">
+        <aside class="budly-mascot-column" aria-label="Budly, your virtual guide">
+          <div class="budly-mascot-stage"><img src="<?php echo esc_url(BUDLY_SALES_URL . 'assets/budly-cutout-v134.png'); ?>" alt="Budly holding a magnifying glass and book"></div>
+          <div class="budly-guide-card"><span class="budly-guide-icon" aria-hidden="true">♢</span><div><strong>Always Here For You</strong><p>Budly is your no-pressure guide to better choices, real education, and products you can trust.</p><b>We’re here when you’re ready.</b></div></div>
+        </aside>
+        <section class="budly-interaction-panel">
+          <div class="budly-welcome-card"><img src="<?php echo esc_url(BUDLY_SALES_URL . 'assets/budly-avatar.png'); ?>" alt="" aria-hidden="true"><div><h3>Hi, I’m Budly! 👋</h3><p>I’m here to help you understand your options before choosing a product, course, membership, or support path.</p><p><strong>What would you like help with today?</strong></p></div></div>
+          <div class="budly-hero-starters" aria-label="Popular ways Budly can help">
+            <button type="button" data-budly-hero-starter="Help me choose the right product">🌿 <span>Help me choose a product</span></button>
+            <button type="button" data-budly-hero-starter="Help me shop within my budget">$ <span>I have a budget in mind</span></button>
+            <button type="button" data-budly-hero-starter="Help me compare products">⚖ <span>Compare products</span></button>
+            <button type="button" data-budly-hero-starter="I have questions about NFT membership terms and refunds">♛ <span>Learn about memberships</span></button>
+            <button type="button" data-budly-hero-starter="I have a wholesale inquiry">▥ <span>Wholesale or bulk orders</span></button>
+            <button type="button" data-budly-hero-starter="I need order, shipping, or human support">🚚 <span>Order, shipping, or support</span></button>
+          </div>
+          <section class="budly-chat" aria-label="Chat with Budly">
+            <header class="budly-chat-status"><span class="budly-avatar">B</span><span><strong>Budly Sales</strong><small>● Ready to help</small></span><button type="button" data-budly-restart hidden>Start over</button></header>
+            <div class="budly-messages" data-budly-messages aria-live="polite"></div>
+            <form class="budly-composer" data-budly-form><div data-budly-fields></div><button type="submit" data-budly-send>Continue</button></form>
+            <p class="budly-fine">For adults. Product information only—not medical or legal advice. <a href="<?php echo esc_url($policy_page ? $policy_page : home_url('/customer-policies/')); ?>">Customer policies</a></p>
+          </section>
+        </section>
+      </div>
+      <div class="budly-trust-row" aria-label="Budly commitments"><span>🔒 Your information is handled according to your explicit privacy choices.</span><strong>● No Pressure</strong><strong>● Just Guidance</strong><strong>● Customer Controlled</strong></div>
     </div>
     <?php return ob_get_clean();
 }
