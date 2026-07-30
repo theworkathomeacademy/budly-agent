@@ -17,7 +17,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "data" / "sales.db"
-APPLICATION_VERSION = "1.3.4"
+APPLICATION_VERSION = "1.4.0"
 SCHEMA_VERSION = "1.2.0"
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 RISK_PATTERNS = {

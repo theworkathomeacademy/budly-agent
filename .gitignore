@@ -5,5 +5,7 @@ data/*.db
 tmp/
 .audit-temp/
 dist/
+deploy/wordpress/budly-sales-agent.zip
+deploy/wordpress/budly-sales-agent.zip.sha256
 deploy/wordpress/budly-sales-live-1.2.0.zip
 deploy/wordpress/budly-sales-live-1.2.0-active.zip

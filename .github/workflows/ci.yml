@@ -1,0 +1,53 @@
+name: Budly CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+      - name: Repository policy
+        run: python scripts/validate_repository.py
+      - name: Version consistency
+        run: python scripts/validate_versions.py --expected-version 1.4.0
+      - name: Python tests
+        run: python -m unittest discover -s tests -v
+      - name: PHP syntax
+        shell: bash
+        run: find deploy/wordpress/budly-sales-agent -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: JavaScript syntax
+        shell: bash
+        run: find deploy/wordpress/budly-sales-agent -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Deterministic build
+        shell: bash
+        run: |
+          python scripts/build_plugin.py --output dist/first.zip --source-commit "$GITHUB_SHA"
+          python scripts/build_plugin.py --output dist/second.zip --source-commit "$GITHUB_SHA"
+          cmp dist/first.zip dist/second.zip
+          sha256sum -c dist/first.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: budly-v1.4-ci-package
+          path: |
+            dist/first.zip
+            dist/first.zip.sha256
+          if-no-files-found: error
+          retention-days: 30

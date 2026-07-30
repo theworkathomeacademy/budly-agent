@@ -1,0 +1,46 @@
+name: Budly Release Artifact
+
+on:
+  push:
+    tags: ["budly-v*"]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate release tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: python scripts/validate_versions.py --tag "${GITHUB_REF_NAME}"
+      - name: Run release validation
+        run: |
+          python scripts/validate_repository.py
+          python -m unittest discover -s tests -v
+      - name: Build release twice
+        shell: bash
+        run: |
+          python scripts/build_plugin.py --output dist/budly-sales-agent-1.4.0.zip --source-commit "$GITHUB_SHA"
+          python scripts/build_plugin.py --output dist/rebuild.zip --source-commit "$GITHUB_SHA"
+          cmp dist/budly-sales-agent-1.4.0.zip dist/rebuild.zip
+          sha256sum -c dist/budly-sales-agent-1.4.0.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: budly-v1.4-release
+          path: |
+            dist/budly-sales-agent-1.4.0.zip
+            dist/budly-sales-agent-1.4.0.zip.sha256
+          if-no-files-found: error
+      - name: Attach to published release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/budly-sales-agent-1.4.0.zip dist/budly-sales-agent-1.4.0.zip.sha256 --clobber
