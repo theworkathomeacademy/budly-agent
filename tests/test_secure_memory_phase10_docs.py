@@ -18,7 +18,7 @@ class Phase10DocumentationTests(unittest.TestCase):
  def test_runtime_plan_covers_all_critical_acceptance_domains(self):
   plan=(DOCS/"phase-3-runtime-acceptance.md").read_text(encoding="utf-8").lower()
   for domain in ("migration","replay","cross-customer","consent","start fresh","deletion","cleanup","accessibility","smtp","backup","rollback"):self.assertIn(domain,plan)
- def test_release_version_is_1_3_4(self):
-  plugin=PLUGIN.read_text(encoding="utf-8");self.assertIn("Version: 1.3.4",plugin);self.assertIn("BUDLY_SALES_VERSION', '1.3.4'",plugin)
+ def test_release_version_is_1_4_0(self):
+  plugin=PLUGIN.read_text(encoding="utf-8");self.assertIn("Version: 1.4.0",plugin);self.assertIn("BUDLY_SALES_VERSION', '1.4.0'",plugin)
 
 if __name__=="__main__":unittest.main()
