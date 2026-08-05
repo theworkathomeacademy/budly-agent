@@ -1,0 +1,12 @@
+{
+  "version": "bros-rules-1.5.0.0",
+  "status": "active",
+  "qualification": {"version": "qualification-1.3.4.1", "weights": {"need_fit": 35, "purchase_intent": 30, "timeline": 20, "engagement": 15}, "thresholds": {"qualified": 70, "nurture": 40}},
+  "recommendation": {"version": "recommendation-1.3.4.1", "minimum_score": 1, "confidence": {"high": 7, "medium": 4, "low": 1}},
+  "catalog": {"version": "catalog-allowlist-2026-07-16"},
+  "journeys": {"version": "journey-routing-1.3.4.1"},
+  "escalation": {"version": "escalation-1.3.4.1"},
+  "consent": {"version": "secure-memory-consent-1.0"},
+  "retention": {"version": "secure-memory-retention-1.1.0"},
+  "commercial_memory": {"version": "commercial-memory-1.5.0.0", "deterministic": true, "free_form_ai_memory": false}
+}

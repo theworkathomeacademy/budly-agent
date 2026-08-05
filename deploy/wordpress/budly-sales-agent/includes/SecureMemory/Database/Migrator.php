@@ -106,6 +106,29 @@ final class Migrator {
             KEY decision_time (decision_type,created_at), KEY outcome_time (outcome,created_at),
             KEY customer_time (customer_reference,created_at)
         ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('commercial_memory') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, memory_uuid char(36) NOT NULL,
+            customer_id bigint(20) unsigned NOT NULL, namespace varchar(40) NOT NULL DEFAULT 'commercial',
+            memory_type varchar(50) NOT NULL, value_json longtext NOT NULL, confidence decimal(5,4) NOT NULL,
+            confidence_basis varchar(80) NOT NULL, source_type varchar(50) NOT NULL, source_reference varchar(80) NOT NULL,
+            observed_at datetime NOT NULL, consent_state varchar(20) NOT NULL, consent_reference varchar(40) NOT NULL,
+            expiration_policy varchar(50) NOT NULL, expires_at datetime NULL, version int unsigned NOT NULL DEFAULT 1,
+            supersedes_uuid char(36) NULL, status varchar(20) NOT NULL DEFAULT 'active', invalidated_reason varchar(160) NULL,
+            audit_reference varchar(40) NOT NULL, created_at datetime NOT NULL, updated_at datetime NOT NULL, deleted_at datetime NULL,
+            PRIMARY KEY (id), UNIQUE KEY memory_uuid (memory_uuid), KEY customer_status (customer_id,status),
+            KEY customer_type (customer_id,memory_type), KEY namespace_type (namespace,memory_type),
+            KEY expiration_review (status,expires_at), KEY supersedes_uuid (supersedes_uuid)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('conversation_contexts') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, context_uuid char(36) NOT NULL,
+            customer_id bigint(20) unsigned NOT NULL, conversation_id varchar(64) NOT NULL,
+            summary_json longtext NOT NULL, source_type varchar(50) NOT NULL, consent_reference varchar(40) NOT NULL,
+            audit_reference varchar(40) NOT NULL, version int unsigned NOT NULL DEFAULT 1,
+            observed_at datetime NOT NULL, expires_at datetime NULL, status varchar(20) NOT NULL DEFAULT 'active',
+            created_at datetime NOT NULL, updated_at datetime NOT NULL, deleted_at datetime NULL,
+            PRIMARY KEY (id), UNIQUE KEY context_uuid (context_uuid), UNIQUE KEY customer_conversation_version (customer_id,conversation_id,version),
+            KEY customer_status (customer_id,status), KEY conversation_id (conversation_id), KEY expiration_review (status,expires_at)
+        ) $charset;";
 
         foreach ($tables as $sql) { dbDelta($sql); }
         $migration_table = Config::table('schema_migrations');
@@ -122,9 +145,15 @@ final class Migrator {
             $now = current_time('mysql', true);
             $wpdb->insert($agent_table, array(
                 'agent_id'=>Config::DEFAULT_AGENT_ID, 'display_name'=>'Budly Sales Agent', 'status'=>'active',
-                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self')),
-                'namespaces_json'=>wp_json_encode(array('shared','sales')), 'created_at'=>$now, 'updated_at'=>$now,
+                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self','commercial-memory:read','commercial-memory:write','commercial-memory:delete','commercial-memory:export')),
+                'namespaces_json'=>wp_json_encode(array('shared','sales','commercial')), 'created_at'=>$now, 'updated_at'=>$now,
             ));
+        } else {
+            $now=current_time('mysql',true);
+            $wpdb->update($agent_table,array(
+                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self','commercial-memory:read','commercial-memory:write','commercial-memory:delete','commercial-memory:export')),
+                'namespaces_json'=>wp_json_encode(array('shared','sales','commercial')),'updated_at'=>$now,
+            ),array('agent_id'=>Config::DEFAULT_AGENT_ID));
         }
         $configuration_table = Config::table('rule_configurations');
         $configuration_versions = array(
@@ -135,6 +164,7 @@ final class Migrator {
             'escalation'=>'escalation-1.3.4.1',
             'consent'=>'secure-memory-consent-1.0',
             'retention'=>'secure-memory-retention-1.1.0',
+            'commercial_memory'=>'commercial-memory-1.5.0.0',
         );
         foreach ($configuration_versions as $type=>$version) {
             $existing_configuration = $wpdb->get_var($wpdb->prepare(
@@ -146,7 +176,7 @@ final class Migrator {
                 $wpdb->insert($configuration_table, array(
                     'configuration_id'=>\Budly\SecureMemory\Validation::opaque_id('cfg'),
                     'configuration_type'=>$type, 'version'=>$version, 'status'=>'active',
-                    'configuration_json'=>wp_json_encode(array('version'=>$version,'release'=>'1.3.4')),
+                    'configuration_json'=>wp_json_encode(array('version'=>$version,'release'=>$type==='commercial_memory'?'1.5.0':'1.3.4')),
                     'activated_by'=>null, 'activated_at'=>$now, 'created_at'=>$now,
                 ));
             }

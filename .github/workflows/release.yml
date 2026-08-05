@@ -28,19 +28,19 @@ jobs:
       - name: Build release twice
         shell: bash
         run: |
-          python scripts/build_plugin.py --output dist/budly-sales-agent-1.4.0.zip --source-commit "$GITHUB_SHA"
+          python scripts/build_plugin.py --output dist/budly-sales-agent-1.5.0.zip --source-commit "$GITHUB_SHA"
           python scripts/build_plugin.py --output dist/rebuild.zip --source-commit "$GITHUB_SHA"
-          cmp dist/budly-sales-agent-1.4.0.zip dist/rebuild.zip
-          (cd dist && sha256sum -c budly-sales-agent-1.4.0.zip.sha256)
+          cmp dist/budly-sales-agent-1.5.0.zip dist/rebuild.zip
+          (cd dist && sha256sum -c budly-sales-agent-1.5.0.zip.sha256)
       - uses: actions/upload-artifact@v4
         with:
           name: budly-v1.4-release
           path: |
-            dist/budly-sales-agent-1.4.0.zip
-            dist/budly-sales-agent-1.4.0.zip.sha256
+            dist/budly-sales-agent-1.5.0.zip
+            dist/budly-sales-agent-1.5.0.zip.sha256
           if-no-files-found: error
       - name: Attach to published release
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/budly-sales-agent-1.4.0.zip dist/budly-sales-agent-1.4.0.zip.sha256 --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/budly-sales-agent-1.5.0.zip dist/budly-sales-agent-1.5.0.zip.sha256 --clobber

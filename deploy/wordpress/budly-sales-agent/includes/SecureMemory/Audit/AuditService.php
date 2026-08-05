@@ -13,8 +13,9 @@ final class AuditService {
 
     public function record($event_type, $actor_type, $actor_id, $result, $severity = 'informational', array $context = array()) {
         $safe_metadata = self::scrub(isset($context['metadata']) && is_array($context['metadata']) ? $context['metadata'] : array());
-        return $this->repository->insert('audit', array(
-            'audit_id' => Validation::opaque_id('aud'),
+        $audit_id = Validation::opaque_id('aud');
+        $inserted = $this->repository->insert('audit', array(
+            'audit_id' => $audit_id,
             'event_type' => self::event_type($event_type),
             'actor_type' => sanitize_key($actor_type),
             'actor_id' => sanitize_text_field($actor_id),
@@ -25,6 +26,7 @@ final class AuditService {
             'metadata_json' => wp_json_encode($safe_metadata),
             'created_at' => current_time('mysql', true),
         ));
+        return $inserted === false ? false : $audit_id;
     }
     private static function event_type($value) {
         return substr(preg_replace('/[^a-z0-9._-]/', '', strtolower((string) $value)), 0, 80);

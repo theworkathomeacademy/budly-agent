@@ -5,9 +5,9 @@ if (!defined('ABSPATH')) { exit; }
 
 final class Config {
     const API_NAMESPACE = 'budly-identity/v1';
-    const API_VERSION = '1.0';
-    const SCHEMA_VERSION = '1.2.0';
-    const BROS_RULE_VERSION = 'bros-rules-1.3.4.1';
+    const API_VERSION = '1.1';
+    const SCHEMA_VERSION = '1.3.0';
+    const BROS_RULE_VERSION = 'bros-rules-1.5.0.0';
     const CONSENT_VERSION = '1.0';
     const SESSION_COOKIE = 'budly_memory_session';
     const SESSION_IDLE_SECONDS = 1800;
@@ -28,6 +28,9 @@ final class Config {
     const VERIFICATION_ARTIFACT_RETENTION_DAYS = 7;
     const SESSION_RECORD_RETENTION_DAYS = 30;
     const CLEANUP_BATCH_SIZE = 500;
+    const COMMERCIAL_MEMORY_MAX_ACTIVE = 200;
+    const COMMERCIAL_MEMORY_DEFAULT_RETENTION_DAYS = 365;
+    const COMMERCIAL_MEMORY_STALE_AFTER_DAYS = 180;
 
     public static function table($logical_name) {
         global $wpdb;
@@ -35,7 +38,8 @@ final class Config {
             'customers', 'preferences', 'conversation_memory', 'consent',
             'consent_history', 'verification_requests', 'sessions', 'audit',
             'schema_migrations', 'agents', 'memory_contexts', 'idempotency',
-            'decision_evidence', 'rule_configurations',
+            'decision_evidence', 'rule_configurations', 'commercial_memory',
+            'conversation_contexts',
         );
         if (!in_array($logical_name, $allowed, true)) {
             throw new \InvalidArgumentException('Unknown secure-memory table.');
@@ -48,6 +52,9 @@ final class Config {
             'verification_email' => self::VERIFICATION_EMAIL_LIMIT,
             'verification_ip' => self::VERIFICATION_IP_LIMIT,
             'verification_attempts' => self::VERIFICATION_MAX_ATTEMPTS,
+            'commercial_memory_read' => 120,
+            'commercial_memory_write' => 60,
+            'commercial_memory_export' => 10,
         );
         if (!isset($defaults[$name])) { return 0; }
         return max(1, (int) get_option('budly_memory_' . $name . '_limit', $defaults[$name]));
