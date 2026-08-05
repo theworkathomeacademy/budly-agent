@@ -14,6 +14,7 @@ Status: Implementation candidate
 | Branch | release/budly-v1.5 |
 | Release tag | budly-v1.5 (pending Project Owner acceptance and merge) |
 | Production deployment | Prohibited |
+| CI | GitHub Actions run 31034548881 passed |
 
 ## Governed components
 
