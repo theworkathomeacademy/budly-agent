@@ -34,7 +34,7 @@ jobs:
           (cd dist && sha256sum -c budly-sales-agent-1.5.0.zip.sha256)
       - uses: actions/upload-artifact@v4
         with:
-          name: budly-v1.4-release
+          name: budly-v1.5-release
           path: |
             dist/budly-sales-agent-1.5.0.zip
             dist/budly-sales-agent-1.5.0.zip.sha256

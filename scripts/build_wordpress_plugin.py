@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compatibility entry point for the Budly v1.4 deterministic builder."""
+"""Compatibility entry point for the current Budly deterministic builder."""
 
 from build_plugin import *  # noqa: F401,F403
 
