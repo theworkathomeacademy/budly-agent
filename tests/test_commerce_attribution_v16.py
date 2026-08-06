@@ -57,6 +57,13 @@ class CommerceAttributionV16Tests(unittest.TestCase):
         self.assertIn("payment_completed", self.adapter)
         self.assertIn("order_completed", self.adapter)
 
+    def test_revenue_requires_authoritative_order_status_and_corrections_reverse_net(self):
+        self.assertIn("in_array($status,array('processing','completed'),true)", self.adapter)
+        self.assertIn("recorded_net_total", self.adapter)
+        self.assertIn("order_cancelled','order_failed", self.adapter)
+        self.assertIn("gross_amount>0", self.repository)
+        self.assertIn("(float)$event['gross_amount']>0", self.revenue)
+
     def test_refunds_use_server_order_refunds(self):
         self.assertIn("$order->get_refunds()", self.adapter)
         self.assertIn("$refund->get_total()", self.adapter)
