@@ -11,5 +11,6 @@
 - Handoff SHA-256: `A25342D714F276206BBA914A84EE5C37E6A742483E83B86EEB850757F93CE69E`
 - Production deployment: prohibited
 - Gate F: blocked
+- CI run: `31127453712` passed
 
 The deterministic ZIP manifest supplies the candidate source commit, per-file SHA-256 values, and final package inventory. Candidate checksum and acceptance results are recorded after final build and staging.
