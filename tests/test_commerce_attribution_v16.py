@@ -79,7 +79,11 @@ class CommerceAttributionV16Tests(unittest.TestCase):
 
     def test_reports_are_capability_protected_and_bounded(self):
         self.assertIn("/admin/commerce/report", self.routes)
+        self.assertIn("/admin/commerce/export", self.routes)
         self.assertIn("admin_permission()", self.routes)
+        self.assertIn("admin_mutation($request", self.routes)
+        self.assertIn("commerce.report_exported", self.routes)
+        self.assertIn("commerce_admin_export", self.routes)
         self.assertIn("min(100", self.routes)
         self.assertIn("Currencies are never combined", self.routes)
 
