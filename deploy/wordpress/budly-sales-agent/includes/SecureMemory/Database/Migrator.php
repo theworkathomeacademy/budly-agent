@@ -129,6 +129,7 @@ final class Migrator {
             PRIMARY KEY (id), UNIQUE KEY context_uuid (context_uuid), UNIQUE KEY customer_conversation_version (customer_id,conversation_id,version),
             KEY customer_status (customer_id,status), KEY conversation_id (conversation_id), KEY expiration_review (status,expires_at)
         ) $charset;";
+        $pre_commerce_table_count = count($tables);
         $tables[] = "CREATE TABLE " . Config::table('commerce_events') . " (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT, event_uuid char(36) NOT NULL,
             external_event_key varchar(191) NOT NULL, order_id bigint(20) unsigned NULL, event_type varchar(40) NOT NULL,
@@ -175,7 +176,19 @@ final class Migrator {
             UNIQUE KEY daily_dimension (revenue_date,currency,product_id,affiliate_id), KEY currency_date (currency,revenue_date)
         ) $charset;";
 
-        foreach ($tables as $sql) { dbDelta($sql); }
+        $installed_version = (string) get_option('budly_secure_memory_schema_version', '0.0.0');
+        if (version_compare($installed_version, Config::SCHEMA_VERSION, '<')) {
+            $tables_to_apply = version_compare($installed_version, '1.3.0', '>=')
+                ? array_slice($tables, $pre_commerce_table_count)
+                : $tables;
+            foreach ($tables_to_apply as $sql) { dbDelta($sql); }
+        }
+        foreach (array('commerce_events', 'order_links', 'affiliate_attribution', 'revenue_daily') as $required_table) {
+            $table_name = Config::table($required_table);
+            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
+                throw new \RuntimeException('Required commerce table is missing after migration: ' . $required_table);
+            }
+        }
         $migration_table = Config::table('schema_migrations');
         $checksum = hash('sha256', implode("\n", $tables));
         $existing = $wpdb->get_var($wpdb->prepare("SELECT version FROM {$migration_table} WHERE version = %s", Config::SCHEMA_VERSION));

@@ -28,6 +28,11 @@ class CommerceAttributionV16Tests(unittest.TestCase):
             self.assertIn(f"Config::table('{name}')", self.migration)
             self.assertIn(f"'{name}'", self.config)
 
+    def test_applied_migration_is_a_verified_no_op(self):
+        self.assertIn("version_compare($installed_version, Config::SCHEMA_VERSION, '<')", self.migration)
+        self.assertIn("array_slice($tables, $pre_commerce_table_count)", self.migration)
+        self.assertIn("Required commerce table is missing after migration", self.migration)
+
     def test_financial_storage_is_fixed_precision_and_currency_scoped(self):
         self.assertGreaterEqual(self.migration.count("decimal(20,6)"), 10)
         self.assertIn("currency char(3)", self.migration)
