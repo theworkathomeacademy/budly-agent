@@ -31,6 +31,7 @@ use Budly\SecureMemory\CommercialMemory\CommercialMemoryRepository;
 use Budly\SecureMemory\CommercialMemory\CommercialMemoryService;
 use Budly\SecureMemory\CommercialMemory\ConversationContextService;
 use Budly\SecureMemory\CommercialMemory\CommercialContextBuilder;
+use Budly\Commerce\CommerceRepository;
 
 if (!defined('ABSPATH')) { exit; }
 
@@ -80,6 +81,8 @@ final class Routes {
         register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})/correct', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_correct_commercial_memory'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})', array('methods'=>'DELETE','callback'=>array(__CLASS__,'admin_delete_commercial_memory'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})/export', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_export_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commerce/report', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_commerce_report'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commerce/health', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_commerce_health'),'permission_callback'=>'__return_true'));
     }
 
     private static function verification() {
@@ -262,4 +265,6 @@ final class Routes {
     public static function admin_correct_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->correct_admin($uuid,$p,isset($p['reason'])?$p['reason']:'');});}
     public static function admin_delete_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->delete_admin($uuid,isset($p['reason'])?$p['reason']:'');});}
     public static function admin_export_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->export_admin($uuid,isset($p['reason'])?$p['reason']:'');});}
+    public static function admin_commerce_health(\WP_REST_Request $request){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);$repo=new CommerceRepository();return Response::success(array_merge($repo->integration_health(),array('configuration_version'=>Config::COMMERCE_CONFIG_VERSION,'schema_version'=>Config::SCHEMA_VERSION)));}
+    public static function admin_commerce_report(\WP_REST_Request $request){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);$from=sanitize_text_field((string)($request->get_param('from')?:gmdate('Y-m-d',strtotime('-30 days'))));$to=sanitize_text_field((string)($request->get_param('to')?:gmdate('Y-m-d')));if(!preg_match('/^\d{4}-\d{2}-\d{2}$/',$from)||!preg_match('/^\d{4}-\d{2}-\d{2}$/',$to))return Response::error(Errors::INVALID_REQUEST,'Dates must use YYYY-MM-DD.',422);$currency=strtoupper(sanitize_text_field((string)$request->get_param('currency')));if($currency&&!preg_match('/^[A-Z]{3}$/',$currency))return Response::error(Errors::INVALID_REQUEST,'Currency must be an ISO 4217 code.',422);$page=max(1,(int)($request->get_param('page')?:1));$per_page=max(1,min(100,(int)($request->get_param('per_page')?:25)));$repo=new CommerceRepository();$audit=new AuditService(new Repository());$audit->record('commerce.report_viewed','administrator',(string)get_current_user_id(),'success','informational',array('metadata'=>array('from'=>$from,'to'=>$to,'currency'=>$currency)));return Response::success(array('items'=>$repo->report($from,$to,$currency,$page,$per_page),'page'=>$page,'per_page'=>$per_page,'source'=>'verified_woocommerce_events','freshness'=>$repo->integration_health(),'known_limitations'=>array('Currencies are never combined.','Behavioral events do not establish revenue.')));}
 }

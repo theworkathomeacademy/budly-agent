@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Budly Sales Agent
  * Description: Zero-cost guided sales assistant for Wake'n'Bake Lounge and CCCultivate.
- * Version: 1.5.0
+ * Version: 1.6.0
  * Author: Compassionate Care Cultivators
  * Requires at least: 6.2
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-define('BUDLY_SALES_VERSION', '1.5.0');
+define('BUDLY_SALES_VERSION', '1.6.0');
 define('BUDLY_SALES_DIR', plugin_dir_path(__FILE__));
 define('BUDLY_SALES_URL', plugin_dir_url(__FILE__));
 require_once BUDLY_SALES_DIR . 'includes/tracking.php';

@@ -12,9 +12,10 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "deploy" / "wordpress" / "budly-sales-agent"
 ARCHIVE_ROOT = "budly-sales-agent"
-APPLICATION_VERSION = "1.5.0"
-SCHEMA_VERSION = "1.3.0"
+APPLICATION_VERSION = "1.6.0"
+SCHEMA_VERSION = "1.4.0"
 RULES_VERSION = "bros-rules-1.5.0.0"
+COMMERCE_CONFIG_VERSION = "commerce-attribution-1.6.0.0"
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)
 DISALLOWED_NAMES = {".DS_Store", "Thumbs.db", ".env"}
 DISALLOWED_SUFFIXES = {".zip", ".log", ".pyc", ".sql", ".sqlite", ".db"}
@@ -64,6 +65,7 @@ def build(
         "archive_root": ARCHIVE_ROOT,
         "release": release,
         "rules_version": RULES_VERSION,
+        "commerce_configuration_version": COMMERCE_CONFIG_VERSION,
         "schema_version": SCHEMA_VERSION,
         "source_commit": source_commit,
         "files": manifest_files,
