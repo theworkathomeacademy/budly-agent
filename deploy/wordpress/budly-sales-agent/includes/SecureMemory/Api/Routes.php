@@ -27,6 +27,10 @@ use Budly\SecureMemory\Sessions\SessionRepository;
 use Budly\SecureMemory\Cleanup\CleanupService;
 use Budly\SecureMemory\Decision\DecisionRepository;
 use Budly\SecureMemory\Decision\DecisionService;
+use Budly\SecureMemory\CommercialMemory\CommercialMemoryRepository;
+use Budly\SecureMemory\CommercialMemory\CommercialMemoryService;
+use Budly\SecureMemory\CommercialMemory\ConversationContextService;
+use Budly\SecureMemory\CommercialMemory\CommercialContextBuilder;
 
 if (!defined('ABSPATH')) { exit; }
 
@@ -54,6 +58,16 @@ final class Routes {
         register_rest_route(Config::API_NAMESPACE, '/memory/export', array('methods'=>'GET','callback'=>array(__CLASS__,'export_memory'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/memory', array('methods'=>'DELETE','callback'=>array(__CLASS__,'delete_memory'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/decisions/evaluate', array('methods'=>'POST','callback'=>array(__CLASS__,'evaluate_decision'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory', array('methods'=>'GET','callback'=>array(__CLASS__,'commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory', array('methods'=>'POST','callback'=>array(__CLASS__,'create_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})', array('methods'=>'PATCH','callback'=>array(__CLASS__,'update_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})/correct', array('methods'=>'POST','callback'=>array(__CLASS__,'correct_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})', array('methods'=>'DELETE','callback'=>array(__CLASS__,'delete_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory/export', array('methods'=>'GET','callback'=>array(__CLASS__,'export_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory/authorize', array('methods'=>'POST','callback'=>array(__CLASS__,'authorize_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-memory/withdraw-consent', array('methods'=>'POST','callback'=>array(__CLASS__,'withdraw_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/conversation-context', array('methods'=>'POST','callback'=>array(__CLASS__,'store_conversation_context'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/commercial-context/build', array('methods'=>'POST','callback'=>array(__CLASS__,'build_commercial_context'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/health', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_health'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/audit', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_audit'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/decisions', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_decisions'),'permission_callback'=>'__return_true'));
@@ -61,6 +75,11 @@ final class Routes {
         register_rest_route(Config::API_NAMESPACE, '/admin/revoke-all', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_revoke_all'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/test-email', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_test_email'),'permission_callback'=>'__return_true'));
         register_rest_route(Config::API_NAMESPACE, '/admin/run-cleanup', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_run_cleanup'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory', array('methods'=>'GET','callback'=>array(__CLASS__,'admin_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})/invalidate', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_invalidate_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})/correct', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_correct_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})', array('methods'=>'DELETE','callback'=>array(__CLASS__,'admin_delete_commercial_memory'),'permission_callback'=>'__return_true'));
+        register_rest_route(Config::API_NAMESPACE, '/admin/commercial-memory/(?P<memory_uuid>[a-f0-9-]{36})/export', array('methods'=>'POST','callback'=>array(__CLASS__,'admin_export_commercial_memory'),'permission_callback'=>'__return_true'));
     }
 
     private static function verification() {
@@ -76,6 +95,10 @@ final class Routes {
     private static function memory_service() { return new MemoryService(new MemoryRepository(),new ConsentRepository(),self::consents(),new AgentRegistry(),self::profile_service(),SessionService::instance(),new AuditService(new Repository())); }
     private static function admin_service(){return new AdminService(new AdminRepository(),new SessionRepository(),new WordPressMailTransport(),new AuditService(new Repository()));}
     private static function decision_service(){return new DecisionService(new DecisionRepository(),new ConsentRepository(),new AuditService(new Repository()));}
+    private static function commercial_repository(){return new CommercialMemoryRepository();}
+    private static function commercial_memory_service(){return new CommercialMemoryService(self::commercial_repository(),new ConsentRepository(),self::consents(),new AuditService(new Repository()));}
+    private static function conversation_context_service(){return new ConversationContextService(self::commercial_repository(),new ConsentRepository(),new AuditService(new Repository()));}
+    private static function commercial_context_builder(){return new CommercialContextBuilder(self::commercial_repository(),self::commercial_memory_service(),self::profile_service(),self::consents(),new AuditService(new Repository()));}
     public static function admin_permission(){return current_user_can('manage_options');}
 
     public static function request_code(\WP_REST_Request $request) {
@@ -148,6 +171,22 @@ final class Routes {
     public static function export_memory(\WP_REST_Request $request){$session=SessionGuard::require_session($request,false);if($session instanceof \WP_REST_Response)return $session;return Response::success(self::memory_service()->export($session));}
     public static function delete_memory(\WP_REST_Request $request){return self::customer_json_mutation($request,'memory/delete-all',function($session,$params){return self::memory_service()->delete_all($session,$params);});}
 
+    public static function commercial_memory(\WP_REST_Request $request){
+        $session=SessionGuard::require_session($request,true);if($session instanceof \WP_REST_Response)return $session;
+        if(!self::commercial_rate_limit((int)$session['customer_id'],'commercial_memory_read'))return Response::error(Errors::RATE_LIMITED,'Commercial-memory requests are temporarily limited.',429);
+        $types=$request->get_param('types');$types=$types===null?array():array_filter(array_map('sanitize_key',explode(',',(string)$types)));
+        return self::service_response(self::commercial_memory_service()->read($session,$types));
+    }
+    public static function create_commercial_memory(\WP_REST_Request $request){return self::commercial_mutation($request,'commercial-memory/create',function($session,$params){return self::commercial_memory_service()->create($session,$params);});}
+    public static function update_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::commercial_mutation($request,'commercial-memory/update/'.$uuid,function($session,$params)use($uuid){return self::commercial_memory_service()->update($session,$uuid,$params,false);});}
+    public static function correct_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::commercial_mutation($request,'commercial-memory/correct/'.$uuid,function($session,$params)use($uuid){return self::commercial_memory_service()->update($session,$uuid,$params,true);});}
+    public static function delete_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::commercial_mutation($request,'commercial-memory/delete/'.$uuid,function($session,$params)use($uuid){return self::commercial_memory_service()->delete($session,$uuid,isset($params['confirmation'])?$params['confirmation']:false);});}
+    public static function export_commercial_memory(\WP_REST_Request $request){$session=SessionGuard::require_session($request,true);if($session instanceof \WP_REST_Response)return $session;if(!self::commercial_rate_limit((int)$session['customer_id'],'commercial_memory_export'))return Response::error(Errors::RATE_LIMITED,'Commercial-memory exports are temporarily limited.',429);return self::service_response(self::commercial_memory_service()->export($session));}
+    public static function authorize_commercial_memory(\WP_REST_Request $request){return self::commercial_mutation($request,'commercial-memory/authorize',function($session,$params){return self::commercial_memory_service()->consent($session,true);});}
+    public static function withdraw_commercial_memory(\WP_REST_Request $request){return self::commercial_mutation($request,'commercial-memory/withdraw-consent',function($session,$params){return self::commercial_memory_service()->consent($session,false);});}
+    public static function store_conversation_context(\WP_REST_Request $request){return self::commercial_mutation($request,'conversation-context/store',function($session,$params){return self::conversation_context_service()->store($session,$params);});}
+    public static function build_commercial_context(\WP_REST_Request $request){return self::commercial_mutation($request,'commercial-context/build',function($session,$params){return self::commercial_context_builder()->build($session,$params);});}
+
     public static function evaluate_decision(\WP_REST_Request $request){
         $nonce=$request->get_header('X-WP-Nonce');
         if(!$nonce||!wp_verify_nonce($nonce,'wp_rest'))return Response::error(Errors::CSRF_VALIDATION_FAILED,'The request security token is invalid.',403);
@@ -161,6 +200,10 @@ final class Routes {
             $session=SessionService::instance()->validate(true);
             if(!empty($session['error']))return Response::error(Errors::AUTHENTICATION_REQUIRED,'The customer session is invalid or expired.',401);
             if(!SessionService::instance()->csrf_is_valid($session,$request->get_header('X-Budly-CSRF')))return Response::error(Errors::CSRF_VALIDATION_FAILED,'The customer security token is invalid.',403);
+        }
+        if(!empty($params['use_commercial_memory'])){
+            if(empty($session))return Response::error(Errors::AUTHENTICATION_REQUIRED,'A verified customer session is required to use commercial memory.',401);
+            $context=self::commercial_context_builder()->build($session,$params);if(!empty($context['error']))return self::service_response($context);$params['commercial_context']=$context;
         }
         $key=$request->get_header('Idempotency-Key');if(!preg_match('/^[A-Za-z0-9._:-]{16,80}$/',$key))return Response::error(Errors::INVALID_REQUEST,'A valid idempotency key is required.',422);
         $customer=(int)($session['customer_id']??0);$session_id=$session['session_id']??'anonymous';$idem=new IdempotencyService();
@@ -182,6 +225,16 @@ final class Routes {
         if(!$idempotency->claim((int)$session['customer_id'],$session['session_id'],$endpoint,$key,$params))return Response::error(Errors::RESOURCE_CONFLICT,'An identical request is already being processed.',409);
         $result=call_user_func($callback,$session,$params);if(empty($result['error']))$idempotency->remember((int)$session['customer_id'],$session['session_id'],$endpoint,$key,$params,$result);else $idempotency->release((int)$session['customer_id'],$endpoint,$key,$params);return self::service_response($result);
     }
+    private static function commercial_mutation(\WP_REST_Request $request,$endpoint,$callback){
+        $session=SessionGuard::require_session($request,true);if($session instanceof \WP_REST_Response)return $session;
+        if(!self::commercial_rate_limit((int)$session['customer_id'],'commercial_memory_write'))return Response::error(Errors::RATE_LIMITED,'Commercial-memory mutations are temporarily limited.',429);
+        return self::customer_json_mutation($request,$endpoint,$callback);
+    }
+    private static function commercial_rate_limit($customer,$action){
+        $limit=Config::rate_limit($action);$key='budly_cm_'.hash_hmac('sha256',$action.'|'.$customer,wp_salt('nonce'));$count=(int)get_transient($key);
+        if($count>=$limit){(new AuditService(new Repository()))->record('commercial_memory.rate_limited','customer',(string)$customer,'failure','warning',array('metadata'=>array('action'=>$action)));return false;}
+        set_transient($key,$count+1,HOUR_IN_SECONDS);return true;
+    }
     private static function service_response(array $result){if(!empty($result['error']))return Response::error($result['error'],$result['message'],$result['status']);return Response::success($result);}
     private static function admin_mutation(\WP_REST_Request $request,$callback){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);$nonce=$request->get_header('X-WP-Nonce');if(!$nonce||!wp_verify_nonce($nonce,'wp_rest'))return Response::error(Errors::CSRF_VALIDATION_FAILED,'The administrator security token is invalid.',403);$params=Validation::json_request($request);if(is_wp_error($params))return Response::error($params->get_error_code(),$params->get_error_message(),(int)$params->get_error_data()['status']);return self::service_response(call_user_func($callback,$params));}
     public static function admin_health(\WP_REST_Request $request){if(!self::admin_permission())return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);return Response::success(self::admin_service()->health());}
@@ -199,4 +252,14 @@ final class Routes {
     public static function admin_revoke_all(\WP_REST_Request $request){return self::admin_mutation($request,function($p){$id=isset($p['customer_id'])?sanitize_text_field($p['customer_id']):'';return self::admin_service()->revoke_all($id);});}
     public static function admin_test_email(\WP_REST_Request $request){return self::admin_mutation($request,function($p){return self::admin_service()->test_email(isset($p['email'])?$p['email']:'');});}
     public static function admin_run_cleanup(\WP_REST_Request $request){return self::admin_mutation($request,function($p){return(new CleanupService())->run('administrator');});}
+    public static function admin_commercial_memory(\WP_REST_Request $request){
+        $audit=new AuditService(new Repository());if(!self::admin_permission()){$audit->record('admin.commercial_memory_access','wordpress_user',(string)get_current_user_id(),'failure','warning');return Response::error(Errors::ADMIN_PERMISSION_REQUIRED,'Administrator permission is required.',403);}
+        $allowed=array('query','customer_reference','type','consent_state','confidence_min','expiration_state','page','per_page');foreach(array_keys($request->get_query_params()) as $key){if(!in_array($key,$allowed,true))return Response::error(Errors::INVALID_REQUEST,'An unsupported memory filter was supplied.',422);}
+        $filters=array();foreach($allowed as $key){if(in_array($key,array('page','per_page'),true))continue;$value=$request->get_param($key);if($value!==null)$filters[$key]=sanitize_text_field((string)$value);}
+        $result=self::commercial_repository()->admin_search($filters,(int)($request->get_param('page')?:1),(int)($request->get_param('per_page')?:25));$audit->record('admin.commercial_memory_access','administrator',(string)get_current_user_id(),'success','informational',array('metadata'=>array('result_count'=>count($result['items']))));return Response::success($result);
+    }
+    public static function admin_invalidate_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->invalidate_admin($uuid,isset($p['reason'])?$p['reason']:'');});}
+    public static function admin_correct_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->correct_admin($uuid,$p,isset($p['reason'])?$p['reason']:'');});}
+    public static function admin_delete_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->delete_admin($uuid,isset($p['reason'])?$p['reason']:'');});}
+    public static function admin_export_commercial_memory(\WP_REST_Request $request){$uuid=sanitize_text_field((string)$request->get_param('memory_uuid'));return self::admin_mutation($request,function($p)use($uuid){return self::commercial_memory_service()->export_admin($uuid,isset($p['reason'])?$p['reason']:'');});}
 }

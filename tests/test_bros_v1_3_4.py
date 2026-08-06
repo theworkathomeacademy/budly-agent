@@ -25,8 +25,8 @@ class BrosV134Tests(unittest.TestCase):
 
     def test_version_reporting_and_active_rule_versions(self):
         diagnostics = self.agent.diagnostics()
-        self.assertEqual("1.4.0", APPLICATION_VERSION)
-        self.assertEqual("1.2.0", SCHEMA_VERSION)
+        self.assertEqual("1.5.0", APPLICATION_VERSION)
+        self.assertEqual("1.3.0", SCHEMA_VERSION)
         self.assertEqual("qualification-1.3.4.1", diagnostics["rule_versions"]["qualification"])
         self.assertEqual(7, len(diagnostics["rule_versions"]))
 
@@ -104,8 +104,8 @@ class WordpressV134ContractTests(unittest.TestCase):
         plugin = (self.ROOT / "deploy/wordpress/budly-sales-agent/budly-sales-agent.php").read_text(encoding="utf-8")
         config = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Config.php").read_text(encoding="utf-8")
         migration = (self.ROOT / "deploy/wordpress/budly-sales-agent/includes/SecureMemory/Database/Migrator.php").read_text(encoding="utf-8")
-        self.assertIn("Version: 1.4.0", plugin)
-        self.assertIn("SCHEMA_VERSION = '1.2.0'", config)
+        self.assertIn("Version: 1.5.0", plugin)
+        self.assertIn("SCHEMA_VERSION = '1.3.0'", config)
         self.assertIn("decision_evidence", migration)
         self.assertIn("rule_configurations", migration)
         self.assertIn("qualification-1.3.4.1", migration)

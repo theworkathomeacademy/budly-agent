@@ -14,7 +14,7 @@ final class DecisionService {
         'qualification'=>'qualification-1.3.4.1','recommendation'=>'recommendation-1.3.4.1',
         'catalog'=>'catalog-allowlist-2026-07-16','journeys'=>'journey-routing-1.3.4.1',
         'escalation'=>'escalation-1.3.4.1','consent'=>'secure-memory-consent-1.0',
-        'retention'=>'secure-memory-retention-1.1.0',
+        'retention'=>'secure-memory-retention-1.1.0','commercial_memory'=>'commercial-memory-1.5.0.0',
     );
     private const CATALOG=array(
         array('id'=>'therapeutic-body-butter','category'=>'wellness','terms'=>'body butter topical one-time'),
@@ -60,16 +60,18 @@ final class DecisionService {
         $answers=array();foreach((array)($input['answers']??array()) as $answer){if(count($answers)>=5)break;$answers[]=Validation::bounded_text($answer,200);}
         $versions=$this->repo->active_versions();
         foreach(self::REQUIRED_VERSIONS as $type=>$version){if(($versions[$type]??'')!==$version){return array('error'=>Errors::RESOURCE_CONFLICT,'status'=>503,'message'=>'Governed decision configuration is unavailable.');}}
-        $customer=(int)($session['customer_id']??0);$verified=$customer>0;$memory=(bool)($input['use_memory']??false);
-        $text=strtolower($objective.' '.implode(' ',$answers));
+        $customer=(int)($session['customer_id']??0);$verified=$customer>0;$commercial_context=is_array($input['commercial_context']??null)?$input['commercial_context']:array();$memory=(bool)($input['use_memory']??false)||!empty($commercial_context);
+        $memory_terms=array();$memory_refs=array();foreach((array)($commercial_context['relevant_memory_objects']??array()) as $item){if(count($memory_terms)>=50)break;if(!is_array($item)||empty($item['uuid'])||!array_key_exists('value',$item))continue;$value=is_scalar($item['value'])?(string)$item['value']:'';if($value!=='')$memory_terms[]=$value;$memory_refs[]=array('uuid'=>sanitize_text_field((string)$item['uuid']),'type'=>sanitize_key((string)($item['type']??'')),'version'=>(int)($item['version']??0));}
+        $text=strtolower($objective.' '.implode(' ',$answers).' '.implode(' ',$memory_terms));
         $risk=(bool)preg_match('/\b(diagnose|treat|treatment|cure|cancer|dosage|dose|medication|hospital|under 18|under 21|legal advice)\b/',$text);
         $eligible=array();$excluded=array();$selected=null;$confidence='insufficient';$outcome='no_match';$action='request_clarification_or_human_help';$escalation=null;
-        if($memory&&(!$verified||$this->consent->status($customer,'memory_use')!=='granted'||!$this->repo->approved_memory_context($session['session_id']??'',$customer,$conversation))){$outcome='consent_restricted';$action='continue_without_memory';}
+        if($memory&&(!$verified||$this->consent->status($customer,'memory_use')!=='granted'||(empty($commercial_context)&&!$this->repo->approved_memory_context($session['session_id']??'',$customer,$conversation)))){$outcome='consent_restricted';$action='continue_without_memory';}
         elseif($risk){$outcome='human_review';$action='human_escalation';$escalation=Validation::opaque_id('esc');}
         else{
             $words=array_values(array_unique(preg_split('/[^a-z0-9]+/',$text,-1,PREG_SPLIT_NO_EMPTY)));
             $best=0;
             foreach(self::CATALOG as $product){
+                if(in_array($product['id'],(array)($commercial_context['known_exclusions']??array()),true)){$excluded[]=array('product_id'=>$product['id'],'reason'=>'customer_exclusion');continue;}
                 if($product['category']!==$journey){$excluded[]=array('product_id'=>$product['id'],'reason'=>'journey_ineligible');continue;}
                 if(!empty($product['human'])){$excluded[]=array('product_id'=>$product['id'],'reason'=>'human_sales_required');continue;}
                 $score=0;foreach($words as $word){if(strlen($word)>2&&strpos($product['terms'],$word)!==false)$score++;}
@@ -86,7 +88,7 @@ final class DecisionService {
         }
         $qualification=count($answers)>=3?'qualified':(count($answers)===2?'nurture':'insufficient');
         $decision=Validation::opaque_id('dec');$customer_ref=$verified?'customer_'.hash_hmac('sha256',(string)$customer,wp_salt('auth')):'';
-        $record=array('decision_id'=>$decision,'decision_type'=>'recommendation','customer_reference'=>$customer_ref,'session_id'=>$session['session_id']??'','conversation_id'=>$conversation,'journey'=>$journey,'objective'=>$risk?'[sensitive request withheld]':$objective,'inputs_json'=>wp_json_encode(array('answer_count'=>count($answers),'qualification'=>$qualification,'qualification_rule_version'=>$versions['qualification'],'memory_requested'=>$memory,'verified'=>$verified)),'rule_version'=>$versions['recommendation'],'eligible_products_json'=>wp_json_encode($eligible),'excluded_products_json'=>wp_json_encode($excluded),'outcome'=>$outcome,'selected_product_id'=>$selected,'confidence'=>$confidence,'escalation_reference'=>$escalation,'resulting_action'=>$action,'created_at'=>current_time('mysql',true));
+        $record=array('decision_id'=>$decision,'decision_type'=>'recommendation','customer_reference'=>$customer_ref,'session_id'=>$session['session_id']??'','conversation_id'=>$conversation,'journey'=>$journey,'objective'=>$risk?'[sensitive request withheld]':$objective,'inputs_json'=>wp_json_encode(array('answer_count'=>count($answers),'qualification'=>$qualification,'qualification_rule_version'=>$versions['qualification'],'memory_requested'=>$memory,'commercial_context_version'=>$commercial_context['context_version']??null,'commercial_memory_references'=>$memory_refs,'verified'=>$verified)),'rule_version'=>$versions['recommendation'],'eligible_products_json'=>wp_json_encode($eligible),'excluded_products_json'=>wp_json_encode($excluded),'outcome'=>$outcome,'selected_product_id'=>$selected,'confidence'=>$confidence,'escalation_reference'=>$escalation,'resulting_action'=>$action,'created_at'=>current_time('mysql',true));
         $this->repo->append($record);
         $actor=$verified?'customer':'visitor';$actor_id=$verified?(string)$customer:'anonymous';
         $this->audit->record('decision.recommendation',$actor,$actor_id,'success',$risk?'warning':'informational',array('customer_reference'=>$customer_ref,'conversation_id'=>$conversation,'metadata'=>array('decision_id'=>$decision,'outcome'=>$outcome,'rule_version'=>$versions['recommendation'])));

@@ -17,8 +17,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "data" / "sales.db"
-APPLICATION_VERSION = "1.4.0"
-SCHEMA_VERSION = "1.2.0"
+APPLICATION_VERSION = "1.5.0"
+SCHEMA_VERSION = "1.3.0"
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 RISK_PATTERNS = {
     "medical": ("diagnose", "treat my", "cure", "dosage", "dose", "replace my medication"),
@@ -66,7 +66,7 @@ class SalesAgent:
         self.product_facts = self._load_json(ROOT / "config" / "product_facts.json")
         self.journeys = self._load_json(ROOT / "config" / "sales_journeys.json")
         self.policies = self._load_json(ROOT / "config" / "policies.json")
-        self.rules = self._load_json(ROOT / "config" / "bros_v1_3_4.json")
+        self.rules = self._load_json(ROOT / "config" / "bros_v1_5.json")
         self._validate_rules()
         self.weights = self.rules["qualification"]["weights"]
         self._enrich_catalog()
