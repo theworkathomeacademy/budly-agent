@@ -26,3 +26,7 @@ Re-running the migration is safe: table creation is idempotent, configuration id
 - A consented test customer can create, supersede, correct, export, expire, and delete a governed object; a non-consented or other customer cannot read it.
 
 Any failed table creation, configuration insertion, durable-count mismatch, consent regression, or audit failure blocks acceptance and requires restoration from backup.
+
+## Staging rehearsal result
+
+On 2026-08-06 the authorized LocalWP environment migrated from 1.2.0 to 1.3.0 and an explicit second migrator run completed without duplicate migration or configuration rows. Customers 2, consent 3, consent history 30, sessions 111, conversation memory 13, and decision evidence 23 were preserved. The two additive v1.5 tables began empty; synthetic acceptance fixtures were removed after testing. Result: Pass.

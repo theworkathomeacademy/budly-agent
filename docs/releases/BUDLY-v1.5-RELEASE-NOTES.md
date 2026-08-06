@@ -1,5 +1,7 @@
 # Budly v1.5 Commercial Memory Foundation
 
+Staging closure on 2026-08-06 passed the schema migration and idempotency checks, 28 authenticated commercial-memory runtime checks, live HTTPS fail-closed checks, exact v1.4 rollback, exact v1.5 restoration, 149 automated tests, 41 PHP syntax checks, and 4 JavaScript syntax checks. Gates A-E pass; Gate F remains blocked. No production deployment occurred.
+
 Budly v1.5 adds deterministic, consent-driven commercial memory without introducing CRM, lifecycle, attribution, workflow, LLM, or autonomous behavior.
 
 Customers can authorize, read, create, update, correct, delete, export, and withdraw consent for governed memory objects. Each object carries identity, type, bounded value, confidence, provenance, observation time, consent reference, expiration, version, status, and audit reference. Conversation summaries use eight explicit fields and cannot contain hidden reasoning.
