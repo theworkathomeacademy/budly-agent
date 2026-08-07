@@ -1,3 +1,5 @@
 # Budly v1.6 Rollback Guide
 
 Deactivate v1.6, restore the exact `budly-v1.5` package, and activate it. Leave additive v1.6 tables dormant to avoid financial-evidence loss; restore the pre-migration database backup only when exact database rollback is required and approved. Verify application `1.5.0`, schema behavior documented for v1.5, customer/consent/session/memory/decision records, Ask Budly, administration, and checksums. Restoration reinstalls the exact v1.6 candidate, reruns the idempotent migration, and verifies no duplicate events/configurations or durable-data loss.
+
+LocalWP rehearsal passed using v1.5 ZIP SHA-256 `954A18A705FD791954B969B39F549659FC0483B78F8A18251C2521FEFA3967EC`. Atomic plugin-directory replacement requires a PHP opcode-cache reset in this LocalWP runtime; without it, a worker can retain the prior release's class map and fail on files that correctly do not exist in v1.5. After cache reset, v1.5 returned HTTP 200 and v1.6 ingestion hooks were absent. Restoration returned schema to 1.4.0 and preserved 24 events, 9 links, two aggregates, one migration record, and one commerce configuration without duplication.

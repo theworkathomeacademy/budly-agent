@@ -1,7 +1,15 @@
 # Budly v1.6 Acceptance Report
 
-Status: automated candidate validation passed; runtime staging pending.
+Status: runtime staging acceptance passed; merge authorization pending.
 
-Automated evidence includes 164 passing Python contract/regression tests, version consistency, repository policy, deterministic packaging, WooCommerce authority boundaries, replay/refund integrity, explicit attribution states, protected reporting, currency separation, and customer-facing isolation. GitHub Actions run `31127453712` passed PHP syntax, JavaScript syntax, repository/version checks, all tests, two byte-identical builds, checksum verification, and artifact retention. Staging migration, synthetic WooCommerce events, rollback, and restoration must pass before this report becomes final.
+Automated evidence includes 166 passing Python contract/regression tests, version consistency, repository policy, deterministic packaging, WooCommerce authority boundaries, replay/refund/cancellation integrity, explicit attribution states, protected reporting and CSV export, currency separation, and customer-facing isolation. Historical GitHub Actions run `31127453712` passed the original 164-test candidate; a new CI run is required for the final branch head.
 
-Gates A–E retain their inherited status but v1.6 acceptance is not complete until runtime evidence is recorded. Gate F remains blocked. No production deployment occurred.
+Runtime staging used the non-production LocalWP site `budly-phase-3-runtime.local` with WordPress 7.0.3, PHP 8.2.29, HTTPS, and WooCommerce 11.0.0. A controlled PHP export produced `budly-v16-pre-migration-20260806-202714.sql` (3,035,956 bytes, SHA-256 `18EF32AA987D39E48EEEABFDE91A013F72AFC6210326AA9D8E839A66B7F159EC`). All 31 tables restored into a disposable database with exact row-count equality.
+
+Schema 1.3.0 to 1.4.0 migration passed. Two explicit reruns produced no database errors, preserved all durable counts, retained one migration record, and retained one commerce-configuration record. The four commerce tables and required fixed-precision monetary columns, currency fields, unique keys, and indexes were verified.
+
+Synthetic WooCommerce acceptance passed 23/23 runtime checks. It processed 24 immutable events and 9 order links, rejected repeated replays, created one governed conflict, and produced separate USD and EUR daily aggregates. WooCommerce authority reconciled exactly: USD gross 225.000000, refunds 75.000000, net 150.000000, four included orders; EUR gross/net 80.000000, one included order. Fabricated browser totals and product identifiers did not affect revenue. Logged-out, unauthorized-role, missing-nonce, invalid-nonce, hostile-origin, and unauthorized export paths failed closed. All 24 events carried audit references. WooCommerce-disabled behavior returned `degraded/woocommerce_unavailable` without taking down the site.
+
+Rollback used immutable v1.5 ZIP SHA-256 `954A18A705FD791954B969B39F549659FC0483B78F8A18251C2521FEFA3967EC`. After resetting LocalWP opcode cache following the atomic file swap, v1.5 loaded successfully, its manifest resolved to `b988027ecbb193e99135af10787de718458c6338`, Secure Memory and decision data remained readable, and all v1.6 commerce rows remained dormant. Restoration to v1.6 passed: schema 1.4.0, one configuration, 24 events, 9 links, and two aggregates with no duplicates or data loss. Ask Budly returned HTTP 200 before and after rehearsal.
+
+Gates A–E pass. Gate F remains blocked. No production deployment occurred. PR #7 must not merge without Project Owner authorization.

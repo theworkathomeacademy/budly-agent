@@ -1,3 +1,5 @@
 # Budly v1.6 Security Report
 
+Runtime result: passed. Logged-out and unauthorized-role report access returned 403. Missing nonce, invalid nonce, hostile origin, and unauthorized export attempts returned 403. Authorized export required administrator capability plus a valid REST nonce, was rate limited, audited, and contained aggregate fields without email or customer data. Fabricated client order totals and product identifiers were ignored in favor of server-loaded `WC_Order` values. All 24 synthetic commerce events had audit correlation.
+
 Commerce amounts, currency, status, identity, and refunds are read from `WC_Order`; public ingestion and client-supplied financial values are absent. Stable unique keys reject replay, prepared SQL protects queries, identifiers and dates are bounded, administrator reports require WordPress capability checks, page sizes are capped, and significant events are audited without payment credentials. Raw card data is never stored. WooCommerce absence degrades reporting without changing the customer conversation. Gate F and production deployment remain blocked.
