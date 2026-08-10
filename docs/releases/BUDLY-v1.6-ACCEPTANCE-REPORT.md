@@ -2,7 +2,7 @@
 
 Status: runtime staging acceptance passed; merge authorization pending.
 
-Automated evidence includes 166 passing Python contract/regression tests, version consistency, repository policy, deterministic packaging, WooCommerce authority boundaries, replay/refund/cancellation integrity, explicit attribution states, protected reporting and CSV export, currency separation, and customer-facing isolation. Historical GitHub Actions run `31127453712` passed the original 164-test candidate; a new CI run is required for the final branch head.
+Automated evidence includes 166 passing Python contract/regression tests, version consistency, repository policy, deterministic packaging, WooCommerce authority boundaries, replay/refund/cancellation integrity, explicit attribution states, protected reporting and CSV export, currency separation, and customer-facing isolation. Historical GitHub Actions run `31127453712` passed the original 164-test candidate (commit `edd567d9fc4f5c23074f9178ee272b8e1f564cad`); final-head GitHub Actions run `31193417116` passed all 166 tests, version/repository checks, PHP/JS syntax, deterministic packaging, and artifact retention for branch HEAD `7a866caa9574b555e7267a3fb895f306c2e4513c` (under synthetic PR merge commit `869d45e2defb09ad51977f219e5e95a5aeeb140a`).
 
 Runtime staging used the non-production LocalWP site `budly-phase-3-runtime.local` with WordPress 7.0.3, PHP 8.2.29, HTTPS, and WooCommerce 11.0.0. A controlled PHP export produced `budly-v16-pre-migration-20260806-202714.sql` (3,035,956 bytes, SHA-256 `18EF32AA987D39E48EEEABFDE91A013F72AFC6210326AA9D8E839A66B7F159EC`). All 31 tables restored into a disposable database with exact row-count equality.
 
