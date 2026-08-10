@@ -80,11 +80,14 @@ class ConversationService:
                 ),
                 "catalog_url": self.agent.settings["catalog_url"],
             }
+        rationale = self.agent.explain_recommendation(card, discovery)
         return {
             "outcome": "recommendation",
             "journey": journey,
             "message": "Based on what you shared, this is the closest current catalog match.",
             "recommendation": card,
+            "rationale": rationale,
+            "canonical_lifecycle": self.agent.canonical_lifecycle_stage(self.agent.get_customer(customer_id)),
         }
 
     @staticmethod

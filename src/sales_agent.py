@@ -17,8 +17,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "data" / "sales.db"
-APPLICATION_VERSION = "1.6.0"
-SCHEMA_VERSION = "1.4.0"
+APPLICATION_VERSION = "1.7.0"
+SCHEMA_VERSION = "1.5.0"
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 RISK_PATTERNS = {
     "medical": ("diagnose", "treat my", "cure", "dosage", "dose", "replace my medication"),
@@ -577,6 +577,50 @@ class SalesAgent:
         except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as error:
             self._audit(customer["id"], "model_fallback", {"error_type": type(error).__name__})
             return self.local_response(customer, message)
+
+    def select_next_adaptive_question(self, known_attributes: dict[str, Any]) -> dict[str, Any] | None:
+        """Select highest information value next question for adaptive discovery."""
+        candidates = [
+            ("shopping_goal", 10, "What are you shopping for today?"),
+            ("experience_level", 8, "What is your experience level with these products?"),
+            ("preferred_format", 7, "Do you prefer tinctures, edibles, gummies, or flower?"),
+            ("budget_range", 5, "Do you have a target price range in mind?"),
+            ("purchase_timeline", 4, "Are you looking to order today or researching for later?"),
+        ]
+        for attr, priority, question in candidates:
+            if not known_attributes.get(attr):
+                return {
+                    "attribute": attr,
+                    "question": question,
+                    "information_value": priority / 10.0,
+                }
+        return None
+
+    def explain_recommendation(self, product: dict[str, Any], discovery: Discovery | dict[str, Any]) -> dict[str, Any]:
+        """Build explainable recommendation rationale based on consented customer discovery."""
+        goal = discovery.shopping_goal if isinstance(discovery, Discovery) else discovery.get("shopping_goal", "your goals")
+        fmt = discovery.preferred_format if isinstance(discovery, Discovery) else discovery.get("preferred_format", "your preferred format")
+        return {
+            "observation": f"Customer indicated interest in {goal} with preference for {fmt}.",
+            "reasoning": f"{product.get('name')} matches the format ({fmt}) and aligns with experience level.",
+            "recommendation": product.get("name"),
+            "explanation": f"We recommend {product.get('name')} because it satisfies your stated preference for {fmt} and aligns with {goal}.",
+            "confirmation_prompt": "Would you like more details or to see alternative options?",
+        }
+
+    def canonical_lifecycle_stage(self, customer: dict[str, Any]) -> str:
+        """Map customer state to canonical BCAM lifecycle stage."""
+        stage = customer.get("stage", "new")
+        raw_score = customer.get("score")
+        score = raw_score if isinstance(raw_score, (int, float)) else 0
+        if stage == "closed_won":
+            return "Member"
+        elif stage in {"qualified", "decision"}:
+            return "Explorer"
+        elif score > 80:
+            return "Explorer"
+        return "Visitor"
+
 
 
 def _rating(label: str) -> int:
