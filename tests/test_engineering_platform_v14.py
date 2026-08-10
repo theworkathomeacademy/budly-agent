@@ -111,6 +111,11 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
                 f"{digest}  release.zip\n",
             )
 
+    def test_pull_request_build_uses_head_commit_provenance(self):
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        self.assertIn("github.event.pull_request.head.sha || github.sha", workflow)
+        self.assertIn('--source-commit "$SOURCE_COMMIT"', workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
