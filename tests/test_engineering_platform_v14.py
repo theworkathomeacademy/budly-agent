@@ -76,8 +76,8 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
             build_plugin.build(output, "abc123")
             with ZipFile(output) as archive:
                 manifest = json.loads(archive.read("budly-sales-agent/release-manifest.json"))
-            self.assertEqual(manifest["application_version"], "1.6.0")
-            self.assertEqual(manifest["schema_version"], "1.4.0")
+            self.assertEqual(manifest["application_version"], "1.7.1")
+            self.assertEqual(manifest["schema_version"], "1.5.0")
             self.assertEqual(manifest["rules_version"], "bros-rules-1.5.0.0")
             self.assertEqual(manifest["source_commit"], "abc123")
             self.assertTrue(all(item["sha256"] and item["size"] > 0 for item in manifest["files"]))
@@ -89,6 +89,18 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
             with ZipFile(output) as archive:
                 names = archive.namelist()
             self.assertFalse(any(name.endswith((".py", ".db", ".env", ".zip")) for name in names))
+
+    def test_release_normalizes_text_line_endings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            plugin = Path(directory) / "plugin"
+            plugin.mkdir()
+            source = plugin / "sample.php"
+            source.write_bytes(b"<?php\r\necho 'Budly';\r\n")
+            output = Path(directory) / "release.zip"
+            build_plugin.build(output, "TEST-COMMIT", plugin=plugin)
+            with ZipFile(output) as archive:
+                packaged = archive.read("budly-sales-agent/sample.php")
+            self.assertEqual(packaged, b"<?php\necho 'Budly';\n")
 
     def test_checksum_sidecar_matches_release(self):
         with tempfile.TemporaryDirectory() as directory:
