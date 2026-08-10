@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0
+
+- Added server-verified WooCommerce commerce events with stable idempotency keys, immutable evidence, replay protection, and audit correlation.
+- Added deterministic order attribution, conflict and reconciliation states, refund/cancellation corrections, and currency-separated revenue metrics.
+- Added protected commerce administration, reporting, CSV export, integration-health and freshness evidence without changing customer-facing behavior.
+- Added additive schema 1.4.0 and separately versioned `commerce-attribution-1.6.0.0` configuration while preserving `bros-rules-1.5.0.0`.
+
 ## 1.5.0
 
 - Added governed commercial-memory objects, versioning, provenance, confidence, aging, supersession, invalidation, expiration, correction, deletion, export, and consent enforcement.

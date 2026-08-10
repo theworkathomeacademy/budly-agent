@@ -60,8 +60,8 @@ class ReconciliationReleaseTests(unittest.TestCase):
                 manifest = json.loads(
                     archive.read("budly-sales-agent/release-manifest.json")
                 )
-            self.assertEqual(manifest["application_version"], "1.5.0")
-            self.assertEqual(manifest["schema_version"], "1.3.0")
+            self.assertEqual(manifest["application_version"], "1.6.0")
+            self.assertEqual(manifest["schema_version"], "1.4.0")
             self.assertEqual(manifest["rules_version"], "bros-rules-1.5.0.0")
             self.assertEqual(manifest["source_commit"], "TEST-COMMIT")
 

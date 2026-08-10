@@ -129,8 +129,66 @@ final class Migrator {
             PRIMARY KEY (id), UNIQUE KEY context_uuid (context_uuid), UNIQUE KEY customer_conversation_version (customer_id,conversation_id,version),
             KEY customer_status (customer_id,status), KEY conversation_id (conversation_id), KEY expiration_review (status,expires_at)
         ) $charset;";
+        $pre_commerce_table_count = count($tables);
+        $tables[] = "CREATE TABLE " . Config::table('commerce_events') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, event_uuid char(36) NOT NULL,
+            external_event_key varchar(191) NOT NULL, order_id bigint(20) unsigned NULL, event_type varchar(40) NOT NULL,
+            source varchar(40) NOT NULL DEFAULT 'woocommerce', verification_status varchar(20) NOT NULL,
+            customer_id bigint(20) unsigned NULL, session_id varchar(40) NULL, conversation_id varchar(64) NULL,
+            decision_id varchar(40) NULL, product_id bigint(20) unsigned NULL, affiliate_id varchar(100) NULL,
+            currency char(3) NULL, gross_amount decimal(20,6) NOT NULL DEFAULT 0, discount_amount decimal(20,6) NOT NULL DEFAULT 0,
+            shipping_amount decimal(20,6) NOT NULL DEFAULT 0, tax_amount decimal(20,6) NOT NULL DEFAULT 0,
+            refund_amount decimal(20,6) NOT NULL DEFAULT 0, net_amount decimal(20,6) NOT NULL DEFAULT 0,
+            attribution_status varchar(30) NOT NULL DEFAULT 'unattributed', reconciliation_status varchar(30) NOT NULL DEFAULT 'pending',
+            evidence_json longtext NULL, audit_reference varchar(40) NOT NULL, source_occurred_at datetime NOT NULL,
+            processed_at datetime NOT NULL, created_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY event_uuid (event_uuid),
+            UNIQUE KEY external_event_key (external_event_key), KEY order_event (order_id,event_type),
+            KEY customer_time (customer_id,source_occurred_at), KEY attribution_time (attribution_status,source_occurred_at),
+            KEY currency_time (currency,source_occurred_at), KEY reconciliation_status (reconciliation_status)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('order_links') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, link_uuid char(36) NOT NULL, order_id bigint(20) unsigned NOT NULL,
+            customer_id bigint(20) unsigned NULL, session_id varchar(40) NULL, conversation_id varchar(64) NULL,
+            decision_id varchar(40) NULL, attribution_status varchar(30) NOT NULL, attribution_method varchar(40) NOT NULL,
+            confidence varchar(20) NOT NULL DEFAULT 'deterministic', evidence_json longtext NOT NULL,
+            evidence_observed_at datetime NOT NULL, rule_version varchar(60) NOT NULL, conflict_state varchar(30) NOT NULL DEFAULT 'none',
+            resolution_state varchar(30) NOT NULL DEFAULT 'resolved', audit_reference varchar(40) NOT NULL,
+            created_at datetime NOT NULL, updated_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY link_uuid (link_uuid),
+            UNIQUE KEY order_id (order_id), KEY customer_status (customer_id,attribution_status),
+            KEY conversation_id (conversation_id), KEY decision_id (decision_id), KEY resolution_state (resolution_state)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('affiliate_attribution') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, attribution_uuid char(36) NOT NULL, order_id bigint(20) unsigned NOT NULL,
+            affiliate_id varchar(100) NOT NULL, referral_id varchar(100) NULL, source varchar(40) NOT NULL,
+            verification_status varchar(20) NOT NULL, evidence_json longtext NOT NULL, audit_reference varchar(40) NOT NULL,
+            created_at datetime NOT NULL, updated_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY attribution_uuid (attribution_uuid),
+            UNIQUE KEY order_affiliate (order_id,affiliate_id), KEY affiliate_time (affiliate_id,created_at)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('revenue_daily') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, revenue_date date NOT NULL, currency char(3) NOT NULL,
+            product_id bigint(20) unsigned NOT NULL DEFAULT 0, affiliate_id varchar(100) NOT NULL DEFAULT '',
+            orders_count bigint(20) unsigned NOT NULL DEFAULT 0, gross_amount decimal(20,6) NOT NULL DEFAULT 0,
+            discount_amount decimal(20,6) NOT NULL DEFAULT 0, shipping_amount decimal(20,6) NOT NULL DEFAULT 0,
+            tax_amount decimal(20,6) NOT NULL DEFAULT 0, refund_amount decimal(20,6) NOT NULL DEFAULT 0,
+            net_amount decimal(20,6) NOT NULL DEFAULT 0, attributed_amount decimal(20,6) NOT NULL DEFAULT 0,
+            unattributed_amount decimal(20,6) NOT NULL DEFAULT 0, source_event_count bigint(20) unsigned NOT NULL DEFAULT 0,
+            calculated_at datetime NOT NULL, config_version varchar(60) NOT NULL, PRIMARY KEY (id),
+            UNIQUE KEY daily_dimension (revenue_date,currency,product_id,affiliate_id), KEY currency_date (currency,revenue_date)
+        ) $charset;";
 
-        foreach ($tables as $sql) { dbDelta($sql); }
+        $installed_version = (string) get_option('budly_secure_memory_schema_version', '0.0.0');
+        if (version_compare($installed_version, Config::SCHEMA_VERSION, '<')) {
+            $tables_to_apply = version_compare($installed_version, '1.3.0', '>=')
+                ? array_slice($tables, $pre_commerce_table_count)
+                : $tables;
+            foreach ($tables_to_apply as $sql) { dbDelta($sql); }
+        }
+        foreach (array('commerce_events', 'order_links', 'affiliate_attribution', 'revenue_daily') as $required_table) {
+            $table_name = Config::table($required_table);
+            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
+                throw new \RuntimeException('Required commerce table is missing after migration: ' . $required_table);
+            }
+        }
         $migration_table = Config::table('schema_migrations');
         $checksum = hash('sha256', implode("\n", $tables));
         $existing = $wpdb->get_var($wpdb->prepare("SELECT version FROM {$migration_table} WHERE version = %s", Config::SCHEMA_VERSION));
@@ -165,6 +223,7 @@ final class Migrator {
             'consent'=>'secure-memory-consent-1.0',
             'retention'=>'secure-memory-retention-1.1.0',
             'commercial_memory'=>'commercial-memory-1.5.0.0',
+            'commerce_attribution'=>Config::COMMERCE_CONFIG_VERSION,
         );
         foreach ($configuration_versions as $type=>$version) {
             $existing_configuration = $wpdb->get_var($wpdb->prepare(
@@ -176,7 +235,7 @@ final class Migrator {
                 $wpdb->insert($configuration_table, array(
                     'configuration_id'=>\Budly\SecureMemory\Validation::opaque_id('cfg'),
                     'configuration_type'=>$type, 'version'=>$version, 'status'=>'active',
-                    'configuration_json'=>wp_json_encode(array('version'=>$version,'release'=>$type==='commercial_memory'?'1.5.0':'1.3.4')),
+                    'configuration_json'=>wp_json_encode(array('version'=>$version,'release'=>$type==='commerce_attribution'?'1.6.0':($type==='commercial_memory'?'1.5.0':'1.3.4'))),
                     'activated_by'=>null, 'activated_at'=>$now, 'created_at'=>$now,
                 ));
             }

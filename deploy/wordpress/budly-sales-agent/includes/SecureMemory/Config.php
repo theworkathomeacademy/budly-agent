@@ -6,8 +6,9 @@ if (!defined('ABSPATH')) { exit; }
 final class Config {
     const API_NAMESPACE = 'budly-identity/v1';
     const API_VERSION = '1.1';
-    const SCHEMA_VERSION = '1.3.0';
+    const SCHEMA_VERSION = '1.4.0';
     const BROS_RULE_VERSION = 'bros-rules-1.5.0.0';
+    const COMMERCE_CONFIG_VERSION = 'commerce-attribution-1.6.0.0';
     const CONSENT_VERSION = '1.0';
     const SESSION_COOKIE = 'budly_memory_session';
     const SESSION_IDLE_SECONDS = 1800;
@@ -39,7 +40,8 @@ final class Config {
             'consent_history', 'verification_requests', 'sessions', 'audit',
             'schema_migrations', 'agents', 'memory_contexts', 'idempotency',
             'decision_evidence', 'rule_configurations', 'commercial_memory',
-            'conversation_contexts',
+            'conversation_contexts', 'commerce_events', 'order_links',
+            'affiliate_attribution', 'revenue_daily',
         );
         if (!in_array($logical_name, $allowed, true)) {
             throw new \InvalidArgumentException('Unknown secure-memory table.');
@@ -55,6 +57,8 @@ final class Config {
             'commercial_memory_read' => 120,
             'commercial_memory_write' => 60,
             'commercial_memory_export' => 10,
+            'commerce_admin_read' => 120,
+            'commerce_admin_export' => 10,
         );
         if (!isset($defaults[$name])) { return 0; }
         return max(1, (int) get_option('budly_memory_' . $name . '_limit', $defaults[$name]));
