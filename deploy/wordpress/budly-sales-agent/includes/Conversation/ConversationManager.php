@@ -124,4 +124,54 @@ final class ConversationManager {
             'info_value' => $unasked[$first_key]['priority'] / 10.0,
         );
     }
+
+    public static function canonical_patterns() {
+        return array(
+            'first_visit' => array('label' => 'First Visit', 'action' => 'welcome_and_explore'),
+            'returning_member' => array('label' => 'Returning Member', 'action' => 'resume_context'),
+            'educational_conversation' => array('label' => 'Educational Conversation', 'action' => 'explain_concepts'),
+            'product_recommendation' => array('label' => 'Product Recommendation', 'action' => 'evaluate_catalog_match'),
+            'comparison' => array('label' => 'Comparison', 'action' => 'compare_attributes'),
+            'complaint' => array('label' => 'Complaint', 'action' => 'deescalate_and_route'),
+            'affiliate_inquiry' => array('label' => 'Affiliate Inquiry', 'action' => 'provide_affiliate_info'),
+            'wholesale_inquiry' => array('label' => 'Wholesale Inquiry', 'action' => 'route_to_wholesale_sales'),
+            'human_handoff' => array('label' => 'Human Handoff', 'action' => 'save_context_for_human_review'),
+            'conversation_recovery' => array('label' => 'Conversation Recovery', 'action' => 'restore_session_state'),
+        );
+    }
+
+    public static function select_pattern($intent_or_message, $context = array()) {
+        $patterns = self::canonical_patterns();
+        $msg = strtolower((string) $intent_or_message);
+
+        if (strpos($msg, 'wholesale') !== false || strpos($msg, 'bulk') !== false) {
+            return array('name' => 'wholesale_inquiry', 'pattern' => $patterns['wholesale_inquiry'], 'match_score' => 0.95);
+        }
+        if (strpos($msg, 'affiliate') !== false || strpos($msg, 'referral') !== false) {
+            return array('name' => 'affiliate_inquiry', 'pattern' => $patterns['affiliate_inquiry'], 'match_score' => 0.95);
+        }
+        if (strpos($msg, 'complaint') !== false || strpos($msg, 'bad reaction') !== false || strpos($msg, 'damaged') !== false) {
+            return array('name' => 'complaint', 'pattern' => $patterns['complaint'], 'match_score' => 0.90);
+        }
+        if (strpos($msg, 'human') !== false || strpos($msg, 'support') !== false) {
+            return array('name' => 'human_handoff', 'pattern' => $patterns['human_handoff'], 'match_score' => 0.85);
+        }
+        if (strpos($msg, 'compare') !== false) {
+            return array('name' => 'comparison', 'pattern' => $patterns['comparison'], 'match_score' => 0.90);
+        }
+        if (strpos($msg, 'how to') !== false || strpos($msg, 'learn') !== false || strpos($msg, 'what is') !== false) {
+            return array('name' => 'educational_conversation', 'pattern' => $patterns['educational_conversation'], 'match_score' => 0.85);
+        }
+        if (!empty($context['is_returning_member'])) {
+            return array('name' => 'returning_member', 'pattern' => $patterns['returning_member'], 'match_score' => 0.90);
+        }
+        if (!empty($context['needs_recovery'])) {
+            return array('name' => 'conversation_recovery', 'pattern' => $patterns['conversation_recovery'], 'match_score' => 0.90);
+        }
+        if (!empty($context['ready_for_recommendation'])) {
+            return array('name' => 'product_recommendation', 'pattern' => $patterns['product_recommendation'], 'match_score' => 0.90);
+        }
+
+        return array('name' => 'first_visit', 'pattern' => $patterns['first_visit'], 'match_score' => 0.80);
+    }
 }

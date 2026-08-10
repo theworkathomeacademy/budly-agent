@@ -578,8 +578,16 @@ class SalesAgent:
             self._audit(customer["id"], "model_fallback", {"error_type": type(error).__name__})
             return self.local_response(customer, message)
 
-    def select_next_adaptive_question(self, known_attributes: dict[str, Any]) -> dict[str, Any] | None:
+    def select_next_adaptive_question(
+        self,
+        known_attributes: dict[str, Any],
+        journey: str = "general",
+        confidence: float = 0.5,
+    ) -> dict[str, Any] | None:
         """Select highest information value next question for adaptive discovery."""
+        if confidence >= 0.9:
+            return None
+
         candidates = [
             ("shopping_goal", 10, "What are you shopping for today?"),
             ("experience_level", 8, "What is your experience level with these products?"),
@@ -587,6 +595,22 @@ class SalesAgent:
             ("budget_range", 5, "Do you have a target price range in mind?"),
             ("purchase_timeline", 4, "Are you looking to order today or researching for later?"),
         ]
+
+        if journey == "budget":
+            candidates = [
+                ("budget_range", 10, "What target price range do you have in mind?"),
+                ("shopping_goal", 8, "What type of product fits your goal?"),
+                ("preferred_format", 7, "Do you prefer tinctures, edibles, gummies, or flower?"),
+                ("experience_level", 5, "What is your experience level?"),
+                ("purchase_timeline", 4, "Are you looking to order today?"),
+            ]
+        elif journey == "wholesale":
+            candidates = [
+                ("shopping_goal", 10, "What bulk or wholesale products are you looking for?"),
+                ("preferred_format", 8, "What format or packaging do you need?"),
+                ("purchase_timeline", 6, "What is your estimated ordering timeline?"),
+            ]
+
         for attr, priority, question in candidates:
             if not known_attributes.get(attr):
                 return {
@@ -595,6 +619,48 @@ class SalesAgent:
                     "information_value": priority / 10.0,
                 }
         return None
+
+    def canonical_patterns(self) -> dict[str, dict[str, str]]:
+        """Return full 10/10 canonical conversation pattern library objects."""
+        return {
+            "first_visit": {"label": "First Visit", "action": "welcome_and_explore"},
+            "returning_member": {"label": "Returning Member", "action": "resume_context"},
+            "educational_conversation": {"label": "Educational Conversation", "action": "explain_concepts"},
+            "product_recommendation": {"label": "Product Recommendation", "action": "evaluate_catalog_match"},
+            "comparison": {"label": "Comparison", "action": "compare_attributes"},
+            "complaint": {"label": "Complaint", "action": "deescalate_and_route"},
+            "affiliate_inquiry": {"label": "Affiliate Inquiry", "action": "provide_affiliate_info"},
+            "wholesale_inquiry": {"label": "Wholesale Inquiry", "action": "route_to_wholesale_sales"},
+            "human_handoff": {"label": "Human Handoff", "action": "save_context_for_human_review"},
+            "conversation_recovery": {"label": "Conversation Recovery", "action": "restore_session_state"},
+        }
+
+    def select_pattern(self, intent_or_message: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Select structured conversation pattern object based on message intent and context."""
+        context = context or {}
+        patterns = self.canonical_patterns()
+        msg = intent_or_message.lower()
+
+        if "wholesale" in msg or "bulk" in msg:
+            return {"name": "wholesale_inquiry", "pattern": patterns["wholesale_inquiry"], "match_score": 0.95}
+        if "affiliate" in msg or "referral" in msg:
+            return {"name": "affiliate_inquiry", "pattern": patterns["affiliate_inquiry"], "match_score": 0.95}
+        if "complaint" in msg or "bad reaction" in msg or "damaged" in msg:
+            return {"name": "complaint", "pattern": patterns["complaint"], "match_score": 0.90}
+        if "human" in msg or "support" in msg:
+            return {"name": "human_handoff", "pattern": patterns["human_handoff"], "match_score": 0.85}
+        if "compare" in msg:
+            return {"name": "comparison", "pattern": patterns["comparison"], "match_score": 0.90}
+        if "how to" in msg or "learn" in msg or "what is" in msg:
+            return {"name": "educational_conversation", "pattern": patterns["educational_conversation"], "match_score": 0.85}
+        if context.get("is_returning_member"):
+            return {"name": "returning_member", "pattern": patterns["returning_member"], "match_score": 0.90}
+        if context.get("needs_recovery"):
+            return {"name": "conversation_recovery", "pattern": patterns["conversation_recovery"], "match_score": 0.90}
+        if context.get("ready_for_recommendation"):
+            return {"name": "product_recommendation", "pattern": patterns["product_recommendation"], "match_score": 0.90}
+
+        return {"name": "first_visit", "pattern": patterns["first_visit"], "match_score": 0.80}
 
     def explain_recommendation(self, product: dict[str, Any], discovery: Discovery | dict[str, Any]) -> dict[str, Any]:
         """Build explainable recommendation rationale based on consented customer discovery."""

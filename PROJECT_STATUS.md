@@ -7,7 +7,6 @@ Budly v1.7 Conversation Intelligence and Customer Lifecycle has completed implem
 - Schema: 1.5.0
 - Rules: `bros-rules-1.5.0.0`
 - Commerce configuration: `commerce-attribution-1.6.0.0`
-- Conversation Intelligence configuration: `conversation-intelligence-1.7.0.0`
 - Gates A–E: PASS
 - Gate F: BLOCKED
 - Production deployment: NOT AUTHORIZED

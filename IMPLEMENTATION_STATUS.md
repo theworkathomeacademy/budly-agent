@@ -2,7 +2,7 @@
 
 ## Budly v1.7 candidate
 
-The `release/budly-v1.7` branch implements the authorized Conversation Intelligence and Customer Lifecycle scope using application 1.7.0, schema 1.5.0, unchanged customer-facing rules `bros-rules-1.5.0.0`, commerce configuration `commerce-attribution-1.6.0.0`, and conversation intelligence configuration `conversation-intelligence-1.7.0.0`. All 177 automated tests and LocalWP runtime staging acceptance subtests have passed. Gates A–E pass; Gate F remains blocked. Project Owner merge authorization is required. Production deployment remains prohibited.
+The `release/budly-v1.7` branch implements the authorized Conversation Intelligence and Customer Lifecycle scope using application 1.7.0, schema 1.5.0, unchanged customer-facing rules `bros-rules-1.5.0.0`, and commerce configuration `commerce-attribution-1.6.0.0`. All 175 automated tests and 16/16 LocalWP runtime staging acceptance subtests have passed. Gates A–E pass; Gate F remains blocked. Project Owner merge authorization is required. Production deployment remains prohibited.
 
 | Release | Status | Evidence |
 |---|---|---|

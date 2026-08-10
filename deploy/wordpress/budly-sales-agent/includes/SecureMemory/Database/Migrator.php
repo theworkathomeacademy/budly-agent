@@ -257,7 +257,6 @@ final class Migrator {
             'retention'=>'secure-memory-retention-1.1.0',
             'commercial_memory'=>'commercial-memory-1.5.0.0',
             'commerce_attribution'=>Config::COMMERCE_CONFIG_VERSION,
-            'conversation_intelligence'=>'conversation-intelligence-1.7.0.0',
         );
         foreach ($configuration_versions as $type=>$version) {
             $existing_configuration = $wpdb->get_var($wpdb->prepare(
