@@ -27,6 +27,18 @@ final class LifecycleEngine {
         );
     }
 
+    public static function allowed_transitions() {
+        return array(
+            self::STAGE_VISITOR => self::STAGE_EXPLORER,
+            self::STAGE_EXPLORER => self::STAGE_MEMBER,
+            self::STAGE_MEMBER => self::STAGE_RETURNING_MEMBER,
+            self::STAGE_RETURNING_MEMBER => self::STAGE_COMMUNITY_MEMBER,
+            self::STAGE_COMMUNITY_MEMBER => self::STAGE_ADVOCATE,
+            self::STAGE_ADVOCATE => self::STAGE_LEADER,
+            self::STAGE_LEADER => null,
+        );
+    }
+
     public static function get_relationship_health($customer_id) {
         global $wpdb;
         $table = Config::table('relationship_health');
@@ -60,6 +72,16 @@ final class LifecycleEngine {
         $allowed = self::canonical_stages();
         if (!in_array($new_stage, $allowed, true)) {
             throw new \InvalidArgumentException('Invalid canonical lifecycle stage: ' . $new_stage);
+        }
+
+        $current_health = self::get_relationship_health($customer_id);
+        $current_stage = $current_health['lifecycle_stage'];
+        if ($new_stage === $current_stage) {
+            return $current_health;
+        }
+        $transitions = self::allowed_transitions();
+        if (!isset($transitions[$current_stage]) || $transitions[$current_stage] !== $new_stage) {
+            throw new \DomainException('Invalid canonical lifecycle transition: ' . $current_stage . ' -> ' . $new_stage);
         }
 
         global $wpdb;
@@ -125,7 +147,16 @@ final class LifecycleEngine {
         $current = $health['lifecycle_stage'];
 
         $next_stage = $current;
-        if ($current === self::STAGE_VISITOR || $current === self::STAGE_EXPLORER) {
+        if ($current === self::STAGE_VISITOR) {
+            self::transition_stage($customer_id, self::STAGE_EXPLORER, array(
+                'source' => 'commerce_event',
+                'order_id' => $order_id,
+                'gross_amount' => $gross_amount,
+                'progression' => 'purchase_evidence',
+            ));
+            $current = self::STAGE_EXPLORER;
+            $next_stage = self::STAGE_MEMBER;
+        } elseif ($current === self::STAGE_EXPLORER) {
             $next_stage = self::STAGE_MEMBER;
         } elseif ($current === self::STAGE_MEMBER) {
             $next_stage = self::STAGE_RETURNING_MEMBER;
@@ -140,5 +171,21 @@ final class LifecycleEngine {
         }
 
         return $health;
+    }
+
+    public static function stage_distribution() {
+        global $wpdb;
+        $table = Config::table('relationship_health');
+        $distribution = array_fill_keys(self::canonical_stages(), 0);
+        $rows = $wpdb->get_results(
+            "SELECT lifecycle_stage, COUNT(*) AS stage_count FROM {$table} GROUP BY lifecycle_stage",
+            ARRAY_A
+        );
+        foreach ((array) $rows as $row) {
+            if (isset($distribution[$row['lifecycle_stage']])) {
+                $distribution[$row['lifecycle_stage']] = (int) $row['stage_count'];
+            }
+        }
+        return $distribution;
     }
 }

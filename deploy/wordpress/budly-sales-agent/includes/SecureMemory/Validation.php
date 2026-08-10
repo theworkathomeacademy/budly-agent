@@ -21,6 +21,10 @@ final class Validation {
         return sanitize_key($prefix) . '_' . bin2hex(random_bytes(13));
     }
 
+    public static function uuid() {
+        return wp_generate_uuid4();
+    }
+
     public static function bounded_text($value, $max) {
         $value = sanitize_text_field((string) $value);
         if (strlen($value) > $max) {

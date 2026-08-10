@@ -27,7 +27,7 @@ jobs:
       - name: Repository policy
         run: python scripts/validate_repository.py
       - name: Version consistency
-        run: python scripts/validate_versions.py --expected-version 1.7.0
+        run: python scripts/validate_versions.py --expected-version 1.7.1
       - name: Python tests
         run: python -m unittest discover -s tests -v
       - name: PHP syntax
@@ -45,7 +45,7 @@ jobs:
           (cd dist && sha256sum -c first.zip.sha256)
       - uses: actions/upload-artifact@v4
         with:
-          name: budly-v1.6-ci-package
+          name: budly-v1.7.1-ci-package
           path: |
             dist/first.zip
             dist/first.zip.sha256
