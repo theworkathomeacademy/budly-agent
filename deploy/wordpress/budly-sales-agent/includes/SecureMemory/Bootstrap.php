@@ -27,6 +27,7 @@ final class Bootstrap {
             'Security/RequestSecurity.php',
             '../Commerce/CommerceRepository.php','../Commerce/AttributionService.php',
             '../Commerce/RevenueService.php','../Commerce/WooCommerceAdapter.php',
+            '../Conversation/ConversationManager.php','../Lifecycle/LifecycleEngine.php',
             'Api/Routes.php',
         ) as $relative) { require_once $base . $relative; }
     }
