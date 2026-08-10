@@ -282,3 +282,17 @@ tracking endpoint's authority to create/update consented customers or store memo
 Until the approved session, consent, agent, and memory services are available, the
 legacy endpoint must fail closed for all identity, consent, and memory writes while
 continuing to accept non-PII sales analytics within bounded limits.
+
+## v1.7.1 production stabilization traceability delta
+
+This patch comparison supersedes only the obsolete implementation-status cells above;
+Assets 1-5 remain authoritative and the historical matrix remains preserved as evidence.
+
+| Patch requirement | Governing requirement | Current v1.7 evidence/gap | v1.7.1 action | Acceptance evidence |
+|---|---|---|---|---|
+| Session errors fail closed | A2 Abuse Cases 4-5; A4 Gate C; A5-15, A5-21, A5-45, A5-59 | v1.7 conversation, relationship, and journey handlers replace non-numeric session results with customer `1` | Centralize verified-customer resolution and return the existing REST error unchanged; prohibit default identity | Executable PHP tests for anonymous, expired, invalid, unverified, and cross-customer access/mutation |
+| Truthful private admin aggregates | A4-4.6, A4-13, A4 Gate E; A5-47, A5-48, A5-67 | v1.7 returns literal conversation and lifecycle figures | Query privacy-minimized aggregate values from authoritative v1.7 tables; empty state returns zero | Executable PHP empty/populated/unauthorized tests |
+| Governed lifecycle sequence | A4-5; approved v1.7 canonical lifecycle | Stage names are validated but canonical ordering is not | Permit same-stage no-op and one canonical forward step only; preserve evidence and reject jumps | Executable valid-sequence, invalid-jump, and persistence tests |
+| PHP adaptive behavior parity | Approved v1.7 implementation; A5-39, A5-40 | PHP skips known fields but ignores approved journey priority and confidence stopping | Add bounded journey priority and confidence threshold behavior without generative questioning | Executable PHP known-field, duplicate avoidance, journey, confidence, and exhausted-question tests |
+| Loader completeness | A4-4; v1.7 hotfix `ae9ed566` | Production hotfix loads the two v1.7 modules but no executable completeness guard exists | Preserve loader entries and add executable load/reflect tests | PHP loader regression test |
+| Immutable patch provenance | A4 Gate F, A4-24, A4-26 | Production lineage is newer than immutable `budly-v1.7` tag | Version 1.7.1, deterministic package, release records, rollback/restoration evidence; no schema/rules/config change | Repository, version, dual-build, checksum, CI, and LocalWP evidence |

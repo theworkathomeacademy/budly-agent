@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.1
+
+- Production stabilization patch for fail-closed session identity, truthful administrator aggregates, canonical lifecycle transitions, PHP adaptive-question parity, and Bootstrap loader regression coverage.
+- Application 1.7.1; schema remains 1.5.0; rules remain `bros-rules-1.5.0.0`; commerce configuration remains `commerce-attribution-1.6.0.0`.
+
 ## 1.7.0
 
 - Added Conversation Intelligence, Adaptive Question Engine, Conversation State Machine, and Pattern Library.

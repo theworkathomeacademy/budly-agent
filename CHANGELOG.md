@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.1
+
+- Fixed v1.7 customer-session error propagation so protected conversation and lifecycle routes fail closed without a default customer identity.
+- Replaced hard-coded conversation-health and lifecycle-distribution figures with privacy-minimized database aggregates.
+- Enforced canonical one-step lifecycle progression and added bounded PHP adaptive-question journey/confidence parity.
+- Formalized the v1.7 Bootstrap module loaders and expanded executable PHP stabilization coverage without changing schema, customer-facing rules, or commerce configuration.
+
 ## 1.7.0
 
 - Added Conversation Intelligence, Adaptive Question Engine, Conversation State Machine, and Pattern Library.
