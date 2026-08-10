@@ -7,7 +7,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "deploy" / "wordpress" / "budly-sales-agent"
@@ -38,7 +38,9 @@ def selected_files(plugin: Path = PLUGIN) -> list[Path]:
 
 def zip_info(name: str) -> ZipInfo:
     info = ZipInfo(name, FIXED_TIME)
-    info.compress_type = ZIP_DEFLATED
+    # Stored entries avoid platform/zlib-version variance while preserving a
+    # standard WordPress-installable ZIP container.
+    info.compress_type = ZIP_STORED
     info.create_system = 3
     info.external_attr = 0o100644 << 16
     return info
@@ -81,7 +83,7 @@ def build(
     }
     manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
     output.parent.mkdir(parents=True, exist_ok=True)
-    with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
+    with ZipFile(output, "w", compression=ZIP_STORED) as archive:
         for path in files:
             name = f"{ARCHIVE_ROOT}/{path.relative_to(plugin).as_posix()}"
             archive.writestr(zip_info(name), release_bytes(path))
