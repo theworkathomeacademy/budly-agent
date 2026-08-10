@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0
+
+- Added Conversation Intelligence, Adaptive Question Engine, Conversation State Machine, and Pattern Library.
+- Added Customer Lifecycle Engine with canonical states (Visitor, Explorer, Member, Returning Member, Community Member, Advocate, Leader).
+- Added Relationship Intelligence, Explainable Recommendations, and Secure Memory & Commerce Attribution integration.
+- Added additive Schema 1.5.0 database tables (`conversation_state`, `conversation_pattern_history`, `relationship_health`, `member_journey`).
+- Added WordPress Admin health and lifecycle reporting endpoints.
+
 ## 1.6.0
 
 - Added server-verified WooCommerce commerce events with stable idempotency keys, immutable evidence, replay protection, and audit correlation.

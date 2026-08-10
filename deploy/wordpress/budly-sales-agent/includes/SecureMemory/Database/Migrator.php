@@ -175,18 +175,51 @@ final class Migrator {
             calculated_at datetime NOT NULL, config_version varchar(60) NOT NULL, PRIMARY KEY (id),
             UNIQUE KEY daily_dimension (revenue_date,currency,product_id,affiliate_id), KEY currency_date (currency,revenue_date)
         ) $charset;";
+        $pre_v17_table_count = count($tables);
+        $tables[] = "CREATE TABLE " . Config::table('conversation_state') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, state_uuid char(36) NOT NULL,
+            customer_id bigint(20) unsigned NOT NULL, conversation_id varchar(64) NOT NULL,
+            current_state varchar(40) NOT NULL DEFAULT 'visitor', previous_state varchar(40) NULL,
+            transition_reason varchar(120) NOT NULL DEFAULT 'initial', confidence_score decimal(5,4) NOT NULL DEFAULT 1.0000,
+            active_journey varchar(80) NULL, context_json longtext NULL, updated_at datetime NOT NULL,
+            created_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY state_uuid (state_uuid),
+            UNIQUE KEY customer_conversation (customer_id,conversation_id), KEY state_time (current_state,updated_at)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('conversation_pattern_history') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, pattern_uuid char(36) NOT NULL,
+            pattern_name varchar(60) NOT NULL, customer_id bigint(20) unsigned NOT NULL,
+            conversation_id varchar(64) NOT NULL, match_score decimal(5,4) NOT NULL DEFAULT 1.0000,
+            selected_action varchar(80) NOT NULL, execution_json longtext NULL, executed_at datetime NOT NULL,
+            PRIMARY KEY (id), UNIQUE KEY pattern_uuid (pattern_uuid), KEY pattern_name_time (pattern_name,executed_at),
+            KEY customer_pattern (customer_id,pattern_name)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('relationship_health') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, health_uuid char(36) NOT NULL,
+            customer_id bigint(20) unsigned NOT NULL, lifecycle_stage varchar(40) NOT NULL DEFAULT 'Visitor',
+            trust_score decimal(5,4) NOT NULL DEFAULT 0.5000, engagement_score decimal(5,4) NOT NULL DEFAULT 0.5000,
+            knowledge_score decimal(5,4) NOT NULL DEFAULT 0.0000, milestones_json longtext NULL,
+            last_interaction_at datetime NOT NULL, updated_at datetime NOT NULL, PRIMARY KEY (id),
+            UNIQUE KEY health_uuid (health_uuid), UNIQUE KEY customer_id (customer_id), KEY stage_health (lifecycle_stage,updated_at)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('member_journey') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, journey_uuid char(36) NOT NULL,
+            customer_id bigint(20) unsigned NOT NULL, milestone_name varchar(80) NOT NULL,
+            lifecycle_stage varchar(40) NOT NULL, evidence_json longtext NOT NULL, audit_reference varchar(40) NOT NULL,
+            achieved_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY journey_uuid (journey_uuid),
+            KEY customer_milestone (customer_id,milestone_name), KEY stage_time (lifecycle_stage,achieved_at)
+        ) $charset;";
 
         $installed_version = (string) get_option('budly_secure_memory_schema_version', '0.0.0');
         if (version_compare($installed_version, Config::SCHEMA_VERSION, '<')) {
-            $tables_to_apply = version_compare($installed_version, '1.3.0', '>=')
-                ? array_slice($tables, $pre_commerce_table_count)
-                : $tables;
+            $tables_to_apply = version_compare($installed_version, '1.4.0', '>=')
+                ? array_slice($tables, $pre_v17_table_count)
+                : (version_compare($installed_version, '1.3.0', '>=') ? array_slice($tables, $pre_commerce_table_count) : $tables);
             foreach ($tables_to_apply as $sql) { dbDelta($sql); }
         }
-        foreach (array('commerce_events', 'order_links', 'affiliate_attribution', 'revenue_daily') as $required_table) {
+        foreach (array('commerce_events', 'order_links', 'affiliate_attribution', 'revenue_daily', 'conversation_state', 'conversation_pattern_history', 'relationship_health', 'member_journey') as $required_table) {
             $table_name = Config::table($required_table);
             if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
-                throw new \RuntimeException('Required commerce table is missing after migration: ' . $required_table);
+                throw new \RuntimeException('Required table is missing after migration: ' . $required_table);
             }
         }
         $migration_table = Config::table('schema_migrations');
@@ -203,14 +236,14 @@ final class Migrator {
             $now = current_time('mysql', true);
             $wpdb->insert($agent_table, array(
                 'agent_id'=>Config::DEFAULT_AGENT_ID, 'display_name'=>'Budly Sales Agent', 'status'=>'active',
-                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self','commercial-memory:read','commercial-memory:write','commercial-memory:delete','commercial-memory:export')),
-                'namespaces_json'=>wp_json_encode(array('shared','sales','commercial')), 'created_at'=>$now, 'updated_at'=>$now,
+                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self','commercial-memory:read','commercial-memory:write','commercial-memory:delete','commercial-memory:export','conversation:read','conversation:write','lifecycle:read','lifecycle:update')),
+                'namespaces_json'=>wp_json_encode(array('shared','sales','commercial','conversation','lifecycle')), 'created_at'=>$now, 'updated_at'=>$now,
             ));
         } else {
             $now=current_time('mysql',true);
             $wpdb->update($agent_table,array(
-                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self','commercial-memory:read','commercial-memory:write','commercial-memory:delete','commercial-memory:export')),
-                'namespaces_json'=>wp_json_encode(array('shared','sales','commercial')),'updated_at'=>$now,
+                'scopes_json'=>wp_json_encode(array('identity:read','profile:read','profile:update','preferences:read','preferences:update','consent:read','consent:update','memory:preview','memory:read:shared','memory:read:agent','memory:write:summary','memory:delete:self','memory:export:self','commercial-memory:read','commercial-memory:write','commercial-memory:delete','commercial-memory:export','conversation:read','conversation:write','lifecycle:read','lifecycle:update')),
+                'namespaces_json'=>wp_json_encode(array('shared','sales','commercial','conversation','lifecycle')),'updated_at'=>$now,
             ),array('agent_id'=>Config::DEFAULT_AGENT_ID));
         }
         $configuration_table = Config::table('rule_configurations');
