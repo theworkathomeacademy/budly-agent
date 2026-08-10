@@ -7,18 +7,19 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "deploy" / "wordpress" / "budly-sales-agent"
 ARCHIVE_ROOT = "budly-sales-agent"
-APPLICATION_VERSION = "1.6.0"
-SCHEMA_VERSION = "1.4.0"
+APPLICATION_VERSION = "1.7.1"
+SCHEMA_VERSION = "1.5.0"
 RULES_VERSION = "bros-rules-1.5.0.0"
 COMMERCE_CONFIG_VERSION = "commerce-attribution-1.6.0.0"
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)
 DISALLOWED_NAMES = {".DS_Store", "Thumbs.db", ".env"}
 DISALLOWED_SUFFIXES = {".zip", ".log", ".pyc", ".sql", ".sqlite", ".db"}
+TEXT_SUFFIXES = {".css", ".html", ".js", ".json", ".md", ".php", ".txt", ".xml"}
 
 
 def selected_files(plugin: Path = PLUGIN) -> list[Path]:
@@ -37,10 +38,20 @@ def selected_files(plugin: Path = PLUGIN) -> list[Path]:
 
 def zip_info(name: str) -> ZipInfo:
     info = ZipInfo(name, FIXED_TIME)
-    info.compress_type = ZIP_DEFLATED
+    # Stored entries avoid platform/zlib-version variance while preserving a
+    # standard WordPress-installable ZIP container.
+    info.compress_type = ZIP_STORED
     info.create_system = 3
     info.external_attr = 0o100644 << 16
     return info
+
+
+def release_bytes(path: Path) -> bytes:
+    """Return platform-independent bytes for a deployable source file."""
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        return data.replace(b"\r\n", b"\n")
+    return data
 
 
 def build(
@@ -52,7 +63,7 @@ def build(
     files = selected_files(plugin)
     manifest_files = []
     for path in files:
-        data = path.read_bytes()
+        data = release_bytes(path)
         manifest_files.append(
             {
                 "path": path.relative_to(plugin).as_posix(),
@@ -72,10 +83,10 @@ def build(
     }
     manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
     output.parent.mkdir(parents=True, exist_ok=True)
-    with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
+    with ZipFile(output, "w", compression=ZIP_STORED) as archive:
         for path in files:
             name = f"{ARCHIVE_ROOT}/{path.relative_to(plugin).as_posix()}"
-            archive.writestr(zip_info(name), path.read_bytes())
+            archive.writestr(zip_info(name), release_bytes(path))
         archive.writestr(zip_info(f"{ARCHIVE_ROOT}/release-manifest.json"), manifest_bytes)
     digest = hashlib.sha256(output.read_bytes()).hexdigest().upper()
     output.with_suffix(output.suffix + ".sha256").write_text(

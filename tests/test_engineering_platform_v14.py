@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class EngineeringPlatformV14Tests(unittest.TestCase):
     def test_version_sources_are_consistent(self):
-        found = validate_versions.validate("1.7.0")
-        self.assertEqual(set(found.values()), {"1.7.0"})
+        found = validate_versions.validate("1.7.1")
+        self.assertEqual(set(found.values()), {"1.7.1"})
 
     def test_tag_patch_zero_is_semantically_equivalent(self):
         self.assertEqual(validate_versions.normalize("budly-v1.4"), (1, 4, 0))
@@ -76,8 +76,8 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
             build_plugin.build(output, "abc123")
             with ZipFile(output) as archive:
                 manifest = json.loads(archive.read("budly-sales-agent/release-manifest.json"))
-            self.assertEqual(manifest["application_version"], "1.6.0")
-            self.assertEqual(manifest["schema_version"], "1.4.0")
+            self.assertEqual(manifest["application_version"], "1.7.1")
+            self.assertEqual(manifest["schema_version"], "1.5.0")
             self.assertEqual(manifest["rules_version"], "bros-rules-1.5.0.0")
             self.assertEqual(manifest["source_commit"], "abc123")
             self.assertTrue(all(item["sha256"] and item["size"] > 0 for item in manifest["files"]))
@@ -90,6 +90,18 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
                 names = archive.namelist()
             self.assertFalse(any(name.endswith((".py", ".db", ".env", ".zip")) for name in names))
 
+    def test_release_normalizes_text_line_endings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            plugin = Path(directory) / "plugin"
+            plugin.mkdir()
+            source = plugin / "sample.php"
+            source.write_bytes(b"<?php\r\necho 'Budly';\r\n")
+            output = Path(directory) / "release.zip"
+            build_plugin.build(output, "TEST-COMMIT", plugin=plugin)
+            with ZipFile(output) as archive:
+                packaged = archive.read("budly-sales-agent/sample.php")
+            self.assertEqual(packaged, b"<?php\necho 'Budly';\n")
+
     def test_checksum_sidecar_matches_release(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "release.zip"
@@ -98,6 +110,11 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
                 output.with_suffix(".zip.sha256").read_text(encoding="ascii"),
                 f"{digest}  release.zip\n",
             )
+
+    def test_pull_request_build_uses_head_commit_provenance(self):
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        self.assertIn("github.event.pull_request.head.sha || github.sha", workflow)
+        self.assertIn('--source-commit "$SOURCE_COMMIT"', workflow)
 
 
 if __name__ == "__main__":

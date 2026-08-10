@@ -93,7 +93,11 @@ final class ConversationManager {
         ));
     }
 
-    public static function select_next_adaptive_question($known_attributes, $journey = 'general') {
+    public static function select_next_adaptive_question($known_attributes, $journey = 'general', $confidence = 0.5) {
+        if ((float) $confidence >= 0.9) {
+            return null;
+        }
+
         $candidate_questions = array(
             'shopping_goal' => array('priority' => 10, 'text' => 'What are you shopping for today?'),
             'experience_level' => array('priority' => 8, 'text' => 'What is your experience level with these products?'),
@@ -101,6 +105,13 @@ final class ConversationManager {
             'budget_range' => array('priority' => 5, 'text' => 'Do you have a target price range in mind?'),
             'purchase_timeline' => array('priority' => 4, 'text' => 'Are you looking to order today or researching for later?'),
         );
+
+        if ($journey === 'budget') {
+            $candidate_questions['budget_range']['priority'] = 12;
+        } elseif ($journey === 'wholesale') {
+            $candidate_questions['shopping_goal']['priority'] = 12;
+            $candidate_questions['purchase_timeline']['priority'] = 9;
+        }
 
         $unasked = array();
         foreach ($candidate_questions as $key => $q) {
@@ -122,6 +133,24 @@ final class ConversationManager {
             'attribute' => $first_key,
             'question' => $unasked[$first_key]['text'],
             'info_value' => $unasked[$first_key]['priority'] / 10.0,
+        );
+    }
+
+    public static function health_metrics() {
+        global $wpdb;
+        $table = Config::table('conversation_state');
+        $active = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$table} WHERE current_state <> 'completed'"
+        );
+        $average = $wpdb->get_var(
+            "SELECT AVG(confidence_score) FROM {$table} WHERE current_state <> 'completed'"
+        );
+
+        return array(
+            'status' => 'healthy',
+            'active_conversations' => $active,
+            'avg_confidence' => $average === null ? 0.0 : round((float) $average, 4),
+            'schema_version' => Config::SCHEMA_VERSION,
         );
     }
 

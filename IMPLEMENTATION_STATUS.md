@@ -1,15 +1,16 @@
 # Implementation Status
 
-## Budly v1.7 candidate
+## Budly v1.7.1 stabilization patch
 
-The `release/budly-v1.7` branch implements the authorized Conversation Intelligence and Customer Lifecycle scope using application 1.7.0, schema 1.5.0, unchanged customer-facing rules `bros-rules-1.5.0.0`, and commerce configuration `commerce-attribution-1.6.0.0`. All 175 automated tests and 16/16 LocalWP runtime staging acceptance subtests have passed. Gates A–E pass; Gate F remains blocked. Project Owner merge authorization is required. Production deployment remains prohibited.
+Budly v1.7 was merged by PR #8, tagged at `79b6752699fe30e42a321008bf62ce5b82c8f858`, deployed to production, and passed Gate F. Production subsequently required bounded Bootstrap hotfix `ae9ed56650adc50d6b22d11d643fc5631d80cb71`.
+
+The `release/budly-v1.7.1` branch formalizes that loader correction and addresses session isolation, truthful administrator aggregates, canonical lifecycle progression, and PHP conversation-behavior parity. It remains a non-production candidate until review, merge, release, and separate production authorization.
 
 | Release | Status | Evidence |
 |---|---|---|
-| 1.3.4-R1 | Accepted, merged, tagged | `budly-v1.3.4-r1` |
-| 1.4.0 | Accepted, merged, tagged | `budly-v1.4` |
 | 1.5.0 | Accepted, merged, tagged | `budly-v1.5`, PR #6 |
 | 1.6.0 | Accepted, merged, tagged | `budly-v1.6`, PR #7 |
-| 1.7.0 | Implementation, staging acceptance, and tests complete; PR Ready for Review | `release/budly-v1.7` |
+| 1.7.0 | Accepted, merged, tagged, deployed; post-release Bootstrap hotfix on main | `budly-v1.7`, PR #8, `ae9ed566` |
+| 1.7.1 | Stabilization candidate | `release/budly-v1.7.1` |
 
-No production deployment is authorized.
+No v1.7.1 production deployment is authorized by this repository state.
