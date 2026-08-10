@@ -6,7 +6,7 @@ Protected conversation-state, relationship, and journey handlers now accept cust
 
 ## Tests
 
-Executable PHP tests cover missing, invalid, expired, and unverified session results; mutation CSRF; no customer-1 fallback; customer-keyed persistence; administrator authorization; and Bootstrap loading. The inherited Secure Memory, consent, replay, commerce, and secret-scanning tests remain mandatory.
+Executable PHP and real WordPress/MySQL tests cover missing, invalid, expired, and unverified session results; mutation CSRF; no customer-1 fallback; cross-customer read/write isolation; customer-keyed persistence; administrator authorization; and Bootstrap loading. The reconstructed LocalWP matrix passed 67/67 before rollback and 67/67 after restoration. The inherited Secure Memory, consent, replay, commerce, and secret-scanning tests also passed within the 179-test repository suite.
 
 ## Residual deployment control
 
