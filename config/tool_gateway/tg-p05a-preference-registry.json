@@ -1,0 +1,17 @@
+{
+  "registry_id": "TG-P05A.PREFERENCE_REGISTRY",
+  "version": "1.0",
+  "definitions": {
+    "book_format": {"category": "product_format", "allowed_values": ["paperback", "hardcover", "digital", "no_preference"]},
+    "content_format": {"category": "content_format", "allowed_values": ["text", "audio", "video", "mixed", "no_preference"]},
+    "education_style": {"category": "education_style", "allowed_values": ["concise", "step_by_step", "deep_dive", "visual", "mixed"]},
+    "conversation_style": {"category": "conversation_style", "allowed_values": ["concise", "detailed", "guided", "casual", "structured"]},
+    "topic_interest": {"category": "topic_interest", "allowed_values": ["gardening", "cooking", "wellness_education", "community"]},
+    "support_style": {"category": "support_preference", "allowed_values": ["self_service", "guided", "human_when_complex", "human_preferred"]},
+    "shopping_style": {"category": "shopping_preference", "allowed_values": ["budget_conscious", "quality_focused", "guided", "independent"]},
+    "experience_style": {"category": "experience_preference", "allowed_values": ["beginner_friendly", "intermediate", "advanced", "mixed"]}
+  },
+  "permitted_purposes": ["conversation_continuity", "education_personalization", "approved_recommendation_context", "support_continuity", "internal_test"],
+  "classification": "INTERNAL",
+  "durable_memory_eligible": true
+}
