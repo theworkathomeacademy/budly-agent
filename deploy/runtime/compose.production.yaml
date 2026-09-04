@@ -1,0 +1,42 @@
+services:
+  budly-runtime:
+    build:
+      context: .
+      dockerfile: deploy/runtime/budly-runtime.Dockerfile
+    image: budly-runtime:1.8.0
+    container_name: budly-runtime
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - budly_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: budly-cloudflared
+    restart: unless-stopped
+    depends_on:
+      - budly-runtime
+    networks:
+      - budly_network
+    env_file:
+      - .env.cloudflared
+    command:
+      - tunnel
+      - --no-autoupdate
+      - run
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  budly_network:
+    name: budly_network
+    driver: bridge
