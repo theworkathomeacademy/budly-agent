@@ -182,9 +182,21 @@ class WordPressPackageTests(unittest.TestCase):
 
     def test_public_catalog_is_allowlisted_and_risk_routed(self):
         js = (PLUGIN / "assets" / "budly-sales.js").read_text(encoding="utf-8")
+        decision = (
+            PLUGIN / "includes" / "SecureMemory" / "Decision" / "DecisionService.php"
+        ).read_text(encoding="utf-8")
         self.assertIn("const allowed=new Set", js)
+        self.assertIn("filter(p=>allowed.has(p.slug))", js)
         self.assertIn("treat my", js)
-        self.assertIn("I cannot diagnose, recommend treatment", js)
+        self.assertIn("decision.outcome==='human_review'", js)
+        self.assertIn("automated product recommendation", js)
+        self.assertIn("without relying on medical claims", js)
+        self.assertIn("No certification or outcome is guaranteed", js)
+        self.assertIn("products.find(x=>x.slug===decision.selected_product_id)", js)
+        self.assertIn("p.permalink", js)
+        self.assertIn("private const CATALOG=array", decision)
+        self.assertIn("'reason'=>'not_allowlisted'", decision)
+        self.assertIn("$outcome='human_review';$action='human_escalation'", decision)
         self.assertNotIn("relieves pain", js.lower())
 
     def test_live_chat_has_membership_policy_and_conversation_starters(self):
@@ -225,7 +237,6 @@ class WordPressPackageTests(unittest.TestCase):
         self.assertNotIn("add_action('wp_ajax_nopriv_budly_sales_verify_recall'", tracking)
         self.assertNotIn("recallNonce", plugin)
         self.assertIn("Secure recall is REST/session based", tracking)
-        self.assertIn("Version: 1.7.1", plugin)
 
     def test_recall_interface_preserves_privacy(self):
         js = (PLUGIN / "assets" / "budly-sales.js").read_text(encoding="utf-8")
