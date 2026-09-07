@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class EngineeringPlatformV14Tests(unittest.TestCase):
     def test_version_sources_are_consistent(self):
-        found = validate_versions.validate("1.7.1")
-        self.assertEqual(set(found.values()), {"1.7.1"})
+        found = validate_versions.validate("1.8.0")
+        self.assertEqual(set(found.values()), {"1.8.0"})
 
     def test_tag_patch_zero_is_semantically_equivalent(self):
         self.assertEqual(validate_versions.normalize("budly-v1.4"), (1, 4, 0))
@@ -76,7 +76,7 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
             build_plugin.build(output, "abc123")
             with ZipFile(output) as archive:
                 manifest = json.loads(archive.read("budly-sales-agent/release-manifest.json"))
-            self.assertEqual(manifest["application_version"], "1.7.1")
+            self.assertEqual(manifest["application_version"], "1.8.0")
             self.assertEqual(manifest["schema_version"], "1.5.0")
             self.assertEqual(manifest["rules_version"], "bros-rules-1.5.0.0")
             self.assertEqual(manifest["source_commit"], "abc123")

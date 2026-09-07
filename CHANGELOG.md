@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.0
+
+- Added the feature-flagged Budly natural-language conversation path through the HMAC-authenticated Python/BROS runtime.
+- Added governed `knowledge.retrieve`, the approved Education Corpus v0.1, centrally assembled personality, and structured model-response validation.
+- Preserved deterministic commercial and safety authority, the guided-flow fallback, and production-safe defaults with durable customer memory disabled.
+- Schema remains 1.5.0; rules remain `bros-rules-1.5.0.0`; commerce configuration remains `commerce-attribution-1.6.0.0`.
+
 ## 1.7.1
 
 - Fixed v1.7 customer-session error propagation so protected conversation and lifecycle routes fail closed without a default customer identity.

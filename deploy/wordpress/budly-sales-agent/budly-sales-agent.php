@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Budly Sales Agent
  * Description: Zero-cost guided sales assistant for Wake'n'Bake Lounge and CCCultivate.
- * Version: 1.7.1
+ * Version: 1.8.0
  * Author: Compassionate Care Cultivators
  * Requires at least: 6.2
  * Requires PHP: 7.4
@@ -11,12 +11,14 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-define('BUDLY_SALES_VERSION', '1.7.1');
+define('BUDLY_SALES_VERSION', '1.8.0');
 define('BUDLY_SALES_DIR', plugin_dir_path(__FILE__));
 define('BUDLY_SALES_URL', plugin_dir_url(__FILE__));
 require_once BUDLY_SALES_DIR . 'includes/tracking.php';
 require_once BUDLY_SALES_DIR . 'includes/SecureMemory/Bootstrap.php';
 \Budly\SecureMemory\Bootstrap::register();
+require_once BUDLY_SALES_DIR . 'includes/Runtime/ConversationProxy.php';
+\Budly\Runtime\ConversationProxy::register();
 
 function budly_sales_activate() {
     \Budly\SecureMemory\Bootstrap::activate();
@@ -106,6 +108,10 @@ function budly_sales_enqueue() {
         'decisionNonce' => wp_create_nonce('wp_rest'),
         'policiesUrl' => $policy_page ? $policy_page : home_url('/customer-policies/'),
         'trackNonce' => wp_create_nonce('budly_sales_track'),
+        'conversationEnabled' => \Budly\Runtime\ConversationProxy::enabled(),
+        'conversationUrl' => esc_url_raw(rest_url('budly-runtime/v1/conversation')),
+        'conversationNonce' => wp_create_nonce('wp_rest'),
+        'durableMemoryEnabled' => false,
     ));
 }
 

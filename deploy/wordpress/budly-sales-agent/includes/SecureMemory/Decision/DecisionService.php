@@ -87,12 +87,27 @@ final class DecisionService {
             else{$outcome='recommended';$confidence=$best>=4?'high':($best>=2?'medium':'low');$action='show_approved_product';}
         }
         $qualification=count($answers)>=3?'qualified':(count($answers)===2?'nurture':'insufficient');
+        $attribution_input=is_array($input['attribution']??null)?$input['attribution']:array();
+        $attr_fields=array('source','platform','content_id','campaign_id','cta_id','product_or_topic','published_post_id');
+        $clean_attribution=array();
+        foreach($attr_fields as $f){
+            if(isset($attribution_input[$f])&&is_scalar($attribution_input[$f])){
+                $val=sanitize_text_field(substr(trim((string)$attribution_input[$f]),0,100));
+                if($val!=='')$clean_attribution[$f]=$val;
+            }
+        }
+        $inputs_data=array('answer_count'=>count($answers),'qualification'=>$qualification,'qualification_rule_version'=>$versions['qualification'],'memory_requested'=>$memory,'commercial_context_version'=>$commercial_context['context_version']??null,'commercial_memory_references'=>$memory_refs,'verified'=>$verified);
+        if(!empty($clean_attribution)){$inputs_data['attribution']=$clean_attribution;}
         $decision=Validation::opaque_id('dec');$customer_ref=$verified?'customer_'.hash_hmac('sha256',(string)$customer,wp_salt('auth')):'';
-        $record=array('decision_id'=>$decision,'decision_type'=>'recommendation','customer_reference'=>$customer_ref,'session_id'=>$session['session_id']??'','conversation_id'=>$conversation,'journey'=>$journey,'objective'=>$risk?'[sensitive request withheld]':$objective,'inputs_json'=>wp_json_encode(array('answer_count'=>count($answers),'qualification'=>$qualification,'qualification_rule_version'=>$versions['qualification'],'memory_requested'=>$memory,'commercial_context_version'=>$commercial_context['context_version']??null,'commercial_memory_references'=>$memory_refs,'verified'=>$verified)),'rule_version'=>$versions['recommendation'],'eligible_products_json'=>wp_json_encode($eligible),'excluded_products_json'=>wp_json_encode($excluded),'outcome'=>$outcome,'selected_product_id'=>$selected,'confidence'=>$confidence,'escalation_reference'=>$escalation,'resulting_action'=>$action,'created_at'=>current_time('mysql',true));
+        $record=array('decision_id'=>$decision,'decision_type'=>'recommendation','customer_reference'=>$customer_ref,'session_id'=>$session['session_id']??'','conversation_id'=>$conversation,'journey'=>$journey,'objective'=>$risk?'[sensitive request withheld]':$objective,'inputs_json'=>wp_json_encode($inputs_data),'rule_version'=>$versions['recommendation'],'eligible_products_json'=>wp_json_encode($eligible),'excluded_products_json'=>wp_json_encode($excluded),'outcome'=>$outcome,'selected_product_id'=>$selected,'confidence'=>$confidence,'escalation_reference'=>$escalation,'resulting_action'=>$action,'created_at'=>current_time('mysql',true));
         $this->repo->append($record);
         $actor=$verified?'customer':'visitor';$actor_id=$verified?(string)$customer:'anonymous';
-        $this->audit->record('decision.recommendation',$actor,$actor_id,'success',$risk?'warning':'informational',array('customer_reference'=>$customer_ref,'conversation_id'=>$conversation,'metadata'=>array('decision_id'=>$decision,'outcome'=>$outcome,'rule_version'=>$versions['recommendation'])));
-        return array('decision_id'=>$decision,'outcome'=>$outcome,'rule_version'=>$versions['recommendation'],'eligible_products'=>$eligible,'excluded_products'=>$excluded,'selected_product_id'=>$selected,'confidence'=>$confidence,'escalation_reference'=>$escalation,'resulting_action'=>$action,'verified_customer'=>$verified);
+        $audit_metadata=array('decision_id'=>$decision,'outcome'=>$outcome,'rule_version'=>$versions['recommendation']);
+        if(!empty($clean_attribution)){$audit_metadata['attribution']=$clean_attribution;}
+        $this->audit->record('decision.recommendation',$actor,$actor_id,'success',$risk?'warning':'informational',array('customer_reference'=>$customer_ref,'conversation_id'=>$conversation,'metadata'=>$audit_metadata));
+        $res=array('decision_id'=>$decision,'outcome'=>$outcome,'rule_version'=>$versions['recommendation'],'eligible_products'=>$eligible,'excluded_products'=>$excluded,'selected_product_id'=>$selected,'confidence'=>$confidence,'escalation_reference'=>$escalation,'resulting_action'=>$action,'verified_customer'=>$verified);
+        if(!empty($clean_attribution)){$res['attribution']=$clean_attribution;}
+        return $res;
     }
     private function error($message){return array('error'=>Errors::INVALID_REQUEST,'status'=>422,'message'=>$message);}
 }

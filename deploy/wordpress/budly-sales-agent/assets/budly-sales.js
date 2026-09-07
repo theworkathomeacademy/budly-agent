@@ -11,19 +11,52 @@ const allowed=new Set(['wakenbake-lounge-cannabis-botanical-collection-volume-1'
 const safeSummary={wellness:'A CBD self-care option. Compare format, price, and purchase cadence without relying on medical claims.',culinary:'A CBD culinary option. Review size, package facts, and current price; Budly does not recommend dosage.',education:'An educational product about the stated topic. No certification or outcome is guaranteed.',membership:'A tiered digital membership collectible. Review the current membership terms before purchase.',wholesale:'A website-listed bulk product. Requests outside the available website options may require support.'};
 const starters=[['Help me choose a product','Help me choose the right product'],['Shop within my budget','Help me shop within my budget'],['Compare products','Help me compare products'],['Membership questions','I have questions about NFT membership terms and refunds'],['Wholesale inquiries','I have a wholesale inquiry'],['Order, shipping, or human support','I need order, shipping, or human support']];
 const riskTerms=['diagnose','treat my','treat it','treatment','cure','cancer','dosage','dose','replace my medication','bad reaction','made me sick','hospital','is it legal','under 18','under 21','chargeback','unauthorized charge'];
-const governedSafetyCopy='I cannot diagnose, recommend treatment, or provide medical advice.';
 document.querySelectorAll('[data-budly-sales]').forEach(root=>{
  const messages=root.querySelector('[data-budly-messages]'),form=root.querySelector('[data-budly-form]'),fields=root.querySelector('[data-budly-fields]'),send=root.querySelector('[data-budly-send]'),restart=root.querySelector('[data-budly-restart]');
  const conversationId=()=>('conv_'+(globalThis.crypto?.randomUUID?.().replaceAll('-','')||Date.now().toString(36)+Math.random().toString(36).slice(2))).slice(0,45);
- let state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId()};
+ const urlParams=new URLSearchParams(window.location.search);
+ const sanitizeParam=(val,maxLen=120)=>{if(!val||typeof val!=='string')return'';return val.trim().slice(0,maxLen).replace(/[^a-zA-Z0-9_\-\.:\/]/g,'')};
+ const initialAttribution={
+  source:sanitizeParam(urlParams.get('source'),64),
+  platform:sanitizeParam(urlParams.get('platform'),64),
+  content_id:sanitizeParam(urlParams.get('content_id'),100),
+  campaign_id:sanitizeParam(urlParams.get('campaign_id'),100),
+  cta_id:sanitizeParam(urlParams.get('cta_id'),64),
+  product_or_topic:sanitizeParam(urlParams.get('product_or_topic'),100),
+  published_post_id:sanitizeParam(urlParams.get('published_post_id'),100)
+ };
+ const hasAttribution=Boolean(initialAttribution.source||initialAttribution.content_id||initialAttribution.cta_id||initialAttribution.product_or_topic);
+ let state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution};
  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
  const bubble=(text,who='bot',label='')=>{const e=document.createElement('div');e.className='budly-message budly-'+who;e.innerHTML=(label?'<div class="budly-label">'+esc(label)+'</div>':'')+esc(text);messages.append(e);messages.scrollTop=messages.scrollHeight};
  const input=(html,label='Continue')=>{fields.innerHTML=html;send.hidden=false;send.textContent=label;fields.querySelector('input,select')?.focus()};
  const link=(url,label)=>{const e=document.createElement('div');e.className='budly-card';e.innerHTML='<a href="'+esc(url)+'">'+esc(label)+' ↗</a>';messages.append(e)};
- const track=(event,extra={})=>{const body=new URLSearchParams({action:'budly_sales_track',nonce:cfg.trackNonce||'',event,session:state.session,name:state.name,email:state.email,phone:state.phone,memory_consent:state.memoryConsent?'1':'',journey:state.journey?.label||'',...extra});fetch(cfg.ajaxUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body,keepalive:true}).catch(()=>{})};
+ const track=(event,extra={})=>{
+  const metaObject=Object.assign({},extra.metadata&&typeof extra.metadata==='object'?extra.metadata:(extra.metadata?{raw:extra.metadata}:{}),hasAttribution?{attribution:state.attribution}:{});
+  const body=new URLSearchParams({
+   action:'budly_sales_track',
+   nonce:cfg.trackNonce||'',
+   event,
+   session:state.session,
+   name:state.name,
+   email:state.email,
+   phone:state.phone,
+   memory_consent:state.memoryConsent?'1':'',
+   journey:state.journey?.label||'',
+   metadata:Object.keys(metaObject).length?JSON.stringify(metaObject):'',
+   source:state.attribution.source||'',
+   platform:state.attribution.platform||'',
+   content_id:state.attribution.content_id||'',
+   campaign_id:state.attribution.campaign_id||'',
+   cta_id:state.attribution.cta_id||'',
+   product_or_topic:state.attribution.product_or_topic||'',
+   ...extra
+  });
+  fetch(cfg.ajaxUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body,keepalive:true}).catch(()=>{});
+ };
  const conversationSummary=()=>[state.goal,...state.answers].filter(Boolean).join(' | ');
  const complete=(summary=conversationSummary())=>track('conversation_completed',{summary});
- const start=()=>{state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId()};messages.innerHTML='';restart.hidden=true;bubble('Hi, I’m Budly. I’ll ask a few short questions before suggesting anything. What should I call you?');input('<input name="name" autocomplete="name" aria-label="First name" placeholder="First name" required><input name="email" type="email" autocomplete="email" aria-label="Email for this conversation" placeholder="Email for this conversation" required><input name="phone" type="tel" autocomplete="tel" aria-label="Phone (optional)" placeholder="Phone (optional)"><label><input name="consent" type="checkbox" required> I agree that my details may be sent to Budly Support if I request human help.</label><label><input name="memory_consent" type="checkbox"> Remember my profile and conversation so Budly can help me in the future.</label><button type="button" class="budly-secondary" data-budly-returning>Returning customer? Verify your email</button>','Meet Budly')};
+ const start=()=>{state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution};messages.innerHTML='';restart.hidden=true;bubble('Hi, I’m Budly. I’ll ask a few short questions before suggesting anything. What should I call you?');input('<input name="name" autocomplete="name" aria-label="First name" placeholder="First name" required><input name="email" type="email" autocomplete="email" aria-label="Email for this conversation" placeholder="Email for this conversation" required><input name="phone" type="tel" autocomplete="tel" aria-label="Phone (optional)" placeholder="Phone (optional)"><label><input name="consent" type="checkbox" required> I agree that my details may be sent to Budly Support if I request human help.</label><label><input name="memory_consent" type="checkbox"> Remember my profile and conversation so Budly can help me in the future.</label><button type="button" class="budly-secondary" data-budly-returning>Returning customer? Verify your email</button>','Meet Budly')};
  const recallRequest=async email=>{const body=new URLSearchParams({action:'budly_sales_request_recall',nonce:cfg.recallNonce||'',email});const r=await fetch(cfg.ajaxUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});const out=await r.json();if(!out.success)throw new Error(out.data?.message||'Unable to send a code.');return out.data};
  const recallVerify=async(email,code)=>{const body=new URLSearchParams({action:'budly_sales_verify_recall',nonce:cfg.recallNonce||'',email,code});const r=await fetch(cfg.ajaxUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});const out=await r.json();if(!out.success)throw new Error(out.data?.message||'Unable to verify that code.');return out.data};
  const showRecallHistory=history=>{if(!history?.length){bubble('I do not have a previous conversation summary to show, but your saved profile is ready.','bot','Verified profile');return}bubble('Here are the latest conversation notes you asked me to remember:','bot','Your Budly history');history.forEach(item=>bubble((item.journey?item.journey+': ':'')+item.summary,'bot',item.created_at||'Previous conversation'))};
@@ -39,7 +72,23 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
  const card=p=>{const e=document.createElement('article');e.className='budly-card';e.innerHTML='<div class="budly-label">Closest current match</div><h3>'+esc(p.name.replace(/&#8217;/g,"'").replace(/&#8211;/g,'–'))+'</h3><div class="budly-price">'+esc(money(p))+'</div><p>'+esc(safeSummary[Object.keys(journeys).find(k=>journeys[k]===state.journey)])+'</p><a href="'+esc(p.permalink)+'">View product ↗</a>';messages.append(e);messages.scrollTop=messages.scrollHeight;track('recommendation_shown',{product_url:p.permalink});e.querySelector('a').addEventListener('click',()=>track('product_clicked',{product_url:p.permalink}))};
  const handoff=async()=>{const summary=[state.goal,...state.answers].join(' | '),body=new URLSearchParams({action:'budly_sales_handoff',nonce:cfg.nonce,name:state.name,email:state.email,journey:state.journey?.label||'Support',summary});try{const r=await fetch(cfg.ajaxUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});const out=await r.json();if(out.success){bubble(out.data.message+' Reference: '+out.data.reference,'bot','Human support');if(!out.data.sent)link('mailto:'+cfg.supportEmail,'Email '+cfg.supportEmail)}else throw new Error(out.data?.message)}catch(e){bubble('I could not send the handoff automatically. Please email '+cfg.supportEmail+'.','bot','Human support');link('mailto:'+cfg.supportEmail,'Email '+cfg.supportEmail)}};
  const offerHumanHelp=()=>{input('<button type="button" data-human-help>Request human support</button>','');send.hidden=true;fields.querySelector('[data-human-help]').addEventListener('click',()=>{track('human_support_requested');handoff()})};
- const governedDecision=async()=>{const journey=Object.keys(journeys).find(k=>journeys[k]===state.journey)||'wellness',headers={'Content-Type':'application/json','X-WP-Nonce':cfg.decisionNonce,'Idempotency-Key':'idem_'+state.session};if(state.decisionCsrf)headers['X-Budly-CSRF']=state.decisionCsrf;const r=await fetch(cfg.decisionUrl,{method:'POST',credentials:'same-origin',headers,body:JSON.stringify({conversation_id:state.session,journey,objective:state.goal,answers:state.answers,use_memory:state.memoryConsent})});const out=await r.json();if(!r.ok||!out.success)throw new Error(out?.error?.message||'Budly could not record this decision.');return out.data};
+ const governedDecision=async()=>{
+  const journey=Object.keys(journeys).find(k=>journeys[k]===state.journey)||'wellness',
+        headers={'Content-Type':'application/json','X-WP-Nonce':cfg.decisionNonce,'Idempotency-Key':'idem_'+state.session};
+  if(state.decisionCsrf)headers['X-Budly-CSRF']=state.decisionCsrf;
+  const payload={
+   conversation_id:state.session,
+   journey,
+   objective:state.goal,
+   answers:state.answers,
+   use_memory:state.memoryConsent
+  };
+  if(hasAttribution)payload.attribution=state.attribution;
+  const r=await fetch(cfg.decisionUrl,{method:'POST',credentials:'same-origin',headers,body:JSON.stringify(payload)});
+  const out=await r.json();
+  if(!r.ok||!out.success)throw new Error(out?.error?.message||'Budly could not record this decision.');
+  return out.data;
+ };
  const finish=async()=>{send.hidden=true;fields.innerHTML='';const decision=await governedDecision(),products=await loadProducts(),p=products.find(x=>x.slug===decision.selected_product_id);if(decision.outcome==='human_review'){bubble('I cannot safely complete that request with an automated product recommendation. A qualified person can help.','bot','Human review');offerHumanHelp()}else if(decision.outcome==='recommended'&&p){bubble('Based on what you shared, this is the closest approved match in the current catalog.','bot',state.journey.label);card(p)}else if(decision.outcome==='clarification_required'||decision.outcome==='nurture'){bubble('I need a little more detail before making a confident match, so I will not guess.','bot','More information needed');offerHumanHelp()}else if(decision.outcome==='consent_restricted'){bubble('I continued without remembered information because the required consent was not active.','bot','Privacy protected');offerHumanHelp()}else{bubble('I do not have a confident approved catalog match, so I will not guess.','bot');offerHumanHelp()}complete();state.step='done'};
  form.addEventListener('click',e=>{const returning=e.target.closest('[data-budly-returning]');if(returning){root.dataset.budlyConversationId=state.session;window.BudlySecureMemory.open(root,profile=>{state.name=profile?.preferred_name||'there';state.verified=true;state.memoryConsent=Boolean(profile?.memoryApproved);state.decisionCsrf=profile?.budlyCsrf||'';track('identity_verified');state.step='goal';bubble('What can I help you with today?');goalInput()});return}const starter=e.target.closest('[data-budly-starter]');if(!starter)return;track('starter_selected',{metadata:starter.textContent.trim()});const field=fields.querySelector('input[name="answer"]');if(field){field.value=starter.dataset.budlyStarter;form.requestSubmit()}});
  form.addEventListener('submit',async e=>{
