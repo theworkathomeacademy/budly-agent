@@ -11,7 +11,7 @@ class ConversationIntelligenceV17Tests(unittest.TestCase):
         self.agent = SalesAgent()
 
     def test_version_declarations_v17(self):
-        self.assertEqual(APPLICATION_VERSION, "1.8.0")
+        self.assertEqual(APPLICATION_VERSION, "1.8.1")
         self.assertEqual(SCHEMA_VERSION, "1.5.0")
 
     def test_canonical_patterns_10_of_10_coverage(self):

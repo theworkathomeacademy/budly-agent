@@ -12,7 +12,7 @@ from zipfile import ZIP_STORED, ZipFile, ZipInfo
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "deploy" / "wordpress" / "budly-sales-agent"
 ARCHIVE_ROOT = "budly-sales-agent"
-APPLICATION_VERSION = "1.8.0"
+APPLICATION_VERSION = "1.8.1"
 SCHEMA_VERSION = "1.5.0"
 RULES_VERSION = "bros-rules-1.5.0.0"
 COMMERCE_CONFIG_VERSION = "commerce-attribution-1.6.0.0"

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.1
+
+- Exposed already-scrubbed audit metadata and conversation identifiers through the existing capability-protected Secure Memory administrator page.
+- Added a local, read-only conversation-ID filter over the existing bounded audit response; no API, schema, customer-facing, decision, attribution, or persistence behavior changed.
+- Schema remains 1.5.0; rules remain `bros-rules-1.5.0.0`; commerce configuration remains `commerce-attribution-1.6.0.0`.
+
 ## 1.8.0
 
 - Added the feature-flagged Budly natural-language conversation path through the HMAC-authenticated Python/BROS runtime.

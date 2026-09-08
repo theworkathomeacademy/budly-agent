@@ -3,6 +3,18 @@ const cfg=window.BudlyMemoryAdmin||{},root=document.querySelector('[data-budly-m
 if(!root)return;
 const message=root.querySelector('[data-admin-message]');
 const show=value=>{message.textContent=value};
+const renderAudit=items=>{
+ const query=String(root.querySelector('[data-audit-conversation]')?.value||'').trim(),list=document.createElement('ol');
+ items.filter(item=>!query||item.conversation_id===query).forEach(item=>{
+  const row=document.createElement('li'),summary=document.createElement('span'),details=document.createElement('details'),toggle=document.createElement('summary'),metadata=document.createElement('pre');
+  summary.textContent=item.created_at+' — '+item.event_type+' — '+item.result+' ('+item.severity+') — conversation: '+(item.conversation_id||'none');
+  toggle.textContent='View metadata';
+  metadata.textContent=JSON.stringify(item.metadata??{},null,2);
+  details.append(toggle,metadata);row.append(summary,details);list.append(row);
+ });
+ if(!list.children.length){const row=document.createElement('li');row.textContent='No audit events match this conversation ID.';list.append(row)}
+ root.querySelector('[data-admin-audit]').replaceChildren(list);
+};
 const call=async(path,method='GET',body)=>{
  const response=await fetch(String(cfg.restBase).replace(/\/$/,'')+path,{method,credentials:'same-origin',headers:{'Content-Type':'application/json','X-WP-Nonce':cfg.nonce},body:body?JSON.stringify(body):undefined});
  const output=await response.json();
@@ -12,14 +24,14 @@ const call=async(path,method='GET',body)=>{
 const load=async()=>{try{
  const health=await call('/admin/health'),box=root.querySelector('[data-admin-status]');
  box.textContent='Status: '+health.status+' | Schema: '+health.schema_version+' | Active sessions: '+health.metrics.active_sessions+' | Active memory: '+health.metrics.active_memory;
- const audit=await call('/admin/audit?per_page=25'),list=document.createElement('ol');
- audit.items.forEach(item=>{const row=document.createElement('li');row.textContent=item.created_at+' — '+item.event_type+' — '+item.result+' ('+item.severity+')';list.append(row)});
- root.querySelector('[data-admin-audit]').replaceChildren(list);
+ const audit=await call('/admin/audit?per_page=100');
+ root.auditItems=audit.items;renderAudit(root.auditItems);
  const memory=await call('/admin/commercial-memory?per_page=25'),memoryList=document.createElement('ol');
  memory.items.forEach(item=>{const row=document.createElement('li');row.textContent=item.memory_uuid+' — '+item.memory_type+' — confidence '+item.confidence+' — '+item.status;memoryList.append(row)});
  root.querySelector('[data-admin-commercial-memory]').replaceChildren(memoryList);
 }catch(error){show(error.message)}};
 root.addEventListener('submit',async event=>{event.preventDefault();const data=Object.fromEntries(new FormData(event.target));try{
+ if(event.target.matches('[data-audit-filter]')){renderAudit(root.auditItems||[]);show('Audit view filtered locally by conversation ID.');return;}
  if(event.target.matches('[data-revoke-session]'))await call('/admin/revoke-session','POST',data);
  if(event.target.matches('[data-revoke-all]'))await call('/admin/revoke-all','POST',data);
  if(event.target.matches('[data-test-email]'))await call('/admin/test-email','POST',data);

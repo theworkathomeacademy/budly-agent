@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.1
+
+- Added read-only administrator visibility for decoded audit metadata and conversation identifiers returned by the existing protected audit API.
+- Added a local conversation-ID filter over the bounded administrator audit result set.
+- Application 1.8.1; schema remains 1.5.0; rules and commerce configuration are unchanged.
+
 ## 1.8.0
 
 - Added the governed conversational WordPress-to-Python/BROS integration with approved knowledge, GPT-5.6 Luna configuration, structured validation, and deterministic fallback.
