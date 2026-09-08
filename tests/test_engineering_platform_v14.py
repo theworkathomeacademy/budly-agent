@@ -1,4 +1,5 @@
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,6 +9,29 @@ from scripts import build_plugin, validate_repository, validate_versions
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PLUGIN = ROOT / "deploy/wordpress/budly-sales-agent"
+
+
+def static_plugin_dependencies():
+    """Return literal plugin-local PHP dependencies declared with require/include."""
+    dependencies = set()
+    plugin_constant = re.compile(
+        r"\b(?:require|require_once|include|include_once)\s+"
+        r"BUDLY_SALES_DIR\s*\.\s*['\"]([^'\"]+)['\"]\s*;"
+    )
+    current_directory = re.compile(
+        r"\b(?:require|require_once|include|include_once)\s+"
+        r"__DIR__\s*\.\s*['\"]([^'\"]+)['\"]\s*;"
+    )
+    for php_file in PLUGIN.rglob("*.php"):
+        source = php_file.read_text(encoding="utf-8")
+        for relative in plugin_constant.findall(source):
+            dependencies.add(Path(relative.replace("\\", "/")))
+        for relative in current_directory.findall(source):
+            dependencies.add(
+                (php_file.parent.relative_to(PLUGIN) / relative.lstrip("/\\"))
+            )
+    return dependencies
 
 
 class EngineeringPlatformV14Tests(unittest.TestCase):
@@ -69,6 +93,26 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
                 names = archive.namelist()
                 self.assertTrue(all(name.startswith("budly-sales-agent/") for name in names))
                 self.assertIn("budly-sales-agent/release-manifest.json", names)
+
+    def test_static_local_php_dependencies_exist_in_source_and_release(self):
+        dependencies = static_plugin_dependencies()
+        self.assertTrue(dependencies, "no static plugin-local PHP dependencies found")
+        missing_source = sorted(
+            path.as_posix() for path in dependencies if not (PLUGIN / path).is_file()
+        )
+        self.assertEqual(missing_source, [], "missing source PHP dependencies")
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "release.zip"
+            build_plugin.build(output, "TEST-COMMIT")
+            with ZipFile(output) as archive:
+                packaged = set(archive.namelist())
+        missing_release = sorted(
+            path.as_posix()
+            for path in dependencies
+            if f"budly-sales-agent/{path.as_posix()}" not in packaged
+        )
+        self.assertEqual(missing_release, [], "missing packaged PHP dependencies")
 
     def test_manifest_records_versions_source_and_file_hashes(self):
         with tempfile.TemporaryDirectory() as directory:
