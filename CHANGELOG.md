@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.2
+
+- Added deterministic STS-2 recommendation-to-order correlation using signed, product-bound opaque identifiers.
+- Added authoritative WooCommerce conversion-state evidence and an existing-schema BROS revenue-event correlation payload.
+- Preserved pricing, catalog, payment, tax, fulfillment, HMAC, idempotency, PII, and service-role boundaries.
+
 ## 1.8.1
 
 - Exposed already-scrubbed audit metadata and conversation identifiers through the existing capability-protected Secure Memory administrator page.
