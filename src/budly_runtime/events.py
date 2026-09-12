@@ -3,7 +3,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-COMMERCIAL_EVENTS = ("conversation_started", "meaningful_engagement", "intent_identified", "recommendation_presented", "product_link_presented", "product_clicked", "lead_opportunity", "purchase_guidance_started", "purchase_attributed", "safe_no_match", "conversation_abandoned")
+COMMERCIAL_EVENTS = (
+    "conversation_started", "meaningful_engagement", "intent_identified",
+    "recommendation_presented", "product_link_presented", "product_clicked",
+    "lead_opportunity", "purchase_guidance_started", "purchase_attributed",
+    "safe_no_match", "conversation_abandoned", "unmet_demand",
+    "relationship_captured", "consent_recorded", "conversation_closed"
+)
 
 
 class EventLogger:

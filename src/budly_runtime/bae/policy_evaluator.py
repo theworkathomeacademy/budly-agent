@@ -127,6 +127,12 @@ class AuthorizationRequest:
             except (ValueError, TypeError, AttributeError) as exc:
                 raise ValueError(f"{name} must be a valid UUID") from exc
 
+    def to_dict(self) -> dict[str, Any]:
+        d = asdict(self)
+        d["authorized_actor_types"] = list(self.authorized_actor_types)
+        d["granted_permissions"] = list(self.granted_permissions)
+        return d
+
 
 @dataclass(frozen=True)
 class ContinuousAuthorizationToken:
@@ -223,9 +229,17 @@ def compute_material_fingerprint(
 class DeterministicPolicyEvaluator:
     """Default-deny policy evaluator implementing the canonical continuous control checks."""
 
-    def __init__(self, registry: BAECapabilityRegistry, kill_switches: BAEKillSwitchRegistry | None = None) -> None:
+    def __init__(
+        self,
+        registry: BAECapabilityRegistry,
+        kill_switches: BAEKillSwitchRegistry | None = None,
+        environment: str = "development",
+        gate_d_authorized: bool = False,
+    ) -> None:
         self.registry = registry
         self.kill_switches = kill_switches or BAEKillSwitchRegistry()
+        self.environment = environment
+        self.gate_d_authorized = gate_d_authorized
         self._issued_tokens: dict[str, ContinuousAuthorizationToken] = {}
         self._seen_idempotency_keys: set[str] = set()
 
@@ -395,6 +409,17 @@ class DeterministicPolicyEvaluator:
                 approval_level=None,
                 denial_reason=AuthorizationDenialReason.CAPABILITY_NOT_REGISTERED,
                 reason_detail=f"Capability {request.capability_id}:{request.capability_version} is not registered in BAE registry",
+            )
+
+        # Check 13b: Environment authorization
+        if request.environment not in cap.allowed_environments:
+            return AuthorizationDecision(
+                status=AuthorizationDecisionStatus.DENIED,
+                permitted=False,
+                requires_approval=False,
+                approval_level=None,
+                denial_reason=AuthorizationDenialReason.ENVIRONMENT_DENIED,
+                reason_detail=f"Environment '{request.environment}' is not authorized for capability",
             )
 
         # Check 14: RESTRICTED / RETIRED lifecycle checks

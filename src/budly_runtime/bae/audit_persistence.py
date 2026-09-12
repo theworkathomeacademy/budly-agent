@@ -522,6 +522,12 @@ class DurableAuditRepository:
     def get_event(self, audit_event_id: str) -> AuditEventRecord | None:
         return self._by_event_id.get(audit_event_id)
 
+    def get_evidence(self, evidence_id: str) -> EvidenceRecord | None:
+        for ev in self._evidence:
+            if ev.evidence_id == evidence_id:
+                return ev
+        return None
+
     def get_action_history(self, action_id: str) -> list[AuditEventRecord]:
         """Returns chronological event history for a given action."""
         events = self._by_action_id.get(action_id, [])

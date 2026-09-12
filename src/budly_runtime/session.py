@@ -51,6 +51,20 @@ class ConversationSession:
     conversation_summary: str | None = None
     recent_turns: list[Turn] = field(default_factory=list)
     conversational_turn_count: int = 0
+    customer_name: str | None = None
+    customer_email: str | None = None
+    crm_context_consent: str = "none"
+    follow_up_permission: str = "none"
+    follow_up_channel: str | None = None
+    unmet_demands: list[dict[str, Any]] = field(default_factory=list)
+    name_capture_asked: bool = False
+    name_capture_declined: bool = False
+    email_capture_asked: bool = False
+    email_capture_declined: bool = False
+    asked_name: bool = False
+    asked_email: bool = False
+    asked_memory_consent: bool = False
+    asked_follow_up_consent: bool = False
 
     def runtime_variables(self) -> dict[str, Any]:
         keys = ("personality_intensity", "humor_intensity", "curiosity_intensity", "commercial_pressure", "education_depth", "customer_emotional_state", "customer_expertise", "conversation_mode")

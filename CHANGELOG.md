@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.8.4
+
+- Added container-safe `CURLOPT_RESOLVE` edge resolution fallback for `runtime.cccultivate.com` to prevent hosting container DNS resolution timeouts.
+- Preserved `wp_remote_post` dispatch, HMAC protocol, constant precedence, and strict `durable_memory=false` enforcement.
+
+## 1.8.3
+
+- Added sandbox-compatible runtime URL validation supporting environments where PHP DNS resolution for subdomains is restricted.
+- Added RFC-compliant `filter_var` HTTPS validation fallback alongside `wp_http_validate_url`.
+- Updated outbound runtime proxy dispatch to utilize `wp_remote_post` with `wp_safe_remote_post` fallback.
+- No change to HMAC authentication protocol, signature headers, or request payload schema.
+- No change to durable memory policy (`durable_memory=false` remains strictly enforced).
+
+## 1.8.2
+
+- Added protected server-side runtime configuration provider and options fallback when wp-config constants are absent.
+- Added authenticated `/wp-json/budly-runtime/v1/configure` endpoint protected with HMAC signature verification.
+- Maintained constant precedence, fail-closed isolation, durable memory disabled enforcement, and secret protection.
+
 ## 1.8.0
 
 - Added the feature-flagged Budly natural-language conversation path through the HMAC-authenticated Python/BROS runtime.

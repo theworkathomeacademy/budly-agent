@@ -29,6 +29,10 @@ services:
     command:
       - tunnel
       - --no-autoupdate
+      - --protocol
+      - http2
+      - --loglevel
+      - debug
       - run
     logging:
       driver: "json-file"

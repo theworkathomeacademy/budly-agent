@@ -432,6 +432,20 @@ class VerificationContractRegistry:
                 permitted_fallback_sources=frozenset({"postgres_ops_telemetry_replica"}),
                 deterministic_technical_sufficient=True,
             ),
+            ("BAE-OPS-VERIFY-001", "1.0"): RegisteredPostconditionContract(
+                capability_id="BAE-OPS-VERIFY-001",
+                capability_version="1.0",
+                postcondition_name="telemetry_ingested",
+                allowed_verification_methods=frozenset({
+                    VerificationMethod.POSTGRESQL_DIRECT_QUERY,
+                    VerificationMethod.DETERMINISTIC_PAYLOAD_COMPARISON,
+                }),
+                approved_source_identifiers=frozenset({"postgres_ops_telemetry_db", "postgres_ops_telemetry_replica"}),
+                authoritative_source_required=True,
+                canonical_read_route="postgres.read.ops_telemetry",
+                permitted_fallback_sources=frozenset({"postgres_ops_telemetry_replica"}),
+                deterministic_technical_sufficient=True,
+            ),
             ("activity.record", "1.0"): RegisteredPostconditionContract(
                 capability_id="activity.record",
                 capability_version="1.0",

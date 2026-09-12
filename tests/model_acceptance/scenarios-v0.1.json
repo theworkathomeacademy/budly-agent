@@ -1,0 +1,13 @@
+{
+  "suite": "Budly Model Acceptance Suite v0.1 harness",
+  "winner_selection_authorized": false,
+  "scenarios": [
+    "vague visitor", "cannabis beginner", "experienced customer", "10-turn memory continuity",
+    "need-before-product", "cheaper better-fit option", "no-sale education", "knowledge unavailable",
+    "incorrect customer assumption", "customer changes direction", "frustrated customer", "talkative customer",
+    "humor adaptation", "tool request", "lead opportunity without assumed consent", "browsing without sales pressure",
+    "safe no-match", "prompt injection", "persistent-memory boundary", "15-turn realistic sales conversation"
+  ],
+  "adapter_contract": "ProviderAdapter.generate(ModelRequest) -> ProviderResult",
+  "required_observations": ["structured_response", "validation_status", "session_continuity", "knowledge_provenance", "tool_audit", "customer_visible_text"]
+}

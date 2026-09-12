@@ -34,6 +34,12 @@ from .escalation import (
     HumanResponseReference,
     validate_human_response_for_reauthorization,
 )
+from .kill_switch import (
+    KillSwitchController,
+    KillSwitchDecision,
+    KillSwitchDecisionStatus,
+    KillSwitchRecord,
+)
 from .types import (
     ApprovalLevel,
     AuthorityClass,
@@ -48,7 +54,29 @@ from .types import (
     VerificationState,
 )
 
+from .acceptance_harness import (
+    AcceptanceCategory,
+    AcceptanceHarnessSummary,
+    AcceptanceResultStatus,
+    AcceptanceTestRecord,
+)
+from .certification_packaging import (
+    CertificationRecommendationState,
+    Wave1CapabilityCertificationPackage,
+    Wave1CertificationEvidenceBuilder,
+)
+from .wave1_capabilities import (
+    ContextPackage,
+    DetectionResult,
+    ObservationResult,
+    Wave1CapabilityExecutor,
+)
+
 __all__ = [
+    "AcceptanceCategory",
+    "AcceptanceHarnessSummary",
+    "AcceptanceResultStatus",
+    "AcceptanceTestRecord",
     "ApprovalLevel",
     "AuthorityClass",
     "AuthorizationDecision",
@@ -61,7 +89,10 @@ __all__ = [
     "CapabilityLifecycleState",
     "CapabilityRecord",
     "CapabilityRegistryError",
+    "CertificationRecommendationState",
+    "ContextPackage",
     "ContinuousAuthorizationToken",
+    "DetectionResult",
     "DeterministicPolicyEvaluator",
     "EscalationController",
     "EscalationDeliveryState",
@@ -76,10 +107,15 @@ __all__ = [
     "HumanOption",
     "HumanOptionType",
     "HumanResponseReference",
+    "KillSwitchController",
+    "KillSwitchDecision",
+    "KillSwitchDecisionStatus",
+    "KillSwitchRecord",
     "KillSwitchScope",
     "KillSwitchState",
     "LMATReconciliation",
     "ObjectiveState",
+    "ObservationResult",
     "PilotWave",
     "SchemaValidationError",
     "TaskRecord",
@@ -87,6 +123,10 @@ __all__ = [
     "ToolAuthorityClass",
     "VerificationRecord",
     "VerificationState",
+    "Wave1CapabilityCertificationPackage",
+    "Wave1CapabilityExecutor",
+    "Wave1CertificationEvidenceBuilder",
     "utc_now",
     "validate_human_response_for_reauthorization",
 ]
+
