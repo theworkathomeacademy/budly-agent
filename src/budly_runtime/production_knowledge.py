@@ -8,6 +8,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .commercial_snapshot.contract import CommercialCatalogRecord
+from .commercial_snapshot.loader import CommercialSnapshotLoader
+from .commercial_snapshot.resolver import DeterministicEntityResolver
 from .tool_gateway import AdapterContext, ToolHealth
 
 
@@ -24,6 +27,8 @@ class ApprovedRepositoryKnowledgeAdapter:
     products_path: Path
     education_path: Path | None = None
     commercial_path: Path | None = None
+    commercial_snapshot_path: Path | None = None
+    commercial_snapshot_enabled: bool = False
     commerce_url: str = "https://cccultivate.com/wp-json/wc/store/v1/products?per_page=100"
     opener: Any = urllib.request.urlopen
     state: ToolHealth = ToolHealth.HEALTHY
@@ -32,7 +37,26 @@ class ApprovedRepositoryKnowledgeAdapter:
     last_context: AdapterContext | None = None
 
     def __post_init__(self) -> None:
+        self.commercial_snapshot_loader: CommercialSnapshotLoader | None = None
+        self.commercial_resolver = DeterministicEntityResolver(public_only=True)
+        if self.commercial_snapshot_enabled or self.commercial_snapshot_path:
+            snap_dir = self.commercial_snapshot_path or (self.policies_path.parent / "commercial_catalog")
+            if snap_dir.exists():
+                self.commercial_snapshot_loader = CommercialSnapshotLoader(snap_dir)
         self._items = self._load()
+
+    def reload(self) -> bool:
+        """Reload commercial snapshot and repository items from disk."""
+        reloaded = False
+        if self.commercial_snapshot_loader is not None:
+            reloaded = self.commercial_snapshot_loader.load()
+        elif self.commercial_snapshot_enabled or self.commercial_snapshot_path:
+            snap_dir = self.commercial_snapshot_path or (self.policies_path.parent / "commercial_catalog")
+            if snap_dir.exists():
+                self.commercial_snapshot_loader = CommercialSnapshotLoader(snap_dir)
+                reloaded = self.commercial_snapshot_loader.record_count > 0
+        self._items = self._load()
+        return reloaded
 
     def health(self) -> ToolHealth:
         return self.state
@@ -41,6 +65,28 @@ class ApprovedRepositoryKnowledgeAdapter:
         self.last_context = context
         if self.state is not ToolHealth.HEALTHY:
             raise RuntimeError("approved knowledge source unavailable")
+
+        # 1. Authoritative Commercial Snapshot Retrieval when feature is enabled
+        if self.commercial_snapshot_enabled and self.commercial_snapshot_loader and self.commercial_snapshot_loader.record_count > 0:
+            q_lower = context.query.lower()
+            is_commercial_domain = context.domain in {"product_catalog", "membership"}
+            is_commercial_query = any(w in q_lower for w in [
+                "product", "products", "available", "carry", "cream", "creams", "butter", "butters",
+                "topical", "topicals", "oil", "oils", "tincture", "tinctures", "book", "books",
+                "course", "courses", "class", "classes", "grow", "cooking", "culinary", "learn",
+                "torque", "nft", "membership", "memberships", "payment plan", "payment plans",
+                "financing", "installment", "installments", "infused basics", "cannabis right for me",
+                "consultation", "service", "buy", "price", "cost", "lounge pass", "lounge member",
+                "lounge elite", "silver", "gold", "legend og", "bronze", "copper", "titanium", "platinum"
+            ])
+
+            if is_commercial_domain or is_commercial_query:
+                snapshot_results = self._retrieve_commercial_snapshot(context)
+                if snapshot_results:
+                    return snapshot_results
+                if self._is_excluded_or_specific_lookup(context.query):
+                    return []
+
         if context.domain == "product_catalog":
             return self._retrieve_live_catalog(context)
         raw_terms = set(re.findall(r"[a-z0-9]+", context.query.lower()))
@@ -104,6 +150,152 @@ class ApprovedRepositoryKnowledgeAdapter:
 
         matches.sort(key=_score_item, reverse=True)
         return matches[: context.max_results]
+
+    def _retrieve_commercial_snapshot(self, context: AdapterContext) -> list[dict[str, Any]]:
+        if not self.commercial_snapshot_loader or self.commercial_snapshot_loader.record_count == 0:
+            return []
+
+        query = context.query.strip()
+        q_lower = query.lower()
+
+        # 1. Deterministic direct entity resolution
+        res = self.commercial_resolver.resolve(query)
+        if res.status == "EXACT_MATCH" and res.canonical_id:
+            rec = self.commercial_snapshot_loader.get_by_canonical_id(res.canonical_id)
+            if rec is not None:
+                items = [self._format_snapshot_record(rec, context.domain)]
+                # If variable NFT parent (e.g. Torque), include its tiers (Bronze, Copper, Titanium, Platinum)
+                if rec.entity_type == "NFT_MEMBERSHIP_PARENT":
+                    tiers = [r for r in self.commercial_snapshot_loader.records if r.canonical_id.startswith(f"{rec.canonical_id}:")]
+                    for t in tiers:
+                        items.append(self._format_snapshot_record(t, context.domain))
+                # If course with payment plan, include payment plan record
+                if rec.entity_type == "COURSE" and rec.payment_plan_available:
+                    plan = self.commercial_snapshot_loader.get_by_canonical_id(f"{rec.canonical_id}:payment-plan")
+                    if plan:
+                        items.append(self._format_snapshot_record(plan, context.domain))
+                return items[: context.max_results]
+
+        # 2. Check if query is for an excluded community product (Fail Closed)
+        if any(exc in q_lower for exc in ["lounge pass", "lounge member", "lounge elite", "wnb:community:"]):
+            return []
+
+        # 3. Category / Inventory Collection Queries
+        matched_records: list[CommercialCatalogRecord] = []
+        all_records = self.commercial_snapshot_loader.records
+
+        # Classes / Courses
+        if any(w in q_lower for w in ["class", "classes", "course", "courses", "growing", "grow", "cooking", "culinary", "learn how to cook", "learn to cook"]):
+            if any(w in q_lower for w in ["payment plan", "financing", "installment", "monthly"]):
+                matched_records.extend([r for r in all_records if r.entity_type == "COURSE_PAYMENT_PLAN"])
+            else:
+                matched_records.extend([r for r in all_records if r.entity_type == "COURSE"])
+                if "cook" in q_lower or "culinary" in q_lower:
+                    # Also include book basics for cooking recommendation context
+                    book = self.commercial_snapshot_loader.get_by_canonical_id("ccc:book:infused-basics")
+                    if book:
+                        matched_records.append(book)
+
+        # Payment plans specifically
+        elif any(w in q_lower for w in ["payment plan", "payment plans", "financing", "installments", "installment", "monthly option"]):
+            matched_records.extend([r for r in all_records if r.entity_type == "COURSE_PAYMENT_PLAN"])
+
+        # Books
+        elif any(w in q_lower for w in ["book", "books", "guide", "guides", "reading", "botanical", "basics", "infused basics"]):
+            matched_records.extend([r for r in all_records if r.entity_type == "BOOK"])
+
+        # Consultation Service
+        elif any(w in q_lower for w in ["is cannabis right for me", "consultation", "consult", "service", "appointment", "1-on-1"]):
+            matched_records.extend([r for r in all_records if r.entity_type == "SERVICE"])
+
+        # Memberships / Legends / Torque / NFTs
+        elif any(w in q_lower for w in ["membership", "memberships", "nft", "legends", "torque", "pass", "tier", "tiers"]):
+            if "torque" in q_lower:
+                matched_records.extend([r for r in all_records if "torque" in r.canonical_id])
+            else:
+                matched_records.extend([r for r in all_records if r.entity_type in ["NFT_MEMBERSHIP_PARENT", "NFT_MEMBERSHIP_TIER"]])
+
+        # CBD Products / General product catalog
+        elif any(w in q_lower for w in ["product", "products", "cream", "creams", "butter", "butters", "topical", "topicals", "oil", "oils", "tincture", "tinctures", "cbd", "salve", "catalog", "shop", "carry", "sell", "available"]):
+            cbd_prods = [r for r in all_records if r.entity_type == "PRODUCT"]
+            if any(w in q_lower for w in ["oil", "oils", "tincture", "tinctures"]):
+                matched_records.extend([r for r in cbd_prods if "oil" in r.canonical_id or "tincture" in r.canonical_id])
+            elif any(w in q_lower for w in ["cream", "butter", "topical"]):
+                matched_records.extend([r for r in cbd_prods if "butter" in r.canonical_id or "cream" in r.canonical_id])
+            else:
+                matched_records.extend(cbd_prods)
+
+        if not matched_records:
+            # Fallback search over tokens
+            raw_terms = set(re.findall(r"[a-z0-9]+", q_lower)) - {"what", "is", "the", "a", "an", "do", "you", "have", "for", "me", "how", "much", "tell", "about"}
+            for r in all_records:
+                rec_text = f"{r.name} {r.slug} {r.canonical_id} {r.short_summary} {r.description}".lower()
+                if raw_terms and any(t in rec_text for t in raw_terms):
+                    matched_records.append(r)
+
+        seen_ids: set[str] = set()
+        deduped: list[CommercialCatalogRecord] = []
+        for r in matched_records:
+            if r.canonical_id not in seen_ids:
+                seen_ids.add(r.canonical_id)
+                deduped.append(r)
+
+        items = [self._format_snapshot_record(r, context.domain) for r in deduped]
+        return items[: context.max_results]
+
+    def _format_snapshot_record(self, record: CommercialCatalogRecord, domain: str) -> dict[str, Any]:
+        dest_url = record.booking_url or record.checkout_url or record.canonical_url
+        link_label = "Book consultation" if record.entity_type == "SERVICE" else ("Enroll now" if record.entity_type in ["COURSE", "COURSE_PAYMENT_PLAN"] else ("View membership" if "NFT" in record.entity_type else "View product"))
+        data = {
+            "resource_type": record.entity_type,
+            "canonical_id": record.canonical_id,
+            "sku": record.sku,
+            "slug": record.slug,
+            "name": record.name,
+            "price_usd": record.price_usd,
+            "current_price": record.price_usd,
+            "currency": record.currency,
+            "billing_model": record.billing_model,
+            "category": record.category,
+            "brand": record.brand,
+            "status": record.status,
+            "release_state": record.release_state,
+            "customer_purchasable": record.customer_purchasable,
+            "catalog_visibility": record.catalog_visibility,
+            "short_summary": record.short_summary,
+            "description": record.description,
+            "benefits": record.benefits,
+            "exclusions": record.exclusions,
+            "canonical_url": record.canonical_url,
+            "checkout_url": record.checkout_url,
+            "booking_url": record.booking_url,
+            "payment_plan_available": record.payment_plan_available,
+            "payment_plan_amount": record.payment_plan_amount,
+            "payment_plan_url": record.payment_plan_url,
+            "payment_processor": record.payment_processor,
+            "link_label": link_label,
+        }
+        return {
+            "knowledge_id": f"commercial:{record.canonical_id}",
+            "title": record.name,
+            "version": record.catalog_version,
+            "domain": domain,
+            "status": "Active",
+            "classification": "Public",
+            "source_reference": f"commercial_snapshot://{record.canonical_id}",
+            "content": json.dumps(data, separators=(",", ":")),
+        }
+
+    @staticmethod
+    def _is_excluded_or_specific_lookup(query: str) -> bool:
+        q_lower = query.lower()
+        if any(exc in q_lower for exc in ["lounge pass", "lounge member", "lounge elite", "wnb:community:"]):
+            return True
+        specific_product_nouns = re.compile(
+            r"\b(balms?|gumm(?:y|ies)|vapes?|chocolates?|edibles?|flowers?|pre-?rolls?|beverages?|capsules?|cartridges?|patches?)\b",
+            re.I
+        )
+        return bool(specific_product_nouns.search(query))
 
     def _retrieve_live_catalog(self, context: AdapterContext) -> list[dict[str, Any]]:
         allowed = {item["knowledge_id"].split(":", 1)[1] for item in self._items if item["domain"] == "product_catalog"}
@@ -339,23 +531,24 @@ class ApprovedRepositoryKnowledgeAdapter:
                 "classification": "Public", "source_reference": f"repository://config/policies.json#{key}",
                 "content": json.dumps(policy_record, separators=(",", ":")),
             })
-        if products.get("status") != "links_verified_details_pending_review":
-            raise ValueError("product identity source status is not recognized")
-        version = str(products.get("source", {}).get("verified_on", ""))
-        for product in products.get("products", []):
-            if not isinstance(product, dict) or not product.get("active") or not product.get("id") or not product.get("name"):
-                continue
-            safe = {
-                "product_id": product["id"], "name": product["name"], "url": product.get("url"),
-                "category": product.get("category"), "formats": product.get("formats", []),
-                "authority_note": "Identity, link and listed formats only; WordPress controls current price, variants, stock and eligibility.",
-            }
-            items.append({
-                "knowledge_id": f"product:{product['id']}", "title": str(product["name"]),
-                "version": version, "domain": "product_catalog", "status": "Active",
-                "classification": "Public", "source_reference": f"repository://config/products.json#{product['id']}",
-                "content": json.dumps(safe, separators=(",", ":"))[:2000],
-            })
+        if not self.commercial_snapshot_enabled:
+            if products.get("status") != "links_verified_details_pending_review":
+                raise ValueError("product identity source status is not recognized")
+            version = str(products.get("source", {}).get("verified_on", ""))
+            for product in products.get("products", []):
+                if not isinstance(product, dict) or not product.get("active") or not product.get("id") or not product.get("name"):
+                    continue
+                safe = {
+                    "product_id": product["id"], "name": product["name"], "url": product.get("url"),
+                    "category": product.get("category"), "formats": product.get("formats", []),
+                    "authority_note": "Identity, link and listed formats only; WordPress controls current price, variants, stock and eligibility.",
+                }
+                items.append({
+                    "knowledge_id": f"product:{product['id']}", "title": str(product["name"]),
+                    "version": version, "domain": "product_catalog", "status": "Active",
+                    "classification": "Public", "source_reference": f"repository://config/products.json#{product['id']}",
+                    "content": json.dumps(safe, separators=(",", ":"))[:2000],
+                })
         if self.education_path is not None:
             education = self._read_json(self.education_path)
             if education.get("status") != "owner_approved" or education.get("corpus_id") != "budly-conversational-education-corpus-v0.1":
@@ -378,16 +571,17 @@ class ApprovedRepositoryKnowledgeAdapter:
             commercial = self._read_json(self.commercial_path)
             if commercial.get("approval_status") != "owner_approved":
                 raise ValueError("commercial knowledge is not owner approved")
-            for resource in commercial.get("resources", []):
-                if resource.get("approval_status") != "approved" or resource.get("active_status") != "active":
-                    continue
-                items.append({
-                    "knowledge_id": str(resource["resource_id"]), "title": str(resource["title"]),
-                    "version": str(resource["last_verified_at"]), "domain": str(resource["knowledge_domain"]),
-                    "status": "Active", "classification": "Public",
-                    "source_reference": f"{resource['source_system']}://{resource['source_identifier']}",
-                    "content": json.dumps(resource, separators=(",", ":"))[:4000],
-                })
+            if not self.commercial_snapshot_enabled:
+                for resource in commercial.get("resources", []):
+                    if resource.get("approval_status") != "approved" or resource.get("active_status") != "active":
+                        continue
+                    items.append({
+                        "knowledge_id": str(resource["resource_id"]), "title": str(resource["title"]),
+                        "version": str(resource["last_verified_at"]), "domain": str(resource["knowledge_domain"]),
+                        "status": "Active", "classification": "Public",
+                        "source_reference": f"{resource['source_system']}://{resource['source_identifier']}",
+                        "content": json.dumps(resource, separators=(",", ":"))[:4000],
+                    })
             for entity in commercial.get("ecosystem_entities", []):
                 if entity.get("approval_status") != "approved" or entity.get("active_status") != "active":
                     continue
@@ -429,29 +623,30 @@ class ApprovedRepositoryKnowledgeAdapter:
                         "source_reference": f"feature_truth://{key}",
                         "content": json.dumps(truth_record, separators=(",", ":")),
                     })
-            for rel in commercial.get("offer_relationships", []):
-                if rel.get("approval_status") != "approved":
-                    continue
-                rel_record = {
-                    "resource_type": "OFFER_RELATIONSHIP",
-                    "offer_id": rel["offer_id"],
-                    "related_offer_id": rel["related_offer_id"],
-                    "relationship_type": rel["relationship_type"],
-                    "summary": rel["benefit_scope"],
-                    "canonical_url": rel.get("source"),
-                    "link_label": "View offer details",
-                }
-                for dom in ("membership", "educational", "product_catalog"):
-                    items.append({
-                        "knowledge_id": f"relationship:{rel['offer_id']}:{rel['related_offer_id']}:{dom}",
-                        "title": f"Offer Relationship: {rel['relationship_type']}",
-                        "version": str(rel.get("last_verified_at", "1.0")),
-                        "domain": dom,
-                        "status": "Active",
-                        "classification": "Public",
-                        "source_reference": f"offer_rel://{rel['offer_id']}",
-                        "content": json.dumps(rel_record, separators=(",", ":")),
-                    })
+            if not self.commercial_snapshot_enabled:
+                for rel in commercial.get("offer_relationships", []):
+                    if rel.get("approval_status") != "approved":
+                        continue
+                    rel_record = {
+                        "resource_type": "OFFER_RELATIONSHIP",
+                        "offer_id": rel["offer_id"],
+                        "related_offer_id": rel["related_offer_id"],
+                        "relationship_type": rel["relationship_type"],
+                        "summary": rel["benefit_scope"],
+                        "canonical_url": rel.get("source"),
+                        "link_label": "View offer details",
+                    }
+                    for dom in ("membership", "educational", "product_catalog"):
+                        items.append({
+                            "knowledge_id": f"relationship:{rel['offer_id']}:{rel['related_offer_id']}:{dom}",
+                            "title": f"Offer Relationship: {rel['relationship_type']}",
+                            "version": str(rel.get("last_verified_at", "1.0")),
+                            "domain": dom,
+                            "status": "Active",
+                            "classification": "Public",
+                            "source_reference": f"offer_rel://{rel['offer_id']}",
+                            "content": json.dumps(rel_record, separators=(",", ":")),
+                        })
         return items
 
     @staticmethod

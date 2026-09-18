@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "catalog_version": "1.20260914.1705",
+  "generated_at": "2026-09-14T21:00:42.686347+00:00",
+  "source_max_updated_at": "2026-09-14T06:50:20Z",
+  "event_reason": "CANONICAL_SOURCE_WITH_LIVE_RECONCILIATION",
+  "triggering_entity": "CANONICAL_CATALOG_FILE",
+  "source_record_count": 76,
+  "output_record_count": 76,
+  "generator_version": "1.0.0",
+  "csv_sha256": "58977035a2d44b50a69c933572cf7c02dd04be997ad4386ea12fa11f192398cf",
+  "json_sha256": "798f20af518617ec3e63b97fcd20d5ca01ab14a4a737d33bffaeeafcdbd54ad9",
+  "validation_status": "PASSED",
+  "previous_catalog_version": "1.20260914.1637"
+}

@@ -3,11 +3,13 @@ services:
     build:
       context: .
       dockerfile: deploy/runtime/budly-runtime.Dockerfile
-    image: budly-runtime:1.8.0
+    image: budly-runtime:1.9.0
     container_name: budly-runtime
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - /volume1/docker/budly/commercial_catalog:/app/config/commercial_catalog:rw
     networks:
       - budly_network
     logging:

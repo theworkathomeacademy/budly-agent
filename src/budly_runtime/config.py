@@ -14,6 +14,7 @@ class FeatureFlags:
     budly_model_fallback_enabled: bool = True
     budly_conversation_logging_enabled: bool = True
     budly_durable_memory_enabled: bool = False
+    budly_commercial_snapshot_enabled: bool = False
 
 
 @dataclass(frozen=True)
@@ -60,6 +61,7 @@ class ProductionSettings:
     model_name: str
     model_api_key: str
     knowledge_path: Path
+    commercial_snapshot_enabled: bool = False
     request_timeout_seconds: float = 15.0
     provider_retry_count: int = 1
     allow_unrestricted_bind: bool = False
@@ -69,6 +71,7 @@ class ProductionSettings:
         values = os.environ if env is None else env
         environment = values.get("BUDLY_RUNTIME_ENV", "development").strip().lower()
         allow_unrestricted = values.get("BUDLY_ALLOW_UNRESTRICTED_BIND", "false").strip().lower() in {"1", "true", "yes"}
+        commercial_snapshot = values.get("BUDLY_COMMERCIAL_SNAPSHOT_ENABLED", "false").strip().lower() in {"1", "true", "yes"}
         settings = cls(
             environment=environment,
             bind_host=values.get("BUDLY_RUNTIME_HOST", "127.0.0.1").strip(),
@@ -78,6 +81,7 @@ class ProductionSettings:
             model_name=values.get("BUDLY_MODEL_NAME", "").strip(),
             model_api_key=values.get("BUDLY_MODEL_API_KEY", ""),
             knowledge_path=Path(values.get("BUDLY_KNOWLEDGE_PATH", "config")),
+            commercial_snapshot_enabled=commercial_snapshot,
             request_timeout_seconds=float(values.get("BUDLY_MODEL_TIMEOUT_SECONDS", "15")),
             provider_retry_count=int(values.get("BUDLY_MODEL_RETRY_COUNT", "1")),
             allow_unrestricted_bind=allow_unrestricted,
