@@ -1,0 +1,124 @@
+<?php
+/**
+ * Plugin Name: CCC Wake'n'Bake Membership Entitlements
+ * Description: Derives Lounge membership access from Flexible Subscriptions. Cart discounts require an approved product grouping.
+ * Version: 0.1.0
+ * Requires Plugins: woocommerce, flexible-subscriptions
+ * License: GPL-2.0-or-later
+ */
+namespace CCC\WNB;
+
+defined( 'ABSPATH' ) || exit;
+require_once __DIR__ . '/includes/class-entitlement-rules.php';
+
+final class Membership_Entitlements {
+    private const PRODUCTS = array( 1048 => array( 'sku' => 'WNB-MBR-MEMBER', 'level' => 'member' ), 1049 => array( 'sku' => 'WNB-MBR-ELITE', 'level' => 'elite' ) );
+    private const META_PREFIX = '_ccc_wnb_membership_';
+
+    public static function bootstrap(): void {
+        add_action( 'fsub/subscription/status/updated', array( __CLASS__, 'on_status_updated' ), 20, 3 );
+        add_action( 'fsub/subscription/new', array( __CLASS__, 'on_new_subscription' ), 20, 1 );
+        add_filter( 'user_has_cap', array( __CLASS__, 'capabilities' ), 20, 4 );
+        // No cart-price or coupon hook is registered until an authoritative Lounge Collection grouping is approved.
+    }
+
+    public static function on_status_updated( $subscription, $new_status, $previous_status ): void {
+        self::sync_subscription_owner( $subscription );
+    }
+
+    public static function on_new_subscription( $subscription ): void {
+        self::sync_subscription_owner( $subscription );
+    }
+
+    private static function sync_subscription_owner( $subscription ): void {
+        if ( ! is_object( $subscription ) || ! method_exists( $subscription, 'get_customer_id' ) ) {
+            return;
+        }
+        $user_id = (int) $subscription->get_customer_id();
+        if ( $user_id > 0 && self::is_membership_subscription( $subscription ) ) {
+            self::state( $user_id );
+        }
+    }
+
+    private static function is_membership_subscription( $subscription ): bool {
+        if ( ! is_object( $subscription ) || ! method_exists( $subscription, 'get_type' ) || 'fsb_subscription' !== $subscription->get_type() ) {
+            return false;
+        }
+        foreach ( $subscription->get_items( 'line_item' ) as $item ) {
+            if ( self::matched_product( $item ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static function matched_product( $item ): ?array {
+        if ( ! is_object( $item ) || ! method_exists( $item, 'get_product_id' ) ) {
+            return null;
+        }
+        $id = (int) $item->get_product_id();
+        if ( ! isset( self::PRODUCTS[ $id ] ) ) {
+            return null;
+        }
+        $product = wc_get_product( $id );
+        return $product && $product->get_sku() === self::PRODUCTS[ $id ]['sku'] ? array_merge( self::PRODUCTS[ $id ], array( 'product_id' => $id ) ) : null;
+    }
+
+    /** Always recompute from the authoritative order store; metadata is a cache for downstream integrations. */
+    public static function state( int $user_id ): array {
+        if ( $user_id <= 0 || ! function_exists( 'wc_get_orders' ) ) {
+            return Entitlement_Rules::evaluate( array(), time() );
+        }
+        $candidates = array();
+        $orders = wc_get_orders( array( 'type' => 'fsb_subscription', 'customer_id' => $user_id, 'status' => 'any', 'limit' => -1 ) );
+        foreach ( $orders as $order ) {
+            if ( ! self::is_membership_subscription( $order ) || (int) $order->get_customer_id() !== $user_id ) {
+                continue;
+            }
+            foreach ( $order->get_items( 'line_item' ) as $item ) {
+                $product = self::matched_product( $item );
+                if ( ! $product ) {
+                    continue;
+                }
+                $end = method_exists( $order, 'get_current_period_end' ) ? $order->get_current_period_end() : null;
+                $candidates[] = array_merge( $product, array(
+                    'status' => $order->get_status(),
+                    'paid_until' => $end instanceof \DateTimeInterface ? $end->getTimestamp() : 0,
+                    'subscription_id' => (int) $order->get_id(),
+                ) );
+            }
+        }
+        $state = Entitlement_Rules::evaluate( $candidates, time() );
+        self::cache_state( $user_id, $state );
+        return $state;
+    }
+
+    private static function cache_state( int $user_id, array $state ): void {
+        foreach ( array( 'level', 'status', 'subscription_id', 'product_id', 'sku' ) as $key ) {
+            $meta_key = self::META_PREFIX . $key;
+            if ( (string) get_user_meta( $user_id, $meta_key, true ) !== (string) $state[ $key ] ) {
+                update_user_meta( $user_id, $meta_key, $state[ $key ] );
+                update_user_meta( $user_id, self::META_PREFIX . 'transition_utc', gmdate( 'Y-m-d H:i:s' ) );
+            }
+        }
+    }
+
+    public static function capabilities( array $allcaps, array $caps, array $args, $user ): array {
+        if ( ! isset( $args[0] ) || ! in_array( $args[0], array( 'ccc_wnb_member_access', 'ccc_wnb_elite_access' ), true ) ) {
+            return $allcaps;
+        }
+        $state = self::state( (int) $user->ID );
+        $allcaps['ccc_wnb_member_access'] = $state['member_access'];
+        $allcaps['ccc_wnb_elite_access'] = $state['elite_access'];
+        return $allcaps;
+    }
+}
+
+add_action( 'plugins_loaded', array( Membership_Entitlements::class, 'bootstrap' ), 20 );
+
+/** Safe integration helpers. Pass an explicit user ID; no customer data is exposed by HTTP. */
+function get_membership_state( int $user_id ): array { return Membership_Entitlements::state( $user_id ); }
+function get_membership_level( int $user_id ): string { return get_membership_state( $user_id )['level']; }
+function is_active_member( int $user_id ): bool { return get_membership_state( $user_id )['member_access']; }
+function is_active_elite( int $user_id ): bool { return get_membership_state( $user_id )['elite_access']; }
+function get_approved_discount_percentage( int $user_id ): int { return get_membership_state( $user_id )['discount_percent']; }

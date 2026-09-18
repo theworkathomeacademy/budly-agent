@@ -1,0 +1,9 @@
+{
+  "release_state": "APPROVED / UNRELEASED",
+  "publicly_available": false,
+  "plans": [
+    {"level": "pass", "price_usd": 0, "billing": "none", "benefits": ["Community access"]},
+    {"level": "member", "product_id": 1048, "sku": "WNB-MBR-MEMBER", "price_usd": 9.99, "billing": "monthly", "benefits": ["Community access", "10% off all Lounge Collection products", "Early access to new drops", "Exclusive forum sections", "Member badge", "Priority event access"]},
+    {"level": "elite", "product_id": 1049, "sku": "WNB-MBR-ELITE", "price_usd": 24.99, "billing": "monthly", "benefits": ["Community access", "25% off all Lounge Collection products", "First access to exclusive drops", "VIP forum badge", "Priority event invitations", "Monthly curated content from Budly T. Cannaguide"]}
+  ]
+}
