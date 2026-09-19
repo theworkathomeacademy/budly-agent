@@ -239,43 +239,53 @@ class OfferRelationship001Tests(unittest.TestCase):
     def test_08_membership_inventory_list_completeness(self):
         results = self.knowledge.retrieve(self.context('What memberships do you have?', domain='membership'))
         titles = [r['title'] for r in results]
-        self.assertTrue(any('Silver Legend' in t for t in titles))
-        self.assertTrue(any('Gold Legend' in t for t in titles))
-        self.assertTrue(any('Legend (OG / Founding Tier)' in t or 'Legend OG' in t for t in titles))
+        self.assertTrue(any('Bronze' in t for t in titles))
+        self.assertTrue(any('Copper' in t for t in titles))
+        self.assertTrue(any('Titanium' in t for t in titles))
+        self.assertTrue(any('Platinum' in t for t in titles))
 
     def test_09_membership_recommendation_ranking(self):
         results = self.knowledge.retrieve(self.context('Which membership would fit someone looking for education and community?', domain='membership'))
         self.assertGreater(len(results), 0)
         all_content = ' '.join(r['content'] for r in results)
         self.assertIn('community', all_content.lower())
-        self.assertIn('class', all_content.lower())
+        self.assertTrue('course' in all_content.lower() or 'education' in all_content.lower() or 'ebook' in all_content.lower())
 
     def test_10_exact_membership_tier_names_and_prices(self):
         commercial = json.loads((ROOT / 'config/budly_runtime/commercial-knowledge-v1.0.json').read_text('utf-8'))
         resources = {r['resource_id']: r for r in commercial.get('resources', []) if r.get('resource_type') == 'MEMBERSHIP_TIER'}
         
-        silver = resources.get('ccc:membership:tier:legend-silver')
-        self.assertIsNotNone(silver)
-        self.assertEqual(silver['title'], 'Silver Legend')
-        self.assertIn('$3,000', silver['summary'])
-        self.assertEqual(silver['canonical_url'], 'https://cccultivate.com/legends/')
-        self.assertEqual(silver['active_status'], 'active')
+        bronze = resources.get('ccc:membership:tier:bronze')
+        self.assertIsNotNone(bronze)
+        self.assertEqual(bronze['title'], 'Bronze Tier')
+        self.assertIn('$5,000', bronze['summary'])
+        self.assertEqual(bronze['canonical_url'], 'https://cccultivate.com/legends/')
+        self.assertEqual(bronze['active_status'], 'active')
 
-        gold = resources.get('ccc:membership:tier:legend-gold')
-        self.assertIsNotNone(gold)
-        self.assertEqual(gold['title'], 'Gold Legend')
-        self.assertIn('$5,000', gold['summary'])
-        self.assertEqual(gold['canonical_url'], 'https://cccultivate.com/legends/')
-        self.assertEqual(gold['active_status'], 'active')
+        copper = resources.get('ccc:membership:tier:copper')
+        self.assertIsNotNone(copper)
+        self.assertEqual(copper['title'], 'Copper Tier')
+        self.assertIn('$10,000', copper['summary'])
+        self.assertEqual(copper['canonical_url'], 'https://cccultivate.com/legends/')
+        self.assertEqual(copper['active_status'], 'active')
 
-        og = resources.get('ccc:membership:tier:legend-og')
-        self.assertIsNotNone(og)
-        self.assertEqual(og['title'], 'Legend (OG / Founding Tier)')
-        self.assertIn('$10,000', og['summary'])
-        self.assertEqual(og['canonical_url'], 'https://cccultivate.com/legends/')
-        self.assertEqual(og['active_status'], 'active')
+        titanium = resources.get('ccc:membership:tier:titanium')
+        self.assertIsNotNone(titanium)
+        self.assertEqual(titanium['title'], 'Titanium Tier')
+        self.assertIn('$20,000', titanium['summary'])
+        self.assertEqual(titanium['canonical_url'], 'https://cccultivate.com/legends/')
+        self.assertEqual(titanium['active_status'], 'active')
 
-        self.assertNotIn('ccc:membership:tier:legend-bronze', resources)
+        platinum = resources.get('ccc:membership:tier:platinum')
+        self.assertIsNotNone(platinum)
+        self.assertEqual(platinum['title'], 'Platinum Tier')
+        self.assertIn('$40,000', platinum['summary'])
+        self.assertEqual(platinum['canonical_url'], 'https://cccultivate.com/legends/')
+        self.assertEqual(platinum['active_status'], 'active')
+
+        self.assertNotIn('ccc:membership:tier:legend-silver', resources)
+        self.assertNotIn('ccc:membership:tier:legend-gold', resources)
+        self.assertNotIn('ccc:membership:tier:legend-og', resources)
 
     def test_11_proactive_name_capture(self):
         model = MockModelAdapter()
@@ -449,21 +459,20 @@ class OfferRelationship001Tests(unittest.TestCase):
         commercial = json.loads((ROOT / 'config/budly_runtime/commercial-knowledge-v1.0.json').read_text('utf-8'))
         rels = commercial.get('offer_relationships', [])
         
-        tier_og_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:legend-og']
-        tier_gold_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:legend-gold']
-        tier_silver_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:legend-silver']
+        tier_bronze_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:bronze']
+        tier_copper_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:copper']
+        tier_titanium_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:titanium']
+        tier_platinum_rels = [r for r in rels if r['offer_id'] == 'ccc:membership:tier:platinum']
         
-        self.assertEqual(len(tier_og_rels), 3)
-        self.assertEqual(len(tier_gold_rels), 3)
-        self.assertEqual(len(tier_silver_rels), 3)
+        self.assertEqual(len(tier_bronze_rels), 2)
+        self.assertEqual(len(tier_copper_rels), 2)
+        self.assertEqual(len(tier_titanium_rels), 3)
+        self.assertEqual(len(tier_platinum_rels), 4)
         
-        for tier_rels in [tier_og_rels, tier_gold_rels, tier_silver_rels]:
+        for tier_rels in [tier_bronze_rels, tier_copper_rels, tier_titanium_rels, tier_platinum_rels]:
             types = {r['relationship_type'] for r in tier_rels}
-            self.assertIn('INCLUDES_CLASS_CHOICE', types)
             self.assertIn('INCLUDES_COMMUNITY_ACCESS', types)
             related_ids = {r['related_offer_id'] for r in tier_rels}
-            self.assertIn('ccc:course:grow-cannabis-home', related_ids)
-            self.assertIn('ccc:course:culinary-cannabis', related_ids)
             self.assertIn('wnb:community:hub', related_ids)
 
     def test_live_course_price_grounding_woocommerce(self):

@@ -74,10 +74,12 @@ class ApprovedRepositoryKnowledgeAdapter:
                 "product", "products", "available", "carry", "cream", "creams", "butter", "butters",
                 "topical", "topicals", "oil", "oils", "tincture", "tinctures", "book", "books",
                 "course", "courses", "class", "classes", "grow", "cooking", "culinary", "learn",
-                "torque", "nft", "membership", "memberships", "payment plan", "payment plans",
+                "torque", "chemist", "the chemist", "berry bliss", "the don", "gamma blaze", "original guardian",
+                "the monarch", "monarch", "dizel", "cookie cutter", "azurea", "azurea skye",
+                "nft", "membership", "memberships", "payment plan", "payment plans",
                 "financing", "installment", "installments", "infused basics", "cannabis right for me",
                 "consultation", "service", "buy", "price", "cost", "lounge pass", "lounge member",
-                "lounge elite", "silver", "gold", "legend og", "bronze", "copper", "titanium", "platinum"
+                "lounge elite", "bronze", "copper", "titanium", "platinum"
             ])
 
             if is_commercial_domain or is_commercial_query:
@@ -208,10 +210,36 @@ class ApprovedRepositoryKnowledgeAdapter:
         elif any(w in q_lower for w in ["is cannabis right for me", "consultation", "consult", "service", "appointment", "1-on-1"]):
             matched_records.extend([r for r in all_records if r.entity_type == "SERVICE"])
 
-        # Memberships / Legends / Torque / NFTs
-        elif any(w in q_lower for w in ["membership", "memberships", "nft", "legends", "torque", "pass", "tier", "tiers"]):
-            if "torque" in q_lower:
-                matched_records.extend([r for r in all_records if "torque" in r.canonical_id])
+        # Memberships / Legends / Torque & Characters / NFTs
+        elif any(w in q_lower for w in [
+            "membership", "memberships", "nft", "legends", "pass", "tier", "tiers",
+            "torque", "chemist", "the chemist", "berry bliss", "the don", "gamma blaze",
+            "original guardian", "the monarch", "monarch", "dizel", "cookie cutter",
+            "azurea", "azurea skye"
+        ]):
+            character_slug_map = {
+                "torque": "torque",
+                "chemist": "the-chemist",
+                "berry bliss": "berry-bliss",
+                "strawberry banana": "berry-bliss",
+                "the don": "the-don",
+                "godfather": "the-don",
+                "gamma blaze": "gamma-blaze",
+                "bruce banner": "gamma-blaze",
+                "original guardian": "the-original-guardian",
+                "guardian": "the-original-guardian",
+                "monarch": "the-monarch",
+                "dizel": "dizel",
+                "cookie cutter": "cookie-cutter",
+                "azurea": "azurea-skye",
+            }
+            matched_char = None
+            for char_term, char_id in character_slug_map.items():
+                if char_term in q_lower:
+                    matched_char = char_id
+                    break
+            if matched_char:
+                matched_records.extend([r for r in all_records if f"wnb:nft:{matched_char}" in r.canonical_id])
             else:
                 matched_records.extend([r for r in all_records if r.entity_type in ["NFT_MEMBERSHIP_PARENT", "NFT_MEMBERSHIP_TIER"]])
 

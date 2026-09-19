@@ -75,4 +75,8 @@ verify( $response instanceof WP_REST_Response && 200 === $response->status, 'Bud
 verify( false !== strpos( $response->data['data']['response']['text'], 'APPROVED / UNRELEASED' ) && false !== strpos( $response->data['data']['response']['text'], 'cannot be purchased yet' ), 'Budly answer blocks public availability claim' );
 $legends = new Request('/budly-runtime/v1/conversation','POST',array('message'=>'Tell me about Torque and LEGENDS NFTs.'));
 verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $legends ), 'LEGENDS-only request remains untouched' );
-echo "24 integration checks passed\n";
+$wnb_torque = new Request('/budly-runtime/v1/conversation','POST',array('message'=>"What are the Wake'n'Bake Torque NFT tiers?"));
+verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $wnb_torque ), "Wake'n'Bake Torque NFT bypasses Lounge Pass interceptor" );
+$gamma = new Request('/budly-runtime/v1/conversation','POST',array('message'=>'Tell me about Gamma Blaze Bronze tier.'));
+verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $gamma ), 'Character tier bypasses Lounge Pass interceptor' );
+echo "26 integration checks passed\n";

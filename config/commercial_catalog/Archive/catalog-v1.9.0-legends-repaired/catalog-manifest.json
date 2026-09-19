@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0",
+  "catalog_version": "1.9.0-legends-repaired",
+  "generated_at": "2026-09-19T18:26:17.781727+00:00",
+  "source_max_updated_at": "2026-09-19T18:26:17.765355+00:00",
+  "event_reason": "LEGENDS_KNOWLEDGE_REPAIR",
+  "triggering_entity": "ANTIGRAVITY_AUTONOMOUS_EXECUTION",
+  "source_record_count": 76,
+  "output_record_count": 73,
+  "generator_version": "1.0.0",
+  "csv_sha256": "a195d55c1d6674191abfc2b09944c370544420da3a6e1169814d3abb7e830e28",
+  "json_sha256": "360132573054646dfa3f76852d6e9f19174be47f2dfafc407174651297c4fa7e",
+  "validation_status": "PASSED",
+  "source_inventory_count": 76,
+  "public_record_count": 73,
+  "excluded_record_count": 3,
+  "pre_release_record_count": 0,
+  "internal_only_record_count": 0,
+  "visibility_policy": "CCS-006",
+  "visibility_policy_version": "0.1",
+  "previous_catalog_version": null
+}

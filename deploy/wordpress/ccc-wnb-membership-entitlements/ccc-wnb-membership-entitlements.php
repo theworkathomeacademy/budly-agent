@@ -241,7 +241,10 @@ final class Membership_Entitlements {
         }
         $payload = $request->get_json_params();
         $message = is_array( $payload ) ? (string) ( $payload['message'] ?? '' ) : '';
-        if ( ! preg_match( '/wake.?n.?bake|lounge\s+(pass|member|elite)|community\s+membership/i', $message ) ) {
+        if ( preg_match( '/legends|nft|web3|unlock|torque|chemist|bliss|don|gamma|guardian|monarch|dizel|cookie|azurea|banner|godfather|strawberry/i', $message ) ) {
+            return $result;
+        }
+        if ( ! preg_match( '/(?:wake.?n.?bake\s+)?lounge\s+(pass|member|elite)|community\s+membership/i', $message ) ) {
             return $result;
         }
         $truth = self::commercial_truth();
