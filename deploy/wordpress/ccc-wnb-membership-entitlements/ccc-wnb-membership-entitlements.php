@@ -26,6 +26,7 @@ final class Membership_Entitlements {
         add_filter( 'user_has_cap', array( __CLASS__, 'capabilities' ), 20, 4 );
         add_filter( 'rest_pre_dispatch', array( __CLASS__, 'answer_budly_membership_question' ), 20, 3 );
         add_shortcode( 'ccc_wnb_protected', array( __CLASS__, 'protected_content' ) );
+        add_shortcode( 'ccc_wnb_community', array( __CLASS__, 'render_community_hub' ) );
     }
 
     public static function on_status_updated( $subscription, $new_status, $previous_status ): void {
@@ -226,6 +227,58 @@ final class Membership_Entitlements {
         return (bool) $state['community_access'];
     }
 
+    public static function render_community_hub(): string {
+        $user_id = (int) get_current_user_id();
+        $state = self::state( $user_id );
+        $level = $state['level'];
+
+        $out = '<div class="ccc-wnb-community-hub">';
+        $out .= '<div class="ccc-wnb-community-header">';
+        $out .= '<h2>Wake&#8217;n&#8217;Bake Lounge Community</h2>';
+        if ( ! empty( $state['badge_label'] ) && 'none' !== $level ) {
+            $badge_key = function_exists( 'esc_attr' ) ? esc_attr( $state['badge_key'] ) : htmlspecialchars( $state['badge_key'], ENT_QUOTES );
+            $badge_lbl = function_exists( 'esc_html' ) ? esc_html( $state['badge_label'] ) : htmlspecialchars( $state['badge_label'], ENT_QUOTES );
+            $out .= '<span class="ccc-wnb-badge ccc-wnb-badge-' . $badge_key . '">' . $badge_lbl . '</span>';
+        }
+        $out .= '</div>';
+
+        if ( 'none' === $level ) {
+            $out .= '<div class="ccc-wnb-community-unauthorized">';
+            $out .= '<p>Welcome to the Wake&#8217;n&#8217;Bake Lounge. Access to community discussions, member areas, and VIP content requires a verified membership or free Lounge Pass.</p>';
+            $out .= '<p>Please log in to your account or claim your free Wake&#8217;n&#8217;Bake Lounge Pass to enter.</p>';
+            $out .= '</div>';
+            $out .= '</div>';
+            return $out;
+        }
+
+        // 1. Pass Level (Pass, Member, Elite)
+        if ( self::can_access_level( $user_id, 'pass' ) ) {
+            $out .= '<div class="ccc-wnb-section ccc-wnb-section-pass">';
+            $out .= '<h3>Community Lounge &amp; Announcements</h3>';
+            $out .= '<p>Welcome to the Wake&#8217;n&#8217;Bake Lounge Community! Explore plant culture discussions, recipes, and educational announcements.</p>';
+            $out .= '</div>';
+        }
+
+        // 2. Member Level (Member, Elite)
+        if ( self::can_access_level( $user_id, 'member' ) ) {
+            $out .= '<div class="ccc-wnb-section ccc-wnb-section-member">';
+            $out .= '<h3>Member-Only Lounge</h3>';
+            $out .= '<p>Active Member benefits unlocked: Early product drop access, priority event reservations, and 10% off eligible store items.</p>';
+            $out .= '</div>';
+        }
+
+        // 3. Elite Level (Elite only)
+        if ( self::can_access_level( $user_id, 'elite' ) ) {
+            $out .= '<div class="ccc-wnb-section ccc-wnb-section-elite">';
+            $out .= '<h3>VIP Elite Lounge</h3>';
+            $out .= '<p>VIP Elite access unlocked: First product drop access, VIP event invitations, monthly curated Budly content, and 25% off eligible store items.</p>';
+            $out .= '</div>';
+        }
+
+        $out .= '</div>';
+        return $out;
+    }
+
     public static function commercial_truth(): array {
         $path = __DIR__ . '/commercial-truth.json';
         if ( ! is_readable( $path ) ) {
@@ -257,6 +310,27 @@ final class Membership_Entitlements {
             'data' => array( 'response' => array( 'text' => $text, 'links' => array(), 'resulting_action' => 'continue' ) ),
         ), 200 );
     }
+}
+
+function ccc_wnb_entitlements_activate(): void {
+    $slug = 'wakenbake-lounge-community';
+    $title = "Wake'n'Bake Lounge Community";
+    $content = '[ccc_wnb_community]';
+    if ( function_exists( 'get_page_by_path' ) && function_exists( 'wp_insert_post' ) ) {
+        $existing = get_page_by_path( $slug );
+        if ( ! $existing ) {
+            wp_insert_post( array(
+                'post_title'   => $title,
+                'post_name'    => $slug,
+                'post_content' => $content,
+                'post_status'  => 'publish',
+                'post_type'    => 'page',
+            ) );
+        }
+    }
+}
+if ( function_exists( 'register_activation_hook' ) ) {
+    register_activation_hook( __FILE__, __NAMESPACE__ . '\\ccc_wnb_entitlements_activate' );
 }
 
 add_action( 'plugins_loaded', array( Membership_Entitlements::class, 'bootstrap' ), 20 );

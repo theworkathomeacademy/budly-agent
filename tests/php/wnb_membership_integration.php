@@ -1,12 +1,17 @@
 <?php
 define( 'ABSPATH', __DIR__ );
-$hooks = array(); $meta = array(); $orders = array(); $products = array(); $shortcodes = array(); $current_user_id = 7;
+$hooks = array(); $meta = array(); $orders = array(); $products = array(); $shortcodes = array(); $current_user_id = 7; $posts = array();
 function add_action( $name, $callback, $priority = 10, $args = 1 ) { global $hooks; $hooks[ $name ] = array( $callback, $args ); }
 function add_filter( $name, $callback, $priority = 10, $args = 1 ) { global $hooks; $hooks[ $name ] = array( $callback, $args ); }
 function add_shortcode( $name, $callback ) { global $shortcodes; $shortcodes[ $name ] = $callback; }
 function shortcode_atts( $defaults, $attributes, $tag ) { return array_merge( $defaults, $attributes ); }
 function do_shortcode( $content ) { return $content; }
 function wp_json_encode( $value ) { return json_encode( $value ); }
+function esc_attr( $text ) { return htmlspecialchars( (string) $text, ENT_QUOTES ); }
+function esc_html( $text ) { return htmlspecialchars( (string) $text, ENT_QUOTES ); }
+function register_activation_hook( $file, $callback ) { global $hooks; $hooks['activation'] = $callback; }
+function get_page_by_path( $slug ) { global $posts; return $posts[ $slug ] ?? null; }
+function wp_insert_post( $postarr ) { global $posts; $posts[ $postarr['post_name'] ] = $postarr; return count( $posts ); }
 class WP_REST_Response { public $data; public $status; function __construct( $data, $status ) { $this->data=$data; $this->status=$status; } }
 class Request { private $route; private $method; private $params; function __construct($route,$method,$params){$this->route=$route;$this->method=$method;$this->params=$params;} function get_route(){return $this->route;} function get_method(){return $this->method;} function get_json_params(){return $this->params;} }
 function wc_get_orders( $query ) { global $orders; return array_values( array_filter( $orders, function( $order ) use ( $query ) { return $order->get_customer_id() === $query['customer_id'] && $order->get_type() === $query['type'] && ( 'any' === $query['status'] || in_array( $order->get_status(), (array) $query['status'], true ) ); } ) ); }
@@ -79,4 +84,22 @@ $wnb_torque = new Request('/budly-runtime/v1/conversation','POST',array('message
 verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $wnb_torque ), "Wake'n'Bake Torque NFT bypasses Lounge Pass interceptor" );
 $gamma = new Request('/budly-runtime/v1/conversation','POST',array('message'=>'Tell me about Gamma Blaze Bronze tier.'));
 verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $gamma ), 'Character tier bypasses Lounge Pass interceptor' );
-echo "26 integration checks passed\n";
+verify( isset( $hooks['activation'] ), 'Activation hook registered' );
+$hooks['activation']();
+verify( isset( $posts['wakenbake-lounge-community'] ), 'Activation provisions community page' );
+$current_user_id = 10;
+$community_non = $shortcodes['ccc_wnb_community']();
+verify( false !== strpos( $community_non, 'ccc-wnb-community-unauthorized' ) && false === strpos( $community_non, 'ccc-wnb-section-pass' ), 'Unauthorized user sees login/claim card' );
+$current_user_id = 9;
+$community_pass = $shortcodes['ccc_wnb_community']();
+verify( false !== strpos( $community_pass, 'ccc-wnb-section-pass' ) && false === strpos( $community_pass, 'ccc-wnb-section-member' ) && false === strpos( $community_pass, 'ccc-wnb-section-elite' ), 'Pass user sees pass section only' );
+$orders[1]->status = 'cancelled';
+$orders[0]->status = 'active';
+$current_user_id = 7;
+$community_member = $shortcodes['ccc_wnb_community']();
+verify( false !== strpos( $community_member, 'ccc-wnb-section-pass' ) && false !== strpos( $community_member, 'ccc-wnb-section-member' ) && false === strpos( $community_member, 'ccc-wnb-section-elite' ), 'Member user sees pass and member sections' );
+$orders[1]->status = 'active';
+$community_elite = $shortcodes['ccc_wnb_community']();
+verify( false !== strpos( $community_elite, 'ccc-wnb-section-pass' ) && false !== strpos( $community_elite, 'ccc-wnb-section-member' ) && false !== strpos( $community_elite, 'ccc-wnb-section-elite' ) && false !== strpos( $community_elite, 'ccc-wnb-badge-wnb_elite' ), 'Elite user sees all sections with VIP badge' );
+echo "32 integration checks passed\n";
+
