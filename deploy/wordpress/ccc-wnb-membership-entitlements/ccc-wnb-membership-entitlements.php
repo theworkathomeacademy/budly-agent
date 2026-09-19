@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: CCC Wake'n'Bake Membership Entitlements
- * Description: Derives Lounge membership access from Flexible Subscriptions. Cart discounts require an approved product grouping.
- * Version: 0.1.0
+ * Description: Derives Lounge membership access from authoritative WooCommerce acquisition and Flexible Subscriptions state.
+ * Version: 0.2.0
  * Requires Plugins: woocommerce, flexible-subscriptions
  * License: GPL-2.0-or-later
  */
@@ -13,13 +13,17 @@ require_once __DIR__ . '/includes/class-entitlement-rules.php';
 
 final class Membership_Entitlements {
     private const PRODUCTS = array( 1048 => array( 'sku' => 'WNB-MBR-MEMBER', 'level' => 'member' ), 1049 => array( 'sku' => 'WNB-MBR-ELITE', 'level' => 'elite' ) );
+    private const PASS_PRODUCT = array( 'product_id' => 1047, 'sku' => 'WNB-MBR-PASS', 'level' => 'pass' );
+    private const PAYMENT_PLAN_PRODUCTS = array( 455, 457, 460 );
     private const META_PREFIX = '_ccc_wnb_membership_';
+    private static $adjusted_prices = array();
 
     public static function bootstrap(): void {
         add_action( 'fsub/subscription/status/updated', array( __CLASS__, 'on_status_updated' ), 20, 3 );
         add_action( 'fsub/subscription/new', array( __CLASS__, 'on_new_subscription' ), 20, 1 );
+        add_action( 'woocommerce_order_status_changed', array( __CLASS__, 'on_order_status_changed' ), 20, 4 );
+        add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'apply_cart_discount' ), 30, 1 );
         add_filter( 'user_has_cap', array( __CLASS__, 'capabilities' ), 20, 4 );
-        // No cart-price or coupon hook is registered until an authoritative Lounge Collection grouping is approved.
     }
 
     public static function on_status_updated( $subscription, $new_status, $previous_status ): void {
@@ -28,6 +32,16 @@ final class Membership_Entitlements {
 
     public static function on_new_subscription( $subscription ): void {
         self::sync_subscription_owner( $subscription );
+    }
+
+    public static function on_order_status_changed( $order_id, $from, $to, $order ): void {
+        if ( ! in_array( $to, array( 'processing', 'completed' ), true ) || ! is_object( $order ) ) {
+            return;
+        }
+        $user_id = (int) $order->get_customer_id();
+        if ( $user_id > 0 && self::order_contains_pass( $order ) ) {
+            self::state( $user_id );
+        }
     }
 
     private static function sync_subscription_owner( $subscription ): void {
@@ -88,9 +102,84 @@ final class Membership_Entitlements {
                 ) );
             }
         }
-        $state = Entitlement_Rules::evaluate( $candidates, time() );
+        $state = Entitlement_Rules::evaluate( $candidates, time(), self::pass_acquisition( $user_id ) );
         self::cache_state( $user_id, $state );
         return $state;
+    }
+
+    private static function pass_acquisition( int $user_id ): ?array {
+        $orders = wc_get_orders( array( 'type' => 'shop_order', 'customer_id' => $user_id, 'status' => array( 'processing', 'completed' ), 'limit' => -1 ) );
+        foreach ( $orders as $order ) {
+            if ( self::order_contains_pass( $order ) ) {
+                return array_merge( self::PASS_PRODUCT, array( 'acquired' => true, 'order_id' => (int) $order->get_id() ) );
+            }
+        }
+        return null;
+    }
+
+    private static function order_contains_pass( $order ): bool {
+        if ( ! is_object( $order ) || ! method_exists( $order, 'get_items' ) ) {
+            return false;
+        }
+        foreach ( $order->get_items( 'line_item' ) as $item ) {
+            if ( (int) $item->get_product_id() !== self::PASS_PRODUCT['product_id'] ) {
+                continue;
+            }
+            $product = wc_get_product( self::PASS_PRODUCT['product_id'] );
+            return $product && $product->get_sku() === self::PASS_PRODUCT['sku'];
+        }
+        return false;
+    }
+
+    public static function apply_cart_discount( $cart ): void {
+        if ( is_admin() && ! wp_doing_ajax() ) {
+            return;
+        }
+        if ( ! is_object( $cart ) || ! method_exists( $cart, 'get_cart' ) ) {
+            return;
+        }
+        foreach ( $cart->get_cart() as $cart_key => $item ) {
+            $adjustment_key = spl_object_hash( $cart ) . ':' . $cart_key;
+            if ( isset( self::$adjusted_prices[ $adjustment_key ] ) && isset( $item['data'] ) && is_object( $item['data'] ) ) {
+                $item['data']->set_price( self::$adjusted_prices[ $adjustment_key ] );
+                unset( self::$adjusted_prices[ $adjustment_key ] );
+            }
+        }
+        $user_id = get_current_user_id();
+        if ( $user_id <= 0 || ! empty( $cart->get_applied_coupons() ) ) {
+            return;
+        }
+        $state = self::state( $user_id );
+        $percent = (int) $state['discount_percent'];
+        if ( $percent <= 0 ) {
+            return;
+        }
+        foreach ( $cart->get_cart() as $cart_key => $item ) {
+            $product = $item['data'] ?? null;
+            if ( ! self::discount_eligible_product( $product ) ) {
+                continue;
+            }
+            $regular = (float) $product->get_regular_price();
+            $current = (float) $product->get_price();
+            if ( $regular <= 0 || $current <= 0 || abs( $current - $regular ) > 0.00001 ) {
+                continue;
+            }
+            self::$adjusted_prices[ spl_object_hash( $cart ) . ':' . $cart_key ] = $current;
+            $product->set_price( wc_format_decimal( $regular * ( 1 - $percent / 100 ), wc_get_price_decimals() ) );
+        }
+    }
+
+    private static function discount_eligible_product( $product ): bool {
+        if ( ! is_object( $product ) || ! method_exists( $product, 'get_id' ) || $product->is_on_sale() ) {
+            return false;
+        }
+        $id = (int) $product->get_id();
+        $parent_id = (int) $product->get_parent_id();
+        $classification_id = $parent_id > 0 ? $parent_id : $id;
+        if ( isset( self::PRODUCTS[ $classification_id ] ) || self::PASS_PRODUCT['product_id'] === $classification_id || in_array( $classification_id, self::PAYMENT_PLAN_PRODUCTS, true ) ) {
+            return false;
+        }
+        return ! has_term( array( 'membership', 'bulk' ), 'product_cat', $classification_id );
     }
 
     private static function cache_state( int $user_id, array $state ): void {
@@ -104,10 +193,11 @@ final class Membership_Entitlements {
     }
 
     public static function capabilities( array $allcaps, array $caps, array $args, $user ): array {
-        if ( ! isset( $args[0] ) || ! in_array( $args[0], array( 'ccc_wnb_member_access', 'ccc_wnb_elite_access' ), true ) ) {
+        if ( ! isset( $args[0] ) || ! in_array( $args[0], array( 'ccc_wnb_community_access', 'ccc_wnb_member_access', 'ccc_wnb_elite_access' ), true ) ) {
             return $allcaps;
         }
         $state = self::state( (int) $user->ID );
+        $allcaps['ccc_wnb_community_access'] = $state['community_access'];
         $allcaps['ccc_wnb_member_access'] = $state['member_access'];
         $allcaps['ccc_wnb_elite_access'] = $state['elite_access'];
         return $allcaps;
@@ -119,6 +209,7 @@ add_action( 'plugins_loaded', array( Membership_Entitlements::class, 'bootstrap'
 /** Safe integration helpers. Pass an explicit user ID; no customer data is exposed by HTTP. */
 function get_membership_state( int $user_id ): array { return Membership_Entitlements::state( $user_id ); }
 function get_membership_level( int $user_id ): string { return get_membership_state( $user_id )['level']; }
+function has_community_access( int $user_id ): bool { return get_membership_state( $user_id )['community_access']; }
 function is_active_member( int $user_id ): bool { return get_membership_state( $user_id )['member_access']; }
 function is_active_elite( int $user_id ): bool { return get_membership_state( $user_id )['elite_access']; }
 function get_approved_discount_percentage( int $user_id ): int { return get_membership_state( $user_id )['discount_percent']; }

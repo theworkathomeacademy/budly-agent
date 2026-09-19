@@ -12,6 +12,13 @@ function sub( string $level, string $status, int $until = 0 ): array {
 $now = 1000;
 $member = Rules::evaluate( array( sub( 'member', 'active' ) ), $now );
 $elite = Rules::evaluate( array( sub( 'elite', 'active' ) ), $now );
+$pass = Rules::evaluate( array(), $now, array( 'level' => 'pass', 'acquired' => true, 'product_id' => 1047, 'sku' => 'WNB-MBR-PASS' ) );
+check( 'pass' === $pass['level'] && $pass['community_access'] && ! $pass['member_access'], 'Acquired Pass' );
+check( 0 === $pass['discount_percent'], 'Pass zero percent' );
+check( 'member' === Rules::evaluate( array( sub( 'member', 'active' ) ), $now, array( 'level' => 'pass', 'acquired' => true ) )['level'], 'Pass to Member upgrade' );
+check( 'elite' === Rules::evaluate( array( sub( 'elite', 'active' ) ), $now, array( 'level' => 'pass', 'acquired' => true ) )['level'], 'Pass to Elite upgrade' );
+check( 'pass' === Rules::evaluate( array( sub( 'member', 'expired' ) ), $now, array( 'level' => 'pass', 'acquired' => true ) )['level'], 'Expired Member falls back to Pass' );
+check( 'pass' === Rules::evaluate( array( sub( 'elite', 'expired' ) ), $now, array( 'level' => 'pass', 'acquired' => true ) )['level'], 'Expired Elite falls back to Pass' );
 check( 'member' === $member['level'] && $member['member_access'] && ! $member['elite_access'], 'Active Member' );
 check( 'elite' === $elite['level'] && $elite['member_access'] && $elite['elite_access'], 'Active Elite hierarchy' );
 check( 'elite' === Rules::evaluate( array( sub( 'member', 'active' ), sub( 'elite', 'active' ) ), $now )['level'], 'Elite precedence' );
@@ -26,4 +33,4 @@ check( 25 === Rules::eligible_discount( $elite, true, false ), 'Elite 25 percent
 check( 0 === Rules::eligible_discount( $elite, true, true ), 'Membership coupon does not stack' );
 check( 0 === Rules::eligible_discount( $elite, false, false ), 'Unrelated product excluded' );
 check( 0 === Rules::eligible_discount( Rules::evaluate( array(), $now ), true, false ), 'Nonmember excluded' );
-echo "14 entitlement rule checks passed\n";
+echo "20 entitlement rule checks passed\n";

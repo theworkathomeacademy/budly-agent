@@ -1,4 +1,4 @@
-# CCC Wake'n'Bake Membership Entitlements 0.1.0
+# CCC Wake'n'Bake Membership Entitlements 0.2.0
 
 Install the plugin ZIP in WordPress and activate it after Flexible Subscriptions and WooCommerce. It does not publish membership products, create subscriptions, charge customers, or modify CBD routing.
 
@@ -8,10 +8,12 @@ Inspected official Flexible Subscriptions **1.8.5** source (`src/Subscription/Su
 
 `active` grants access. `pending-cancel` grants access only before its current paid period ends. `on-hold`, `cancelled`, `expired`, missing/unknown statuses, and an overdue pending cancellation grant none. An active subscription after reactivation restores access. Elite outranks Member. No account identity is hard-coded.
 
-Metadata `_ccc_wnb_membership_{level,status,subscription_id,product_id,sku,transition_utc}` is a downstream cache. Call namespaced `CCC\WNB\get_membership_state($user_id)`, `get_membership_level`, `is_active_member`, `is_active_elite`, or `get_approved_discount_percentage` to reconcile against the order store. WordPress `current_user_can('ccc_wnb_member_access')` and `current_user_can('ccc_wnb_elite_access')` derive capabilities dynamically; Elite satisfies both.
+PASS is derived only from a `shop_order` in Processing or Completed state containing Product 1047 whose live SKU is `WNB-MBR-PASS`. It is never inferred from account existence. Active Member/Elite outrank PASS; when paid entitlement ends, a valid PASS acquisition becomes the fallback.
 
-## Discount gate
+Metadata `_ccc_wnb_membership_{level,status,subscription_id,product_id,sku,transition_utc}` is a downstream cache. Call namespaced `CCC\WNB\get_membership_state($user_id)`, `get_membership_level`, `has_community_access`, `is_active_member`, `is_active_elite`, or `get_approved_discount_percentage` to reconcile against the order store. WordPress capabilities `ccc_wnb_community_access`, `ccc_wnb_member_access`, and `ccc_wnb_elite_access` derive dynamically; Elite satisfies all three, while PASS satisfies community access only.
 
-The approved 10%/25% amounts are computed by `Entitlement_Rules::eligible_discount`, with Elite winning and existing membership coupon use suppressing an additional membership discount. **No WooCommerce cart mutation is registered in 0.1.0.** On September 17, 2026, the live store had no authoritative Lounge Collection category; the Wake'n'Bake Lounge tag had zero assigned products. Define and approve an exact eligible product grouping and a stacking policy for sales, other coupons, and special offers before enabling automatic discounts. Existing coupon `LoungeMemberElite25` is published but displays a stored amount of 10; this component does not change it.
+## Automatic discount exclusions
+
+The cart receives 10% for Member or 25% for Elite. The hook applies only when the cart has no coupon and an item is at its unchanged regular price. It excludes the Membership and bulk product categories, Product IDs 1047–1049, and the verified class payment-plan IDs 455, 457, and 460. Full-payment course IDs 150, 151, and 152 remain eligible. It does not alter coupon definitions or CCC Payment Routing Guard behavior.
 
 The `commercial-truth.json` file is approved, unreleased offer data for later Budly ingestion. Budly does not determine customer entitlement.

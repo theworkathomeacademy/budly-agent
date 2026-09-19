@@ -3,7 +3,7 @@
 namespace CCC\WNB;
 
 final class Entitlement_Rules {
-    public static function evaluate( array $subscriptions, int $now ): array {
+    public static function evaluate( array $subscriptions, int $now, ?array $pass = null ): array {
         $winner = null;
         $fallback = null;
         foreach ( $subscriptions as $subscription ) {
@@ -29,6 +29,9 @@ final class Entitlement_Rules {
         if ( ! in_array( $status, array( 'on-hold', 'cancelled', 'expired' ), true ) ) {
             $status = 'none';
         }
+        if ( is_array( $pass ) && ! empty( $pass['acquired'] ) ) {
+            return self::state( 'pass', 'active', $pass );
+        }
         return self::state( 'none', $status, $fallback );
     }
 
@@ -37,6 +40,7 @@ final class Entitlement_Rules {
             'level' => $level,
             'status' => $status,
             'discount_percent' => 'elite' === $level ? 25 : ( 'member' === $level ? 10 : 0 ),
+            'community_access' => in_array( $level, array( 'pass', 'member', 'elite' ), true ),
             'member_access' => in_array( $level, array( 'member', 'elite' ), true ),
             'elite_access' => 'elite' === $level,
             'subscription_id' => (int) ( $source['subscription_id'] ?? 0 ),
@@ -46,10 +50,10 @@ final class Entitlement_Rules {
     }
 
     private static function rank( string $level ): int {
-        return 'elite' === $level ? 2 : ( 'member' === $level ? 1 : 0 );
+        return 'elite' === $level ? 3 : ( 'member' === $level ? 2 : ( 'pass' === $level ? 1 : 0 ) );
     }
 
-    public static function eligible_discount( array $state, bool $in_collection, bool $has_membership_coupon ): int {
-        return $in_collection && ! $has_membership_coupon ? (int) ( $state['discount_percent'] ?? 0 ) : 0;
+    public static function eligible_discount( array $state, bool $eligible_product, bool $has_conflicting_discount ): int {
+        return $eligible_product && ! $has_conflicting_discount ? (int) ( $state['discount_percent'] ?? 0 ) : 0;
     }
 }
