@@ -1,9 +1,20 @@
 {
+  "schema_version": 2,
+  "membership_family": "Wake'n'Bake Lounge community memberships",
   "release_state": "APPROVED / UNRELEASED",
   "publicly_available": false,
+  "public_response_rule": "Do not claim Member or Elite can be purchased until publication is explicitly authorized.",
+  "authority": {
+    "entitlement_and_discount": "CCC Wake'n'Bake Membership Entitlements",
+    "budly_role": "Explain approved rules only; never grant entitlement or independently calculate eligibility."
+  },
+  "hierarchy": ["elite", "member", "pass", "none"],
+  "discount_exclusions": ["another membership", "bulk products", "payment-plan class products", "already discounted or sale products", "transactions using coupons"],
+  "full_payment_class_products_may_be_eligible": true,
+  "separate_membership_families": ["LEGENDS NFT memberships remain separate and unchanged."],
   "plans": [
     {"level": "pass", "product_id": 1047, "sku": "WNB-MBR-PASS", "price_usd": 0, "billing": "none", "activation": "successful WooCommerce acquisition", "benefits": ["Community access"]},
-    {"level": "member", "product_id": 1048, "sku": "WNB-MBR-MEMBER", "price_usd": 9.99, "billing": "monthly", "benefits": ["Community access", "10% off all Lounge Collection products", "Early access to new drops", "Exclusive forum sections", "Member badge", "Priority event access"]},
-    {"level": "elite", "product_id": 1049, "sku": "WNB-MBR-ELITE", "price_usd": 24.99, "billing": "monthly", "benefits": ["Community access", "25% off all Lounge Collection products", "First access to exclusive drops", "VIP forum badge", "Priority event invitations", "Monthly curated content from Budly T. Cannaguide"]}
+    {"level": "member", "product_id": 1048, "sku": "WNB-MBR-MEMBER", "price_usd": 9.99, "billing": "monthly", "benefits": ["Community access", "10% off eligible Lounge Collection purchases", "Early access to new drops", "Exclusive forum/community sections", "Member badge", "Priority event access"]},
+    {"level": "elite", "product_id": 1049, "sku": "WNB-MBR-ELITE", "price_usd": 24.99, "billing": "monthly", "benefits": ["Community access", "25% off eligible Lounge Collection purchases", "First access to exclusive drops", "VIP forum/community access", "VIP badge", "Priority event invitations", "Monthly curated content from Budly T. Cannaguide"]}
   ]
 }

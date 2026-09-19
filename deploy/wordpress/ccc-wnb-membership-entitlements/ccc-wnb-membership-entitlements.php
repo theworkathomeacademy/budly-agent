@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CCC Wake'n'Bake Membership Entitlements
  * Description: Derives Lounge membership access from authoritative WooCommerce acquisition and Flexible Subscriptions state.
- * Version: 0.2.0
+ * Version: 0.3.0
  * Requires Plugins: woocommerce, flexible-subscriptions
  * License: GPL-2.0-or-later
  */
@@ -24,6 +24,8 @@ final class Membership_Entitlements {
         add_action( 'woocommerce_order_status_changed', array( __CLASS__, 'on_order_status_changed' ), 20, 4 );
         add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'apply_cart_discount' ), 30, 1 );
         add_filter( 'user_has_cap', array( __CLASS__, 'capabilities' ), 20, 4 );
+        add_filter( 'http_request_args', array( __CLASS__, 'add_budly_commercial_truth' ), 20, 2 );
+        add_shortcode( 'ccc_wnb_protected', array( __CLASS__, 'protected_content' ) );
     }
 
     public static function on_status_updated( $subscription, $new_status, $previous_status ): void {
@@ -183,7 +185,7 @@ final class Membership_Entitlements {
     }
 
     private static function cache_state( int $user_id, array $state ): void {
-        foreach ( array( 'level', 'status', 'subscription_id', 'product_id', 'sku' ) as $key ) {
+        foreach ( array( 'level', 'status', 'subscription_id', 'product_id', 'sku', 'badge_key', 'badge_label' ) as $key ) {
             $meta_key = self::META_PREFIX . $key;
             if ( (string) get_user_meta( $user_id, $meta_key, true ) !== (string) $state[ $key ] ) {
                 update_user_meta( $user_id, $meta_key, $state[ $key ] );
@@ -193,14 +195,78 @@ final class Membership_Entitlements {
     }
 
     public static function capabilities( array $allcaps, array $caps, array $args, $user ): array {
-        if ( ! isset( $args[0] ) || ! in_array( $args[0], array( 'ccc_wnb_community_access', 'ccc_wnb_member_access', 'ccc_wnb_elite_access' ), true ) ) {
+        if ( ! isset( $args[0] ) || ! in_array( $args[0], array( 'ccc_wnb_pass_access', 'ccc_wnb_community_access', 'ccc_wnb_member_access', 'ccc_wnb_elite_access' ), true ) ) {
             return $allcaps;
         }
         $state = self::state( (int) $user->ID );
+        $allcaps['ccc_wnb_pass_access'] = $state['community_access'];
         $allcaps['ccc_wnb_community_access'] = $state['community_access'];
         $allcaps['ccc_wnb_member_access'] = $state['member_access'];
         $allcaps['ccc_wnb_elite_access'] = $state['elite_access'];
         return $allcaps;
+    }
+
+    public static function protected_content( array $attributes, ?string $content = null ): string {
+        $attributes = shortcode_atts( array( 'level' => 'pass' ), $attributes, 'ccc_wnb_protected' );
+        $level = strtolower( (string) $attributes['level'] );
+        if ( ! in_array( $level, array( 'pass', 'member', 'elite' ), true ) || ! self::can_access_level( get_current_user_id(), $level ) ) {
+            return '';
+        }
+        return do_shortcode( (string) $content );
+    }
+
+    public static function can_access_level( int $user_id, string $level ): bool {
+        $state = self::state( $user_id );
+        if ( 'elite' === $level ) {
+            return (bool) $state['elite_access'];
+        }
+        if ( 'member' === $level ) {
+            return (bool) $state['member_access'];
+        }
+        return (bool) $state['community_access'];
+    }
+
+    public static function commercial_truth(): array {
+        $path = __DIR__ . '/commercial-truth.json';
+        if ( ! is_readable( $path ) ) {
+            return array();
+        }
+        $truth = json_decode( (string) file_get_contents( $path ), true );
+        return is_array( $truth ) ? $truth : array();
+    }
+
+    public static function add_budly_commercial_truth( array $args, string $url ): array {
+        if ( false === strpos( $url, '/v1/conversation' ) || empty( $args['body'] ) ) {
+            return $args;
+        }
+        $agent = '';
+        foreach ( (array) ( $args['headers'] ?? array() ) as $name => $value ) {
+            if ( 'user-agent' === strtolower( (string) $name ) ) {
+                $agent = (string) $value;
+            }
+        }
+        if ( 0 !== strpos( $agent, 'BudlySalesAgent/' ) ) {
+            return $args;
+        }
+        $payload = json_decode( (string) $args['body'], true );
+        if ( ! is_array( $payload ) ) {
+            return $args;
+        }
+        $message = (string) ( $payload['message'] ?? '' );
+        $is_lounge_query = (bool) preg_match( '/wake.?n.?bake|lounge\s+(pass|member|elite)|community\s+membership/i', $message );
+        if ( ! $is_lounge_query ) {
+            return $args;
+        }
+        $truth = self::commercial_truth();
+        if ( empty( $truth ) ) {
+            return $args;
+        }
+        if ( ! isset( $payload['deterministic_context'] ) || ! is_array( $payload['deterministic_context'] ) ) {
+            $payload['deterministic_context'] = array();
+        }
+        $payload['deterministic_context']['wnb_membership_commercial_truth'] = $truth;
+        $args['body'] = wp_json_encode( $payload );
+        return $args;
     }
 }
 
@@ -213,3 +279,8 @@ function has_community_access( int $user_id ): bool { return get_membership_stat
 function is_active_member( int $user_id ): bool { return get_membership_state( $user_id )['member_access']; }
 function is_active_elite( int $user_id ): bool { return get_membership_state( $user_id )['elite_access']; }
 function get_approved_discount_percentage( int $user_id ): int { return get_membership_state( $user_id )['discount_percent']; }
+function get_membership_badge( int $user_id ): array {
+    $state = get_membership_state( $user_id );
+    return array( 'key' => $state['badge_key'], 'label' => $state['badge_label'] );
+}
+function can_access_level( int $user_id, string $level ): bool { return Membership_Entitlements::can_access_level( $user_id, $level ); }

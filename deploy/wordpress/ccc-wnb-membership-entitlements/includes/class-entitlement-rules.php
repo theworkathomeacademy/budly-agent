@@ -36,6 +36,13 @@ final class Entitlement_Rules {
     }
 
     private static function state( string $level, string $status, ?array $source ): array {
+        $badges = array(
+            'pass' => array( 'key' => 'wnb_pass', 'label' => "Wake'n'Bake Lounge Pass" ),
+            'member' => array( 'key' => 'wnb_member', 'label' => "Wake'n'Bake Lounge Member" ),
+            'elite' => array( 'key' => 'wnb_elite', 'label' => "Wake'n'Bake Lounge Elite" ),
+            'none' => array( 'key' => 'none', 'label' => '' ),
+        );
+        $badge = $badges[ $level ] ?? $badges['none'];
         return array(
             'level' => $level,
             'status' => $status,
@@ -43,6 +50,8 @@ final class Entitlement_Rules {
             'community_access' => in_array( $level, array( 'pass', 'member', 'elite' ), true ),
             'member_access' => in_array( $level, array( 'member', 'elite' ), true ),
             'elite_access' => 'elite' === $level,
+            'badge_key' => $badge['key'],
+            'badge_label' => $badge['label'],
             'subscription_id' => (int) ( $source['subscription_id'] ?? 0 ),
             'product_id' => (int) ( $source['product_id'] ?? 0 ),
             'sku' => (string) ( $source['sku'] ?? '' ),
