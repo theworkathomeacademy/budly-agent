@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "catalog_version": "1.9.0-ccs001",
+  "generated_at": "2026-09-14T20:25:43.616000+00:00",
+  "source_max_updated_at": null,
+  "event_reason": "REBUILD_FINAL",
+  "triggering_entity": "SEED_CANONICAL",
+  "source_record_count": 76,
+  "output_record_count": 76,
+  "generator_version": "1.0.0",
+  "csv_sha256": "543fb01aec02ec51ce3facd2a4b3a147bf3d485b3a59e461089f4e16c90d899a",
+  "json_sha256": "6c40455a8c69e2ecd81b3faa9eb42fa7e8876c1472a4dc073a394854f7754431",
+  "validation_status": "PASSED",
+  "previous_catalog_version": null
+}

@@ -1,0 +1,53 @@
+{
+  "corpus_id": "budly-conversational-education-corpus-v0.1",
+  "version": "0.1",
+  "status": "owner_approved",
+  "approved_by": "MATT-003",
+  "approved_on": "2026-08-25",
+  "source": {
+    "title": "Wake'n'Bake Lounge Cannabis Botanical Collection - Volume I reviewed educational excerpts",
+    "reference": "owner-controlled://coloring-encyclopedia-vol-1-final.pdf",
+    "sha256": "AC18C2FDAABDD5CC52FBDDCAD986EECC88BEE8DE8FBA5D7418556B420A8E388F"
+  },
+  "excluded_claims": [
+    "medical-treatment claims", "disease claims", "guaranteed effects", "potency ranges",
+    "guaranteed cultivar chemistry", "unsupported health claims"
+  ],
+  "chunks": [
+    {
+      "id": "ecs-overview", "title": "Endocannabinoid System Overview", "domain": "educational",
+      "classification": "Public", "status": "Active",
+      "content": "The endocannabinoid system, often shortened to ECS, is described in the approved Volume I educational source as a naturally occurring signaling system involving endocannabinoids, receptors, and enzymes. This is neutral education and is not a diagnosis, treatment claim, or promise of a health outcome."
+    },
+    {
+      "id": "cannabinoids-overview", "title": "Cannabinoids Overview", "domain": "educational",
+      "classification": "Public", "status": "Active",
+      "content": "The approved Volume I source introduces cannabinoids as compounds associated with cannabis and discusses them as part of general plant education. This approved chunk does not authorize medical-treatment, disease, potency, or guaranteed-effect claims."
+    },
+    {
+      "id": "terpenes-overview", "title": "Terpenes Overview", "domain": "educational",
+      "classification": "Public", "status": "Active",
+      "content": "The approved Volume I source presents terpenes as aromatic compounds found in cannabis and many other plants, useful for discussing aroma and flavor. Terpene descriptions do not guarantee a batch's chemistry or effects."
+    },
+    {
+      "id": "entourage-effect", "title": "Entourage Effect", "domain": "educational",
+      "classification": "Public", "status": "Active",
+      "content": "The approved Volume I source uses entourage effect for the idea that cannabis compounds may interact. It must be presented as a general educational concept, not as guaranteed chemistry, treatment, or a promised individual outcome."
+    },
+    {
+      "id": "cannabis-safety", "title": "Cannabis Safety", "domain": "educational",
+      "classification": "Public", "status": "Active",
+      "content": "For general cannabis safety, avoid driving or operating machinery while impaired, keep products secured away from children and pets, follow applicable laws and product directions, and seek a qualified professional for individual medical concerns. This is general safety education, not medical advice."
+    },
+    {
+      "id": "blue-dream-terpenes", "title": "Blue Dream Source-Reported Terpene Association", "domain": "educational",
+      "classification": "Public", "status": "Active",
+      "content": "The approved Volume I source associates Blue Dream with myrcene, pinene, and caryophyllene. Cannabis chemistry varies by cultivar expression, grow conditions, harvest, processing, and individual batch, so these terpenes should not be presented as guaranteed chemistry for every Blue Dream product. No effects or potency claims are authorized."
+    },
+    {
+      "id": "volume-one-education", "title": "Botanical Coloring Collection Volume I Education", "domain": "product_catalog",
+      "classification": "Public", "status": "Active",
+      "content": "Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1 is an educational botanical coloring collection offered in listed digital and print formats. It combines coloring-oriented pages with introductory cannabis plant education. Current price, stock, variants, availability, and eligibility must come from WordPress/WooCommerce, not this corpus."
+    }
+  ]
+}

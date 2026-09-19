@@ -1,0 +1,27 @@
+{
+  "policy_id": "TG-P06.MEMORY_RECALL_POLICY",
+  "version": "1.0",
+  "purposes": {
+    "product_assistance": ["PREFERENCE", "RELATIONSHIP_FACT"],
+    "education_assistance": ["PREFERENCE", "RELATIONSHIP_FACT"],
+    "support_assistance": ["PREFERENCE"],
+    "relationship_conversation": ["PREFERENCE", "RELATIONSHIP_FACT"],
+    "explicit_memory_review": ["PREFERENCE", "RELATIONSHIP_FACT"],
+    "internal_test": ["PREFERENCE", "RELATIONSHIP_FACT"]
+  },
+  "functional": {
+    "silent_use_keys": ["conversation_style", "education_style", "support_style"],
+    "product_keys": ["book_format", "product_format", "shopping_style", "topic_interest", "content_format"],
+    "education_keys": ["education_style", "content_format", "conversation_style", "topic_interest"],
+    "support_keys": ["support_style", "conversation_style", "content_format"]
+  },
+  "relational": {
+    "negative_priorities": ["COMPLAINT", "PAYMENT_PROBLEM", "SECURITY_CONCERN", "URGENT_SUPPORT", "ANGRY", "REFUND_DISPUTE", "ACCOUNT_ACCESS"],
+    "bridge_terms": ["family", "daughter", "son", "child", "children", "birthday", "anniversary", "graduation", "wedding", "trip", "milestone", "tradition", "maya"],
+    "high_decay_keys": ["related_person_age", "upcoming_graduation", "upcoming_wedding", "upcoming_trip", "upcoming_special_event"],
+    "low_decay_keys": ["customer_birthday", "relationship_anniversary"],
+    "high_decay_days": 365,
+    "medium_decay_days": 730
+  },
+  "limits": {"functional": 5, "relational": 1}
+}

@@ -1,0 +1,21 @@
+{
+  "environment": "production",
+  "activation": {
+    "wordpress_conversational_runtime_default": false,
+    "durable_memory_enabled": false
+  },
+  "model": {
+    "provider_source": "BUDLY_MODEL_PROVIDER",
+    "model_source": "BUDLY_MODEL_NAME",
+    "credential_source": "BUDLY_MODEL_API_KEY",
+    "fallback_provider": null
+  },
+  "runtime": {
+    "host_source": "BUDLY_RUNTIME_HOST",
+    "port_source": "BUDLY_RUNTIME_PORT",
+    "shared_secret_source": "BUDLY_RUNTIME_SHARED_SECRET",
+    "knowledge_path_source": "BUDLY_KNOWLEDGE_PATH",
+    "timeout_source": "BUDLY_MODEL_TIMEOUT_SECONDS",
+    "retry_source": "BUDLY_MODEL_RETRY_COUNT"
+  }
+}

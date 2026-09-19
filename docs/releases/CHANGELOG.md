@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.0
+
+- Added the governed conversational WordPress-to-Python/BROS integration with approved knowledge, GPT-5.6 Luna configuration, structured validation, and deterministic fallback.
+- Conversational activation defaults OFF; durable customer memory defaults OFF and is unavailable to production conversational requests in this release.
+- Application 1.8.0; schema remains 1.5.0; rules and commerce configuration are unchanged.
+
 ## 1.7.1
 
 - Production stabilization patch for fail-closed session identity, truthful administrator aggregates, canonical lifecycle transitions, PHP adaptive-question parity, and Bootstrap loader regression coverage.

@@ -182,9 +182,21 @@ class WordPressPackageTests(unittest.TestCase):
 
     def test_public_catalog_is_allowlisted_and_risk_routed(self):
         js = (PLUGIN / "assets" / "budly-sales.js").read_text(encoding="utf-8")
+        decision = (
+            PLUGIN / "includes" / "SecureMemory" / "Decision" / "DecisionService.php"
+        ).read_text(encoding="utf-8")
         self.assertIn("const allowed=new Set", js)
+        self.assertIn("filter(p=>allowed.has(p.slug))", js)
         self.assertIn("treat my", js)
-        self.assertIn("I cannot diagnose, recommend treatment", js)
+        self.assertIn("decision.outcome==='human_review'", js)
+        self.assertIn("automated product recommendation", js)
+        self.assertIn("without relying on medical claims", js)
+        self.assertIn("No certification or outcome is guaranteed", js)
+        self.assertIn("products.find(x=>x.slug===decision.selected_product_id)", js)
+        self.assertIn("p.permalink", js)
+        self.assertIn("private const CATALOG=array", decision)
+        self.assertIn("'reason'=>'not_allowlisted'", decision)
+        self.assertIn("$outcome='human_review';$action='human_escalation'", decision)
         self.assertNotIn("relieves pain", js.lower())
 
     def test_live_chat_has_membership_policy_and_conversation_starters(self):
@@ -197,9 +209,7 @@ class WordPressPackageTests(unittest.TestCase):
         self.assertIn("Membership questions", js)
         self.assertIn("Wholesale inquiries", js)
         self.assertIn("Order, shipping, or human support", js)
-        self.assertIn('aria-label="First name"', js)
-        self.assertIn('aria-label="Email for this conversation"', js)
-        self.assertIn('aria-label="Phone (optional)"', js)
+        self.assertIn('aria-label="Ask Budly anything"', js)
         self.assertIn('aria-label="Tell me what you’re looking for"', js)
         self.assertIn('aria-label="Your answer"', js)
         css = (PLUGIN / "assets" / "budly-sales.css").read_text(encoding="utf-8")
@@ -213,7 +223,7 @@ class WordPressPackageTests(unittest.TestCase):
         self.assertIn("budly_sales_conversations", tracking)
         self.assertIn("memory_consent", tracking)
         self.assertIn("budly_sales_sheet_webhook", tracking)
-        self.assertIn("conversation_started", js)
+        self.assertIn("conversation_completed", js)
         self.assertIn("product_clicked", js)
 
     def test_legacy_ajax_recall_is_not_registered(self):
@@ -225,7 +235,6 @@ class WordPressPackageTests(unittest.TestCase):
         self.assertNotIn("add_action('wp_ajax_nopriv_budly_sales_verify_recall'", tracking)
         self.assertNotIn("recallNonce", plugin)
         self.assertIn("Secure recall is REST/session based", tracking)
-        self.assertIn("Version: 1.7.1", plugin)
 
     def test_recall_interface_preserves_privacy(self):
         js = (PLUGIN / "assets" / "budly-sales.js").read_text(encoding="utf-8")
@@ -247,6 +256,50 @@ class WordPressPackageTests(unittest.TestCase):
         self.assertIn("'email_hash' => ''", handler)
         self.assertIn("'phone_hash' => ''", handler)
         self.assertIn("'summary'=>'" + "'", handler)
+
+    def test_release_artifact_188_integrity(self):
+        import zipfile
+        import json
+        artifact_path = ROOT / "dist" / "budly-sales-agent-1.8.8.zip"
+        self.assertTrue(artifact_path.is_file(), "dist/budly-sales-agent-1.8.8.zip must exist")
+        self.assertEqual(artifact_path.name, "budly-sales-agent-1.8.8.zip")
+
+        with zipfile.ZipFile(artifact_path, "r") as archive:
+            names = archive.namelist()
+            php_entry = "budly-sales-agent/budly-sales-agent.php"
+            self.assertIn(php_entry, names)
+            php_content = archive.read(php_entry).decode("utf-8")
+
+            ver_header = re.search(r"\*\s*Version:\s*([^\r\n]+)", php_content)
+            self.assertIsNotNone(ver_header)
+            self.assertEqual(ver_header.group(1).strip(), "1.8.8")
+
+            const_match = re.search(r"define\('BUDLY_SALES_VERSION',\s*'([^']+)'\);", php_content)
+            self.assertIsNotNone(const_match)
+            self.assertEqual(const_match.group(1).strip(), "1.8.8")
+
+            # Check JS/CSS enqueues use BUDLY_SALES_VERSION
+            self.assertIn("wp_enqueue_style('budly-sales', BUDLY_SALES_URL . 'assets/budly-sales.css', array(), BUDLY_SALES_VERSION);", php_content)
+            self.assertIn("wp_enqueue_script('budly-sales', BUDLY_SALES_URL . 'assets/budly-sales.js', array('budly-secure-memory'), BUDLY_SALES_VERSION, true);", php_content)
+
+            # Check ConversationProxy
+            proxy_entry = "budly-sales-agent/includes/Runtime/ConversationProxy.php"
+            self.assertIn(proxy_entry, names)
+            proxy_content = archive.read(proxy_entry).decode("utf-8")
+            self.assertIn("'User-Agent' => 'BudlySalesAgent/1.8.8'", proxy_content)
+
+            # Check release manifest
+            manifest_entry = "budly-sales-agent/release-manifest.json"
+            self.assertIn(manifest_entry, names)
+            manifest = json.loads(archive.read(manifest_entry).decode("utf-8"))
+            self.assertEqual(manifest.get("application_version"), "1.8.8")
+            self.assertEqual(manifest.get("release"), "1.8.8")
+
+            # Assert no release-critical metadata still declares 1.8.7
+            for name in names:
+                if any(name.endswith(ext) for ext in [".php", ".js", ".css", ".json", ".md"]):
+                    content = archive.read(name).decode("utf-8", errors="ignore")
+                    self.assertNotIn("1.8.7", content, f"Stale 1.8.7 found in {name}")
 
 
 if __name__ == "__main__":

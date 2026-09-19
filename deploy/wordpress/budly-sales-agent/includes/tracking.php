@@ -189,7 +189,38 @@ function budly_sales_track_event() {
     }
     $journey = sanitize_text_field(isset($_POST['journey']) ? wp_unslash($_POST['journey']) : '');
     $product_url = esc_url_raw(isset($_POST['product_url']) ? wp_unslash($_POST['product_url']) : '');
-    $metadata = sanitize_textarea_field(isset($_POST['metadata']) ? wp_unslash($_POST['metadata']) : '');
+    $raw_meta = isset($_POST['metadata']) ? wp_unslash($_POST['metadata']) : '';
+    $meta_arr = array();
+    if (is_string($raw_meta) && $raw_meta !== '') {
+        $decoded = json_decode($raw_meta, true);
+        if (is_array($decoded)) {
+            $meta_arr = $decoded;
+        } else {
+            $meta_arr['raw'] = sanitize_textarea_field($raw_meta);
+        }
+    }
+    $attr_fields = array('source', 'platform', 'content_id', 'campaign_id', 'cta_id', 'product_or_topic', 'published_post_id');
+    $attribution = isset($meta_arr['attribution']) && is_array($meta_arr['attribution']) ? $meta_arr['attribution'] : array();
+    foreach ($attr_fields as $f) {
+        if (isset($_POST[$f]) && !isset($attribution[$f])) {
+            $attribution[$f] = wp_unslash($_POST[$f]);
+        }
+    }
+    if (!empty($attribution)) {
+        $clean_attr = array();
+        foreach ($attr_fields as $f) {
+            if (isset($attribution[$f]) && is_string($attribution[$f])) {
+                $val = sanitize_text_field(substr(trim($attribution[$f]), 0, 100));
+                if ($val !== '') {
+                    $clean_attr[$f] = $val;
+                }
+            }
+        }
+        if (!empty($clean_attr)) {
+            $meta_arr['attribution'] = $clean_attr;
+        }
+    }
+    $metadata = !empty($meta_arr) ? wp_json_encode($meta_arr) : '';
     global $wpdb;
     $tables = budly_sales_tracking_tables();
     $wpdb->insert($tables['events'], array(

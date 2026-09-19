@@ -32,8 +32,25 @@ class BudlyHandler(SimpleHTTPRequestHandler):
     def do_POST(self) -> None:  # noqa: N802
         try:
             payload = self._payload()
-            if self.path == "/api/start":
-                result = self.service.start(name=payload["name"], email=payload["email"])
+            if self.path == "/api/intake":
+                result = self.service.intake(
+                    landing_input=payload.get("landing_input", payload),
+                    session_id=payload.get("session_id"),
+                    landing_route=payload.get("landing_route", "https://www.wakenbakelounge.com/ask-budly"),
+                )
+            elif self.path == "/api/turn":
+                result = self.service.turn(
+                    session_id=payload["session_id"],
+                    message=payload["message"],
+                    contact_data=payload.get("contact_data"),
+                )
+            elif self.path == "/api/start":
+                result = self.service.start(
+                    name=payload["name"],
+                    email=payload["email"],
+                    session_id=payload.get("session_id"),
+                    attribution=payload.get("attribution"),
+                )
             elif self.path == "/api/route":
                 result = self.service.route(
                     customer_id=payload["customer_id"], shopping_goal=payload["shopping_goal"]

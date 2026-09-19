@@ -1,0 +1,52 @@
+[
+  {
+    "knowledge_id": "K-TEST-001",
+    "title": "Approved Return Policy Test Fixture",
+    "version": "1.0",
+    "domain": "customer_policy",
+    "status": "Active",
+    "classification": "Public",
+    "source_reference": "synthetic://tg-p01/K-TEST-001/1.0",
+    "content": "Synthetic prototype returns are accepted within 30 test days with a test receipt."
+  },
+  {
+    "knowledge_id": "K-TEST-002",
+    "title": "Approved Product Education Test Fixture",
+    "version": "2.0",
+    "domain": "educational",
+    "status": "Active",
+    "classification": "Public",
+    "source_reference": "synthetic://tg-p01/K-TEST-002/2.0",
+    "content": "Synthetic product education explains that this fixture is not real product guidance."
+  },
+  {
+    "knowledge_id": "K-TEST-003",
+    "title": "Superseded Policy Fixture",
+    "version": "0.9",
+    "domain": "customer_policy",
+    "status": "Superseded",
+    "classification": "Public",
+    "source_reference": "synthetic://tg-p01/K-TEST-003/0.9",
+    "content": "Superseded synthetic policy that must never be returned."
+  },
+  {
+    "knowledge_id": "K-TEST-004",
+    "title": "Restricted Internal Fixture",
+    "version": "1.0",
+    "domain": "governance",
+    "status": "Active",
+    "classification": "Restricted",
+    "source_reference": "synthetic://tg-p01/K-TEST-004/1.0",
+    "content": "Synthetic restricted governance fixture."
+  },
+  {
+    "knowledge_id": "K-TEST-005",
+    "title": "Draft Policy Fixture",
+    "version": "1.1-draft",
+    "domain": "customer_policy",
+    "status": "Draft",
+    "classification": "Public",
+    "source_reference": "synthetic://tg-p01/K-TEST-005/draft",
+    "content": "Draft synthetic policy that must never be returned."
+  }
+]

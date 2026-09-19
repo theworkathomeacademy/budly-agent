@@ -1,0 +1,68 @@
+[
+  {
+    "metric_name": "revenue.events.accepted",
+    "domain": "revenue_operations",
+    "value": 12,
+    "unit": "events",
+    "classification": "INTERNAL",
+    "status": "Active",
+    "source_reference": "synthetic://revenue-events",
+    "observed_at": "2026-08-24T00:00:00+00:00",
+    "time_window": "current_snapshot"
+  },
+  {
+    "metric_name": "revenue.events.duplicate",
+    "domain": "revenue_operations",
+    "value": 2,
+    "unit": "events",
+    "classification": "INTERNAL",
+    "status": "Active",
+    "source_reference": "synthetic://revenue-events",
+    "observed_at": "2026-08-24T00:00:00+00:00",
+    "time_window": "current_snapshot"
+  },
+  {
+    "metric_name": "tool_gateway.requests",
+    "domain": "tool_gateway",
+    "value": 40,
+    "unit": "requests",
+    "classification": "INTERNAL",
+    "status": "Active",
+    "source_reference": "synthetic://tool-gateway",
+    "observed_at": "2026-08-24T00:00:00+00:00",
+    "time_window": "current_snapshot"
+  },
+  {
+    "metric_name": "system.health.status",
+    "domain": "system_health",
+    "value": "HEALTHY",
+    "unit": "state",
+    "classification": "PUBLIC",
+    "status": "Active",
+    "source_reference": "synthetic://system-health",
+    "observed_at": "2026-08-24T00:00:00+00:00",
+    "time_window": "current_snapshot"
+  },
+  {
+    "metric_name": "infrastructure.secret_error_detail",
+    "domain": "system_health",
+    "value": "synthetic restricted diagnostic",
+    "unit": "text",
+    "classification": "RESTRICTED",
+    "status": "Active",
+    "source_reference": "synthetic://restricted-health",
+    "observed_at": "2026-08-24T00:00:00+00:00",
+    "time_window": "current_snapshot"
+  },
+  {
+    "metric_name": "deprecated.metric",
+    "domain": "workflow_operations",
+    "value": 99,
+    "unit": "events",
+    "classification": "INTERNAL",
+    "status": "Superseded",
+    "source_reference": "synthetic://deprecated",
+    "observed_at": "2026-08-24T00:00:00+00:00",
+    "time_window": "current_snapshot"
+  }
+]

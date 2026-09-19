@@ -1,0 +1,31 @@
+{
+  "registry_id": "TG-P05B.RELATIONSHIP_FACT_REGISTRY",
+  "version": "1.0",
+  "permitted_purposes": ["conversation_continuity", "relationship_continuity", "customer_service", "appropriate_personalization", "support_continuity", "internal_test"],
+  "allowed_source_context_summaries": [
+    "discussion about terpenes and the ECS",
+    "conversation about choosing a botanical coloring book",
+    "conversation about family milestones",
+    "conversation about upcoming plans"
+  ],
+  "definitions": {
+    "customer_birthday": {"category": "birthday", "value_type": "partial_date", "sensitivity": "R1", "required_fields": ["month", "day"], "allowed_fields": ["month", "day"], "related_person": false, "minor_allowed": false, "status": "ACTIVE", "supersession": "SUBJECT_KEY"},
+    "relationship_anniversary": {"category": "anniversary", "value_type": "partial_date", "sensitivity": "R1", "required_fields": ["month", "day"], "allowed_fields": ["month", "day"], "related_person": false, "minor_allowed": false, "status": "ACTIVE", "supersession": "SUBJECT_KEY"},
+    "children_count": {"category": "family_structure", "value_type": "count", "sensitivity": "R1", "required_fields": ["count"], "allowed_fields": ["count"], "related_person": false, "minor_allowed": true, "status": "ACTIVE", "supersession": "SUBJECT_KEY"},
+    "related_person_first_name": {"category": "important_person", "value_type": "related_person", "sensitivity": "R1", "required_fields": ["first_name", "relationship"], "allowed_fields": ["first_name", "relationship", "is_minor", "stated_age", "birthday_month", "birthday_day"], "related_person": true, "minor_allowed": true, "status": "ACTIVE", "supersession": "NONE"},
+    "related_person_relationship": {"category": "important_person", "value_type": "related_person", "sensitivity": "R1", "required_fields": ["first_name", "relationship"], "allowed_fields": ["first_name", "relationship", "is_minor"], "related_person": true, "minor_allowed": true, "status": "ACTIVE", "supersession": "NONE"},
+    "related_person_age": {"category": "important_person", "value_type": "related_person", "sensitivity": "R1", "required_fields": ["first_name", "relationship", "stated_age"], "allowed_fields": ["first_name", "relationship", "stated_age", "is_minor"], "related_person": true, "minor_allowed": true, "status": "ACTIVE", "supersession": "SUBJECT_KEY"},
+    "related_person_birthday": {"category": "birthday", "value_type": "related_person", "sensitivity": "R1", "required_fields": ["first_name", "relationship", "birthday_month", "birthday_day"], "allowed_fields": ["first_name", "relationship", "birthday_month", "birthday_day", "is_minor"], "related_person": true, "minor_allowed": true, "status": "ACTIVE", "supersession": "SUBJECT_KEY"},
+    "upcoming_graduation": {"category": "upcoming_event", "value_type": "event", "sensitivity": "R1", "required_fields": ["related_person_first_name", "related_person_relationship", "event_period"], "allowed_fields": ["related_person_first_name", "related_person_relationship", "event_period", "is_minor"], "related_person": true, "minor_allowed": true, "status": "UPCOMING", "supersession": "SUBJECT_KEY"},
+    "upcoming_wedding": {"category": "upcoming_event", "value_type": "event", "sensitivity": "R1", "required_fields": ["event_period"], "allowed_fields": ["related_person_first_name", "related_person_relationship", "event_period"], "related_person": true, "minor_allowed": false, "status": "UPCOMING", "supersession": "SUBJECT_KEY"},
+    "upcoming_trip": {"category": "travel_or_trip", "value_type": "event", "sensitivity": "R1", "required_fields": ["event_period"], "allowed_fields": ["event_period", "general_destination"], "related_person": false, "minor_allowed": false, "status": "UPCOMING", "supersession": "SUBJECT_KEY"},
+    "upcoming_special_event": {"category": "special_occasion", "value_type": "event", "sensitivity": "R1", "required_fields": ["event_period", "event_type"], "allowed_fields": ["event_period", "event_type"], "related_person": false, "minor_allowed": false, "status": "UPCOMING", "supersession": "SUBJECT_KEY"},
+    "personal_milestone": {"category": "personal_milestone", "value_type": "milestone", "sensitivity": "R1", "required_fields": ["milestone_type"], "allowed_fields": ["milestone_type", "event_period"], "related_person": false, "minor_allowed": false, "status": "ACTIVE", "supersession": "NONE"},
+    "recurring_tradition": {"category": "recurring_tradition", "value_type": "tradition", "sensitivity": "R1", "required_fields": ["tradition_type"], "allowed_fields": ["tradition_type", "general_period"], "related_person": false, "minor_allowed": false, "status": "ACTIVE", "supersession": "NONE"},
+    "bereavement": {"category": "general_life_context", "value_type": "denied", "sensitivity": "R2", "required_fields": [], "allowed_fields": [], "related_person": false, "minor_allowed": false, "status": "ARCHIVED", "supersession": "NONE"},
+    "divorce": {"category": "general_life_context", "value_type": "denied", "sensitivity": "R2", "required_fields": [], "allowed_fields": [], "related_person": false, "minor_allowed": false, "status": "ARCHIVED", "supersession": "NONE"},
+    "family_conflict": {"category": "general_life_context", "value_type": "denied", "sensitivity": "R2", "required_fields": [], "allowed_fields": [], "related_person": false, "minor_allowed": false, "status": "ARCHIVED", "supersession": "NONE"},
+    "medical_diagnosis": {"category": "general_life_context", "value_type": "denied", "sensitivity": "RX", "required_fields": [], "allowed_fields": [], "related_person": false, "minor_allowed": false, "status": "ARCHIVED", "supersession": "NONE"},
+    "financial_distress": {"category": "general_life_context", "value_type": "denied", "sensitivity": "RX", "required_fields": [], "allowed_fields": [], "related_person": false, "minor_allowed": false, "status": "ARCHIVED", "supersession": "NONE"}
+  }
+}

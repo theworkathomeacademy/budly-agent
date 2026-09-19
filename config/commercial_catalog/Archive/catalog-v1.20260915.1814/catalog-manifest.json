@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0",
+  "catalog_version": "1.20260915.1814",
+  "generated_at": "2026-09-15T18:14:35.195482+00:00",
+  "source_max_updated_at": "2026-09-15T18:14:35.168844+00:00",
+  "event_reason": "PUBLIC_CATALOG_VISIBILITY_REBUILD",
+  "triggering_entity": "CANONICAL_CATALOG_FILE",
+  "source_record_count": 76,
+  "output_record_count": 73,
+  "generator_version": "1.0.0",
+  "csv_sha256": "975e24e0bdb3948e94438c6e73d7045b33216eaffc14ac0f2db22b478d280b5e",
+  "json_sha256": "ac127d21ae48f1e782653cdeba40c0cc2040cd9dbbf3d0ee243f2e021a1d8815",
+  "validation_status": "PASSED",
+  "source_inventory_count": 76,
+  "public_record_count": 73,
+  "excluded_record_count": 3,
+  "pre_release_record_count": 0,
+  "internal_only_record_count": 0,
+  "visibility_policy": "CCS-006",
+  "visibility_policy_version": "0.1",
+  "previous_catalog_version": null
+}
