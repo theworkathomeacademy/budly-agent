@@ -1,4 +1,4 @@
-# CCC Wake'n'Bake Membership Entitlements 0.3.0
+# CCC Wake'n'Bake Membership Entitlements 0.3.1
 
 Install the plugin ZIP in WordPress and activate it after Flexible Subscriptions and WooCommerce. It does not publish membership products, create subscriptions, charge customers, or modify CBD routing.
 
@@ -18,4 +18,4 @@ WordPress capabilities `ccc_wnb_pass_access` (with the compatible alias `ccc_wnb
 
 The cart receives 10% for Member or 25% for Elite. The hook applies only when the cart has no coupon and an item is at its unchanged regular price. It excludes the Membership and bulk product categories, Product IDs 1047–1049, and the verified class payment-plan IDs 455, 457, and 460. Full-payment course IDs 150, 151, and 152 remain eligible. It does not alter coupon definitions or CCC Payment Routing Guard behavior.
 
-The `commercial-truth.json` file is approved, unreleased offer data. For matching Lounge membership questions, the plugin adds it to Budly's already-signed deterministic runtime context. It is not injected into unrelated or LEGENDS-only questions. Budly explains the rules but does not determine entitlement or discounts, and the payload explicitly blocks public availability claims while the paid products remain unpublished.
+The `commercial-truth.json` file is approved, unreleased offer data. For matching Lounge membership questions, the plugin answers the existing Budly conversation REST route from this deterministic file before the external signed runtime request. This avoids changing a request body after Budly signs it. Unrelated and LEGENDS-only questions continue through Budly unchanged. Budly explains the rules but does not determine entitlement or discounts, and the response explicitly blocks public availability claims while the paid products remain unpublished.

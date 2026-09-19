@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CCC Wake'n'Bake Membership Entitlements
  * Description: Derives Lounge membership access from authoritative WooCommerce acquisition and Flexible Subscriptions state.
- * Version: 0.3.0
+ * Version: 0.3.1
  * Requires Plugins: woocommerce, flexible-subscriptions
  * License: GPL-2.0-or-later
  */
@@ -24,7 +24,7 @@ final class Membership_Entitlements {
         add_action( 'woocommerce_order_status_changed', array( __CLASS__, 'on_order_status_changed' ), 20, 4 );
         add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'apply_cart_discount' ), 30, 1 );
         add_filter( 'user_has_cap', array( __CLASS__, 'capabilities' ), 20, 4 );
-        add_filter( 'http_request_args', array( __CLASS__, 'add_budly_commercial_truth' ), 20, 2 );
+        add_filter( 'rest_pre_dispatch', array( __CLASS__, 'answer_budly_membership_question' ), 20, 3 );
         add_shortcode( 'ccc_wnb_protected', array( __CLASS__, 'protected_content' ) );
     }
 
@@ -235,38 +235,24 @@ final class Membership_Entitlements {
         return is_array( $truth ) ? $truth : array();
     }
 
-    public static function add_budly_commercial_truth( array $args, string $url ): array {
-        if ( false === strpos( $url, '/v1/conversation' ) || empty( $args['body'] ) ) {
-            return $args;
+    public static function answer_budly_membership_question( $result, $server, $request ) {
+        if ( ! is_object( $request ) || '/budly-runtime/v1/conversation' !== $request->get_route() || 'POST' !== $request->get_method() ) {
+            return $result;
         }
-        $agent = '';
-        foreach ( (array) ( $args['headers'] ?? array() ) as $name => $value ) {
-            if ( 'user-agent' === strtolower( (string) $name ) ) {
-                $agent = (string) $value;
-            }
-        }
-        if ( 0 !== strpos( $agent, 'BudlySalesAgent/' ) ) {
-            return $args;
-        }
-        $payload = json_decode( (string) $args['body'], true );
-        if ( ! is_array( $payload ) ) {
-            return $args;
-        }
-        $message = (string) ( $payload['message'] ?? '' );
-        $is_lounge_query = (bool) preg_match( '/wake.?n.?bake|lounge\s+(pass|member|elite)|community\s+membership/i', $message );
-        if ( ! $is_lounge_query ) {
-            return $args;
+        $payload = $request->get_json_params();
+        $message = is_array( $payload ) ? (string) ( $payload['message'] ?? '' ) : '';
+        if ( ! preg_match( '/wake.?n.?bake|lounge\s+(pass|member|elite)|community\s+membership/i', $message ) ) {
+            return $result;
         }
         $truth = self::commercial_truth();
         if ( empty( $truth ) ) {
-            return $args;
+            return $result;
         }
-        if ( ! isset( $payload['deterministic_context'] ) || ! is_array( $payload['deterministic_context'] ) ) {
-            $payload['deterministic_context'] = array();
-        }
-        $payload['deterministic_context']['wnb_membership_commercial_truth'] = $truth;
-        $args['body'] = wp_json_encode( $payload );
-        return $args;
+        $text = "Wake'n'Bake Lounge Pass is free and includes community access. Lounge Member is $9.99 per month with community and Member access, a Member badge, early drop access, priority event access, and 10% off eligible purchases. Lounge Elite is $24.99 per month with Member benefits plus VIP community access, a VIP badge, first drop access, priority event invitations, monthly curated Budly content, and 25% off eligible purchases. Member and Elite are APPROVED / UNRELEASED and cannot be purchased yet. Discounts exclude memberships, bulk products, payment-plan classes, sale items, and transactions using coupons. LEGENDS NFT memberships are a separate family and remain unchanged.";
+        return new \WP_REST_Response( array(
+            'success' => true,
+            'data' => array( 'response' => array( 'text' => $text, 'links' => array(), 'resulting_action' => 'continue' ) ),
+        ), 200 );
     }
 }
 

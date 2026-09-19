@@ -7,6 +7,8 @@ function add_shortcode( $name, $callback ) { global $shortcodes; $shortcodes[ $n
 function shortcode_atts( $defaults, $attributes, $tag ) { return array_merge( $defaults, $attributes ); }
 function do_shortcode( $content ) { return $content; }
 function wp_json_encode( $value ) { return json_encode( $value ); }
+class WP_REST_Response { public $data; public $status; function __construct( $data, $status ) { $this->data=$data; $this->status=$status; } }
+class Request { private $route; private $method; private $params; function __construct($route,$method,$params){$this->route=$route;$this->method=$method;$this->params=$params;} function get_route(){return $this->route;} function get_method(){return $this->method;} function get_json_params(){return $this->params;} }
 function wc_get_orders( $query ) { global $orders; return array_values( array_filter( $orders, function( $order ) use ( $query ) { return $order->get_customer_id() === $query['customer_id'] && $order->get_type() === $query['type'] && ( 'any' === $query['status'] || in_array( $order->get_status(), (array) $query['status'], true ) ); } ) ); }
 function wc_get_product( $id ) { global $products; return $products[ $id ] ?? null; }
 function get_user_meta( $id, $key, $single ) { global $meta; return $meta[ $id ][ $key ] ?? ''; }
@@ -32,7 +34,7 @@ class Cart { public $items; public $coupons; function __construct($items,$coupon
 require_once __DIR__ . '/../../deploy/wordpress/ccc-wnb-membership-entitlements/ccc-wnb-membership-entitlements.php';
 function verify( $truth, $message ) { if ( ! $truth ) throw new RuntimeException( $message ); }
 $hooks['plugins_loaded'][0]();
-verify( isset( $hooks['fsub/subscription/status/updated'], $hooks['fsub/subscription/new'], $hooks['woocommerce_order_status_changed'], $hooks['woocommerce_before_calculate_totals'], $hooks['user_has_cap'], $hooks['http_request_args'], $shortcodes['ccc_wnb_protected'] ), 'Expected hooks and shortcode' );
+verify( isset( $hooks['fsub/subscription/status/updated'], $hooks['fsub/subscription/new'], $hooks['woocommerce_order_status_changed'], $hooks['woocommerce_before_calculate_totals'], $hooks['user_has_cap'], $hooks['rest_pre_dispatch'], $shortcodes['ccc_wnb_protected'] ), 'Expected hooks and shortcode' );
 $products = array( 1047 => new Product(1047,'WNB-MBR-PASS',0,0), 1048 => new Product(1048,'WNB-MBR-MEMBER'), 1049 => new Product(1049,'WNB-MBR-ELITE'), 42 => new Product(42,'OTHER'), 50 => new Product(50,'BULK',100,100,false,array('bulk')), 455 => new Product(455,'PLAN'), 150 => new Product(150,'COURSE'), 60 => new Product(60,'SALE',100,80,true) );
 $orders = array( new Subscription( 1, 7, 1048, 'active' ), new Subscription( 2, 7, 1049, 'active' ), new Subscription( 3, 8, 42, 'active' ), new Order(4,9,1047,'completed') );
 verify( 'elite' === CCC\WNB\get_membership_level( 7 ), 'Elite precedence' );
@@ -67,11 +69,10 @@ $hooks['woocommerce_before_calculate_totals'][0]($cart);
 verify( 100.0 === $products[42]->get_price() && 100.0 === $products[150]->get_price(), 'Later coupon restores membership-adjusted prices before coupon calculation' );
 $plain = new Product(70,'PLAIN'); $coupon_cart = new Cart(array(array('data'=>$plain)),array('fam33')); $hooks['woocommerce_before_calculate_totals'][0]($coupon_cart);
 verify( 100.0 === (float) $plain->get_price(), 'Coupon blocks membership discount' );
-$request = array( 'headers' => array( 'User-Agent' => 'BudlySalesAgent/1.8.8' ), 'body' => json_encode( array( 'message' => "Can I buy the Wake'n'Bake Lounge Elite membership?", 'deterministic_context' => array() ) ) );
-$filtered = $hooks['http_request_args'][0]( $request, 'https://runtime.example/v1/conversation' );
-$payload = json_decode( $filtered['body'], true );
-verify( 'APPROVED / UNRELEASED' === $payload['deterministic_context']['wnb_membership_commercial_truth']['release_state'], 'Budly receives governed membership truth' );
-verify( false === $payload['deterministic_context']['wnb_membership_commercial_truth']['publicly_available'], 'Budly truth blocks public availability claim' );
-$legends = array( 'headers' => array( 'User-Agent' => 'BudlySalesAgent/1.8.8' ), 'body' => json_encode( array( 'message' => 'Tell me about Torque and LEGENDS NFTs.', 'deterministic_context' => array() ) ) );
-verify( $legends === $hooks['http_request_args'][0]( $legends, 'https://runtime.example/v1/conversation' ), 'LEGENDS-only request remains untouched' );
+$request = new Request('/budly-runtime/v1/conversation','POST',array('message'=>"Can I buy the Wake'n'Bake Lounge Elite membership?"));
+$response = $hooks['rest_pre_dispatch'][0]( null, null, $request );
+verify( $response instanceof WP_REST_Response && 200 === $response->status, 'Budly receives governed membership answer' );
+verify( false !== strpos( $response->data['data']['response']['text'], 'APPROVED / UNRELEASED' ) && false !== strpos( $response->data['data']['response']['text'], 'cannot be purchased yet' ), 'Budly answer blocks public availability claim' );
+$legends = new Request('/budly-runtime/v1/conversation','POST',array('message'=>'Tell me about Torque and LEGENDS NFTs.'));
+verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $legends ), 'LEGENDS-only request remains untouched' );
 echo "24 integration checks passed\n";
