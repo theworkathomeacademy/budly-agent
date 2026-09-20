@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wake'n'Bake Lounge Membership</title>
+  <style>
+    :root {
+      --bg-cream: #FAF8F5;
+      --text-dark: #1A201C;
+      --text-muted: #5A635C;
+      --moss-green: #2D5A3D;
+      --moss-green-hover: #234730;
+      --gold-accent: #C5A059;
+      --card-bg: #FFFFFF;
+      --border-color: #E6E1D8;
+      --border-active: #2D5A3D;
+      --disabled-bg: #EAE7E1;
+      --disabled-text: #8C948E;
+      --font-display: Georgia, "Playfair Display", "Times New Roman", serif;
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      padding: 32px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .header p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card.card-active-tier {
+      border-color: var(--border-active);
+      box-shadow: 0 6px 24px rgba(45, 90, 61, 0.08);
+    }
+
+    .card-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .badge-active {
+      background-color: #EBF4EE;
+      color: var(--moss-green);
+    }
+
+    .badge-soon {
+      background-color: #F0EDE6;
+      color: #78736A;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+
+    .price-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .billing {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      min-height: 44px;
+    }
+
+    .divider {
+      height: 1px;
+      background-color: var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    .benefits-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .benefits-list {
+      list-style: none;
+      margin-bottom: 28px;
+      flex-grow: 1;
+    }
+
+    .benefits-list li {
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.4;
+    }
+
+    .check-icon {
+      color: var(--moss-green);
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--moss-green);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--moss-green-hover);
+    }
+
+    .btn-disabled {
+      background-color: var(--disabled-bg);
+      color: var(--disabled-text);
+      cursor: not-allowed;
+    }
+
+    /* Support Section */
+    .support-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 32px 28px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .support-section h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .support-section p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* Ask Budly */
+    .budly-wrap {
+      text-align: center;
+    }
+
+    .btn-budly {
+      display: inline-block;
+      width: auto;
+      padding: 12px 24px;
+      background: transparent;
+      border: 1px solid var(--moss-green);
+      color: var(--moss-green);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-budly:hover {
+      background-color: #EBF4EE;
+    }
+
+    /* Skeleton Loading State */
+    .skeleton {
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+      background: linear-gradient(90deg, #EAE7E1 25%, #F4F1EC 50%, #EAE7E1 75%);
+      background-size: 200% 100%;
+      border-radius: 4px;
+    }
+
+    @keyframes skeleton-pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-badge {
+      width: 90px;
+      height: 22px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .skeleton-title {
+      width: 75%;
+      height: 28px;
+      margin-bottom: 14px;
+    }
+
+    .skeleton-price {
+      width: 45%;
+      height: 36px;
+      margin-bottom: 16px;
+    }
+
+    .skeleton-text {
+      width: 100%;
+      height: 16px;
+      margin-bottom: 8px;
+    }
+
+    .skeleton-text.short {
+      width: 60%;
+      margin-bottom: 24px;
+    }
+
+    .skeleton-benefit {
+      width: 85%;
+      height: 16px;
+      margin-bottom: 12px;
+    }
+
+    .skeleton-btn {
+      width: 100%;
+      height: 46px;
+      border-radius: 8px;
+      margin-top: auto;
+    }
+
+    .loading-notice {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+      body {
+        padding: 24px 14px;
+      }
+
+      .header h1 {
+        font-size: 1.75rem;
+      }
+
+      .header p {
+        font-size: 0.95rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        padding: 22px 18px;
+      }
+
+      .support-section {
+        padding: 24px 18px;
+      }
+
+      .btn-budly {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>Find Your Place in the Wake’n’Bake Lounge</h1>
+      <p>Whether you just want to step inside the community or unlock deeper access, there’s a place for you in the Lounge.</p>
+    </header>
+
+    <!-- Cards Section (Neutral Skeleton Initial State) -->
+    <div id="cardsGrid" class="cards-grid">
+      <!-- Skeleton Card 1 -->
+      <div class="card">
+        <div class="skeleton skeleton-badge"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-price"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text short"></div>
+        <div class="divider"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-btn"></div>
+      </div>
+
+      <!-- Skeleton Card 2 -->
+      <div class="card">
+        <div class="skeleton skeleton-badge"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-price"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text short"></div>
+        <div class="divider"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-btn"></div>
+      </div>
+
+      <!-- Skeleton Card 3 -->
+      <div class="card">
+        <div class="skeleton skeleton-badge"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-price"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text short"></div>
+        <div class="divider"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-benefit"></div>
+        <div class="skeleton skeleton-btn"></div>
+      </div>
+    </div>
+    <div id="loadingStatus" class="loading-notice">Loading membership options…</div>
+
+    <!-- Support Section -->
+    <section class="support-section">
+      <h2>Start Free. Level Up When You’re Ready.</h2>
+      <p>The free Lounge Pass is your entry point into the community. Member and Elite unlock deeper discounts, exclusive drops, VIP access, and curated experiences.</p>
+    </section>
+
+    <!-- Ask Budly -->
+    <div class="budly-wrap">
+      <button type="button" class="btn btn-budly" onclick="handleAskBudly()">
+        Not sure which level fits you? Ask Budly.
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Escape HTML to prevent injection
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Handle CTA button click
+    function handleCtaClick(url) {
+      if (!url) return;
+      window.parent.postMessage({
+        type: 'WNB_MEMBERSHIP_CTA',
+        url: url
+      }, '*');
+    }
+
+    // Handle Ask Budly click
+    function handleAskBudly() {
+      window.parent.postMessage({
+        type: 'WNB_ASK_BUDLY'
+      }, '*');
+    }
+
+    // Render membership cards dynamically from CMS payload
+    function renderMemberships(memberships) {
+      if (!Array.isArray(memberships) || memberships.length === 0) {
+        return;
+      }
+
+      // Sort by displayOrder ascending
+      const sorted = [...memberships].sort((a, b) => {
+        const orderA = typeof a.displayOrder === 'number' ? a.displayOrder : 999;
+        const orderB = typeof b.displayOrder === 'number' ? b.displayOrder : 999;
+        return orderA - orderB;
+      });
+
+      const grid = document.getElementById('cardsGrid');
+      const statusNotice = document.getElementById('loadingStatus');
+      if (statusNotice) statusNotice.style.display = 'none';
+
+      let html = '';
+
+      sorted.forEach(item => {
+        const ctaState = (item.ctaState || '').toUpperCase();
+        const isActive = ctaState === 'ACTIVE' && item.ctaUrl;
+        const badgeClass = isActive ? 'badge-active' : 'badge-soon';
+        const cardClass = isActive ? 'card card-active-tier' : 'card';
+
+        // Split benefits from multiline string or array
+        let benefitItems = [];
+        if (Array.isArray(item.benefits)) {
+          benefitItems = item.benefits;
+        } else if (typeof item.benefits === 'string') {
+          benefitItems = item.benefits.split(/\r?\n/).map(b => b.trim()).filter(Boolean);
+        }
+
+        let benefitsHtml = '';
+        benefitItems.forEach(benefit => {
+          benefitsHtml += `<li><span class="check-icon">✓</span><span>${escapeHtml(benefit)}</span></li>`;
+        });
+
+        let ctaButtonHtml = '';
+        if (isActive) {
+          ctaButtonHtml = `<button type="button" class="btn btn-primary" onclick="handleCtaClick('${escapeHtml(item.ctaUrl)}')">${escapeHtml(item.ctaLabel || 'Get the Pass')}</button>`;
+        } else {
+          ctaButtonHtml = `<button type="button" class="btn btn-disabled" disabled>${escapeHtml(item.ctaLabel || 'Coming Soon')}</button>`;
+        }
+
+        html += `
+          <div class="${cardClass}">
+            ${item.statusLabel ? `<span class="card-badge ${badgeClass}">${escapeHtml(item.statusLabel)}</span>` : ''}
+            <h2 class="card-title">${escapeHtml(item.name || '')}</h2>
+            <div class="price-wrap">
+              <span class="price">${escapeHtml(item.priceDisplay || '')}</span>
+              ${item.billingDisplay ? `<span class="billing">${escapeHtml(item.billingDisplay)}</span>` : ''}
+            </div>
+            <p class="card-desc">${escapeHtml(item.description || '')}</p>
+            <div class="divider"></div>
+            <div class="benefits-title">Included Benefits</div>
+            <ul class="benefits-list">
+              ${benefitsHtml}
+            </ul>
+            ${ctaButtonHtml}
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    // Message listener
+    window.addEventListener('message', function(event) {
+      const data = event.data;
+      if (!data || typeof data !== 'object') return;
+
+      if (data.type === 'WNB_MEMBERSHIP_DATA') {
+        renderMemberships(data.memberships);
+      }
+    });
+
+    // Notify parent when iframe is ready
+    window.addEventListener('DOMContentLoaded', function() {
+      window.parent.postMessage({ type: 'WNB_EMBED_READY' }, '*');
+    });
+  </script>
+</body>
+</html>
