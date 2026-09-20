@@ -142,15 +142,8 @@ function handleCtaAction(rawUrl) {
 }
 
 /**
- * Launch the approved Budly assistance experience
+ * Handle Budly assistance action (Pending approved Wix-to-Budly mechanism configuration)
  */
 function handleAskBudlyAction() {
-    try {
-        wixWindow.openLightbox(BUDLY_LIGHTBOX_NAME)
-            .catch(err => {
-                console.warn(`[WnB Membership] Lightbox ${BUDLY_LIGHTBOX_NAME} open failed:`, err);
-            });
-    } catch (error) {
-        console.error('[WnB Membership] Error launching Budly lightbox:', error);
-    }
+    console.log('[WnB Membership] Ask Budly CTA action received (Budly mechanism pending configuration).');
 }

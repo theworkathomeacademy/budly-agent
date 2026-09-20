@@ -26,12 +26,7 @@ def test_embed_html_structure_and_neutral_fallback():
     # PostMessage contract checks
     assert "WNB_MEMBERSHIP_DATA" in html
     assert "WNB_MEMBERSHIP_CTA" in html
-    assert "WNB_ASK_BUDLY" in html
     assert "WNB_EMBED_READY" in html
-
-    # Ask Budly trigger
-    assert "handleAskBudly" in html
-    assert "Ask Budly" in html
 
     # Sanitization check
     assert "escapeHtml" in html
@@ -49,6 +44,20 @@ def test_embed_html_supports_all_active_commercial_tiers():
     # Check that ctaState === 'ACTIVE' activates primary button with ctaUrl
     assert "ctaState === 'ACTIVE'" in html or 'ctaState === "ACTIVE"' in html
     assert "handleCtaClick" in html
+
+def test_negative_routing_checks_in_presentation():
+    with open(EMBED_HTML_PATH, "r", encoding="utf-8") as f:
+        html = f.read()
+    with open(VELO_JS_PATH, "r", encoding="utf-8") as f:
+        js = f.read()
+
+    # No direct Stripe payment URLs in presentation artifacts
+    assert "buy.stripe.com" not in html, "Direct Stripe payment links must not exist in embed HTML"
+    assert "buy.stripe.com" not in js, "Direct Stripe payment links must not exist in Velo JS"
+
+    # No /members Wix page acquisition route
+    assert "/members" not in html, "Pass acquisition must not route to /members in embed HTML"
+    assert "/members" not in js, "Pass acquisition must not route to /members in Velo JS"
 
 def test_velo_page_code_contract():
     with open(VELO_JS_PATH, "r", encoding="utf-8") as f:
@@ -69,11 +78,11 @@ def test_velo_page_code_contract():
     # PostMessage handlers
     assert "WNB_EMBED_READY" in js
     assert "WNB_MEMBERSHIP_CTA" in js
-    assert "WNB_ASK_BUDLY" in js
     assert "WNB_MEMBERSHIP_DATA" in js
 
-    # Lightbox integration
-    assert "openLightbox" in js
+    # Broken openLightbox('Budly') call must NOT be actively invoked
+    assert "wixWindow.openLightbox('Budly')" not in js
+    assert 'wixWindow.openLightbox("Budly")' not in js
 
     # Dynamic element resolution
     assert "getHtmlElement" in js
