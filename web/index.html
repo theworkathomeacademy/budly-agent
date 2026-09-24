@@ -20,10 +20,60 @@
     <section class="chat-card" aria-label="Chat with Budly">
       <header class="chat-header">
         <div class="avatar" aria-hidden="true">B</div>
-        <div><strong>Budly Sales</strong><span><i></i> Ready to help</span></div>
-        <button id="restart" class="quiet" type="button" hidden>Start over</button>
+        <div>
+          <strong>Budly Sales</strong>
+          <span id="chat-substatus"><i></i> Ready to help</span>
+        </div>
+        
+        <div class="voice-toolbar" role="toolbar" aria-label="Voice settings">
+          <div class="voice-selector-wrapper">
+            <label for="voice-select" class="sr-only">Voice Profile</label>
+            <select id="voice-select" title="Select Voice Profile">
+              <option value="builtin-default">Default (Built-in)</option>
+              <option value="test-voice-a">Test Voice A (Measured)</option>
+              <option value="test-voice-b">Test Voice B (Bright)</option>
+              <option value="test-voice-c">Test Voice C (Conversational)</option>
+            </select>
+          </div>
+          
+          <button id="auto-speak-toggle" type="button" class="btn-toggle" aria-pressed="false" title="Toggle Auto-Speak">
+            <span class="toggle-icon">🔇</span>
+            <span class="toggle-label">Auto-Speak: <strong>OFF</strong></span>
+          </button>
+          
+          <!-- Diagnostics button: only unhidden if ?debug=1 is in URL -->
+          <button id="toggle-telemetry" class="btn-diag quiet" type="button" title="View Diagnostics" hidden>📊 Diagnostics</button>
+          <button id="restart" class="quiet" type="button" hidden>Start over</button>
+        </div>
       </header>
+
+      <!-- Autoplay interaction helper banner if needed -->
+      <div id="autoplay-banner" class="autoplay-banner" hidden>
+        <span>💡 Browser policy requires a tap to enable audio playback.</span>
+        <button id="enable-audio-btn" type="button">Enable Audio</button>
+      </div>
+
+      <!-- Voice engine status banner if unavailable -->
+      <div id="voice-unavailable-banner" class="voice-alert-banner" hidden>
+        ⚠️ Voice engine is currently unavailable. Budly text chat is running normally.
+      </div>
+
       <div id="messages" class="messages" aria-live="polite"></div>
+
+      <!-- Compact Diagnostics Drawer (Debug mode only, <=25% width) -->
+      <aside id="telemetry-drawer" class="telemetry-drawer" hidden>
+        <div class="telemetry-header">
+          <h3>📊 Diagnostics</h3>
+          <button id="close-telemetry" class="quiet" type="button">✕</button>
+        </div>
+        <div id="telemetry-content" class="telemetry-content">
+          <p class="telemetry-empty">No conversation turns recorded yet.</p>
+        </div>
+        <div class="telemetry-footer">
+          <a href="/debug/telemetry" target="_blank">Open Full Log View ↗</a>
+        </div>
+      </aside>
+
       <form id="composer" class="composer">
         <div id="fields" class="fields"></div>
         <button id="send" type="submit">Continue</button>

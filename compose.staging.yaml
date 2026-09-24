@@ -1,0 +1,45 @@
+services:
+  budly-runtime-staging:
+    build:
+      context: .
+      dockerfile: deploy/staging/Dockerfile.staging
+    image: budly-runtime-staging:1.0.0
+    container_name: budly-runtime-staging
+    restart: unless-stopped
+    env_file:
+      - ./secrets/staging.env
+    networks:
+      - budly_staging_network
+    ports:
+      - "127.0.0.1:8791:8791"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  cloudflared-staging:
+    image: cloudflare/cloudflared:2026.7.3
+    container_name: budly-staging-cloudflared
+    restart: unless-stopped
+    depends_on:
+      - budly-runtime-staging
+    networks:
+      - budly_staging_network
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --loglevel
+      - info
+      - --url
+      - http://budly-runtime-staging:8791
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  budly_staging_network:
+    name: budly_staging_network
+    driver: bridge

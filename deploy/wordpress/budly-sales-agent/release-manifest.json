@@ -1,0 +1,18 @@
+{
+  "application_name": "budly-sales-agent",
+  "application_version": "1.9.0-rc2",
+  "release": "1.9.0-rc2",
+  "release_stage": "PREPRODUCTION_RELEASE_CANDIDATE",
+  "built_at": "2026-09-14T02:12:00-04:00",
+  "governing_slice": "WEB-COMMERCIAL-ALIGNMENT-001F",
+  "baseline_production_accepted_version": "1.8.8",
+  "components": {
+    "secure_memory": "active",
+    "runtime_proxy": "active",
+    "catalog_provisioner": "active",
+    "fail_closed_authorization": "verified",
+    "coupon_deferral_policy": "DEFER_LIVE_COUPON_CREATION_UNTIL_LAUNCH",
+    "torque_redirect_gate": "MIGRATION_GATED",
+    "consultation_booking_destination": "https://wakenbakelounge.com/service-page/is-cannabis-right-for-me"
+  }
+}

@@ -66,6 +66,8 @@ class RuntimeTurnRequest:
 
     @classmethod
     def parse(cls, value: Any) -> "RuntimeTurnRequest":
+        if isinstance(value, cls):
+            return value
         if not isinstance(value, dict) or set(value) - {"conversation_id", "message", "correlation_id", "channel", "reset", "use_durable_memory", "deterministic_context"}:
             raise ValueError("invalid runtime request fields")
         conversation_id = str(value.get("conversation_id", ""))
@@ -340,6 +342,9 @@ class ProductionConversationRuntime:
             return self._safe_result(request, session, deterministic, "I’m having trouble responding right now. The guided Budly experience is still available.", "legacy_guided_flow")
         except (ConnectionError, LookupError, ValueError):
             return self._safe_result(request, session, deterministic, "I couldn’t form a reliable answer. The guided Budly experience is still available.", "legacy_guided_flow")
+
+        if deterministic.get("selected_product_id") is None and isinstance(generated, dict):
+            generated["selected_product_id"] = None
 
         valid, reasons = self.validator.validate(generated, deterministic)
         if not valid:
