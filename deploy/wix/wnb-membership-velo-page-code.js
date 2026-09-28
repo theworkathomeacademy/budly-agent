@@ -1,15 +1,19 @@
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
-import wixWindow from 'wix-window';
+import wixWindowFrontend from 'wix-window-frontend';
 
 // Configuration
 const CMS_COLLECTION_ID = 'wnb-membership-presentation';
 const APPROVED_DOMAIN = 'cccultivate.com';
 const BUDLY_LIGHTBOX_NAME = 'Budly'; // Canonical lightbox name if installed
+const LAYOUT_MESSAGE_TYPE = 'WNB_LAYOUT_MODE';
 
 let cachedMemberships = null;
+let cachedLayoutMode = 'desktop';
 
 $w.onReady(async function () {
+    cachedLayoutMode = resolveLayoutMode(wixWindowFrontend.formFactor);
+
     // 1. Set up postMessage listener for the HTML embed
     setupHtmlEmbedBridge();
 
@@ -48,7 +52,11 @@ function setupHtmlEmbedBridge() {
 
         switch (data.type) {
             case 'WNB_EMBED_READY':
-                // The iframe is ready, send cached data or fetch fresh
+                // The iframe is ready. Send layout first so CMS cards render in
+                // the correct explicit mode even when Wix reports a 980px iframe.
+                sendLayoutModeToEmbed(cachedLayoutMode);
+
+                // Send cached data or fetch fresh.
                 if (cachedMemberships) {
                     sendDataToEmbed(cachedMemberships);
                 } else {
@@ -68,6 +76,35 @@ function setupHtmlEmbedBridge() {
                 console.warn('[WnB Membership] Unknown message type:', data.type);
                 break;
         }
+    });
+}
+
+/**
+ * Map Wix's supported frontend form-factor values to the deterministic
+ * membership layout contract. Unknown values safely retain desktop behavior.
+ */
+function resolveLayoutMode(formFactor) {
+    switch (formFactor) {
+        case 'Tablet':
+            return 'tablet';
+        case 'Mobile':
+            return 'mobile';
+        case 'Desktop':
+        default:
+            return 'desktop';
+    }
+}
+
+/**
+ * Send non-commercial layout state to the membership iframe.
+ */
+function sendLayoutModeToEmbed(mode) {
+    const htmlElement = getHtmlElement();
+    if (!htmlElement) return;
+
+    htmlElement.postMessage({
+        type: LAYOUT_MESSAGE_TYPE,
+        mode: mode
     });
 }
 

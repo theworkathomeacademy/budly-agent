@@ -66,7 +66,7 @@ def test_velo_page_code_contract():
     # Must import required Wix modules
     assert "import wixData from 'wix-data';" in js
     assert "import wixLocation from 'wix-location';" in js
-    assert "import wixWindow from 'wix-window';" in js
+    assert "import wixWindowFrontend from 'wix-window-frontend';" in js
 
     # Collection ID
     assert "wnb-membership-presentation" in js
@@ -86,3 +86,41 @@ def test_velo_page_code_contract():
 
     # Dynamic element resolution
     assert "getHtmlElement" in js
+
+def test_velo_layout_mode_contract_uses_supported_form_factor():
+    with open(VELO_JS_PATH, "r", encoding="utf-8") as f:
+        js = f.read()
+
+    assert "wixWindowFrontend.formFactor" in js
+    assert "WNB_LAYOUT_MODE" in js
+    assert "case 'Desktop':" in js
+    assert "case 'Tablet':" in js
+    assert "case 'Mobile':" in js
+    assert "default:" in js
+    assert "return 'desktop';" in js
+    assert js.index("sendLayoutModeToEmbed(cachedLayoutMode)") < js.index("sendDataToEmbed(cachedMemberships)")
+
+def test_embed_explicit_layout_modes_and_safe_default():
+    with open(EMBED_HTML_PATH, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert '<body class="wnb-desktop">' in html
+    assert "new Set(['desktop', 'tablet', 'mobile'])" in html
+    assert "if (!VALID_LAYOUT_MODES.has(mode)) return;" in html
+    assert "body.wnb-desktop .cards-grid" in html
+    assert "body.wnb-tablet .cards-grid" in html
+    assert "body.wnb-mobile .cards-grid" in html
+    assert "data.type === 'WNB_LAYOUT_MODE'" in html
+
+def test_explicit_layout_mode_does_not_change_commercial_routes():
+    with open(EMBED_HTML_PATH, "r", encoding="utf-8") as f:
+        html = f.read()
+    with open(VELO_JS_PATH, "r", encoding="utf-8") as f:
+        js = f.read()
+
+    assert "WNB_MEMBERSHIP_DATA" in html
+    assert "WNB_MEMBERSHIP_CTA" in html
+    assert "cccultivate.com" in js
+    assert "buy.stripe.com" not in html + js
+    assert "/members" not in html + js
+    assert "openLightbox('Budly')" not in html + js

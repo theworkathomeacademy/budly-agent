@@ -27,6 +27,13 @@
       padding: 0;
     }
 
+    html,
+    body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
     body {
       background-color: var(--bg-cream);
       color: var(--text-dark);
@@ -37,6 +44,7 @@
     }
 
     .container {
+      width: 100%;
       max-width: 1160px;
       margin: 0 auto;
     }
@@ -69,6 +77,7 @@
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 24px;
       margin-bottom: 48px;
+      min-width: 0;
     }
 
     .card {
@@ -81,6 +90,7 @@
       position: relative;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-width: 0;
     }
 
     .card.card-active-tier {
@@ -323,6 +333,89 @@
       font-style: italic;
     }
 
+    /* Explicit Wix Classic layout modes.
+       These classes intentionally do not depend on the iframe's misleading
+       fixed 980px viewport. The tablet and mobile surfaces are left-aligned
+       inside the portion of the Wix page visible to the customer. */
+    body.wnb-desktop .cards-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    body.wnb-tablet {
+      width: 752px;
+      padding: 28px 16px;
+    }
+
+    body.wnb-tablet .container {
+      width: 720px;
+      max-width: 720px;
+      margin: 0;
+    }
+
+    body.wnb-tablet .cards-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    body.wnb-tablet .card-desc {
+      min-height: 0;
+    }
+
+    body.wnb-mobile {
+      width: 344px;
+      padding: 24px 12px;
+    }
+
+    body.wnb-mobile .container {
+      width: 320px;
+      max-width: 320px;
+      margin: 0;
+    }
+
+    body.wnb-mobile .header {
+      margin-bottom: 28px;
+    }
+
+    body.wnb-mobile .header h1 {
+      font-size: 1.75rem;
+    }
+
+    body.wnb-mobile .header p {
+      font-size: 0.95rem;
+    }
+
+    body.wnb-mobile .cards-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    body.wnb-mobile .card {
+      padding: 22px 18px;
+    }
+
+    body.wnb-mobile .card-desc {
+      min-height: 0;
+    }
+
+    body.wnb-mobile .support-section {
+      padding: 24px 18px;
+    }
+
+    body.wnb-mobile .btn-budly {
+      width: 100%;
+    }
+
+    /* Tablet Responsive */
+    @media (max-width: 900px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-desc {
+        min-height: 0;
+      }
+    }
+
     /* Mobile Responsive */
     @media (max-width: 640px) {
       body {
@@ -356,7 +449,7 @@
     }
   </style>
 </head>
-<body>
+<body class="wnb-desktop">
   <div class="container">
     <!-- Header -->
     <header class="header">
@@ -427,6 +520,17 @@
   </div>
 
   <script>
+    const VALID_LAYOUT_MODES = new Set(['desktop', 'tablet', 'mobile']);
+
+    // Apply only the supported deterministic layout states. The initial body
+    // class is desktop, so missing or invalid messages preserve current behavior.
+    function applyLayoutMode(mode) {
+      if (!VALID_LAYOUT_MODES.has(mode)) return;
+
+      document.body.classList.remove('wnb-desktop', 'wnb-tablet', 'wnb-mobile');
+      document.body.classList.add(`wnb-${mode}`);
+    }
+
     // Escape HTML to prevent injection
     function escapeHtml(text) {
       if (!text) return '';
@@ -526,7 +630,9 @@
       const data = event.data;
       if (!data || typeof data !== 'object') return;
 
-      if (data.type === 'WNB_MEMBERSHIP_DATA') {
+      if (data.type === 'WNB_LAYOUT_MODE') {
+        applyLayoutMode(data.mode);
+      } else if (data.type === 'WNB_MEMBERSHIP_DATA') {
         renderMemberships(data.memberships);
       }
     });
