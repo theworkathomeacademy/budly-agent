@@ -8,7 +8,7 @@ final class Config {
     const API_VERSION = '1.1';
     const SCHEMA_VERSION = '1.5.0';
     const BROS_RULE_VERSION = 'bros-rules-1.5.0.0';
-    const COMMERCE_CONFIG_VERSION = 'commerce-attribution-1.6.0.0';
+    const COMMERCE_CONFIG_VERSION = 'commerce-correlation-1.8.2.0';
     const CONSENT_VERSION = '1.0';
     const SESSION_COOKIE = 'budly_memory_session';
     const SESSION_IDLE_SECONDS = 1800;

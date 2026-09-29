@@ -6,6 +6,7 @@ use Budly\SecureMemory\Database\Repository;
 use Budly\SecureMemory\Decision\DecisionRepository;
 use Budly\SecureMemory\Decision\DecisionService;
 use Budly\SecureMemory\Consent\ConsentRepository;
+use Budly\Commerce\CommerceCorrelationService;
 
 if (!defined('ABSPATH')) { exit; }
 
@@ -95,7 +96,7 @@ final class ConversationProxy {
         if ($content_length < 2 || $content_length > self::MAX_REQUEST_BYTES) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         if (!self::rate_allowed()) return self::error('RATE_LIMITED', 'Please wait before sending more messages.', 429);
         $params = $request->get_json_params();
-        if (!is_array($params) || array_diff(array_keys($params), array('conversation_id','message','reset'))) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
+        if (!is_array($params) || array_diff(array_keys($params), array('conversation_id','message','reset','attribution'))) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         $conversation = sanitize_text_field((string)($params['conversation_id'] ?? ''));
         $message = sanitize_textarea_field((string)($params['message'] ?? ''));
         $reset = !empty($params['reset']);
@@ -105,6 +106,8 @@ final class ConversationProxy {
         $configuration = self::configuration();
         if (isset($configuration['error'])) return self::error('RUNTIME_UNAVAILABLE', 'The conversational runtime is unavailable.', 503);
         $correlation = wp_generate_uuid4();
+        $decision = self::deterministic_context($conversation, $message, is_array($params['attribution'] ?? null) ? $params['attribution'] : array());
+        $runtime_context = array_intersect_key($decision, array_flip(array('outcome','selected_product_id','confidence','resulting_action','journey')));
         $runtime_request = array(
             'conversation_id' => $conversation,
             'message' => $message,
@@ -112,7 +115,7 @@ final class ConversationProxy {
             'channel' => 'ccc_website',
             'reset' => $reset,
             'use_durable_memory' => false,
-            'deterministic_context' => self::deterministic_context($conversation, $message),
+            'deterministic_context' => $runtime_context,
         );
         $body = wp_json_encode($runtime_request, JSON_UNESCAPED_SLASHES);
         $timestamp = (string) time();
@@ -158,11 +161,19 @@ final class ConversationProxy {
             return self::error('RUNTIME_RESPONSE_INVALID', 'The conversational response could not be validated.', 503, $correlation);
         }
         self::audit($correlation, 'success', '');
+        $response = $decoded['response'];
+        if (!empty($response['selected_product_id']) && ($decision['outcome'] ?? '') === 'recommended') {
+            $token = CommerceCorrelationService::issue($decision, array(
+                'conversation_id' => $conversation,
+                'journey' => $decision['journey'] ?? '',
+            ), array());
+            if ($token !== null) { $response['commerce_correlation_token'] = $token; }
+        }
         return new \WP_REST_Response(array(
             'success' => true,
             'data' => array(
                 'conversation_id' => $conversation,
-                'response' => $decoded['response'],
+                'response' => $response,
                 'evidence' => array('correlation_id' => $correlation, 'knowledge_used' => !empty($decoded['evidence']['knowledge_used'])),
             ),
         ), 200);
@@ -197,7 +208,7 @@ final class ConversationProxy {
         );
     }
 
-    private static function deterministic_context($conversation, $message) {
+    private static function deterministic_context($conversation, $message, array $attribution = array()) {
         $lower = strtolower($message);
         $risk = preg_match('/\b(diagnose|treat|treatment|cure|cancer|dosage|dose|medication|hospital|under 18|under 21|legal advice)\b/', $lower);
         $commercial = preg_match('/\b(product|book|course|coloring|buy|price|cost|membership|wholesale|tincture|butter|oil)\b/', $lower);
@@ -205,13 +216,15 @@ final class ConversationProxy {
         if (!$risk && !$commercial) return array('journey' => $journey, 'outcome' => 'conversation', 'selected_product_id' => null, 'resulting_action' => 'continue_conversation');
         try {
             $service = new DecisionService(new DecisionRepository(), new ConsentRepository(), new AuditService(new Repository()));
-            return array_intersect_key($service->evaluate(array(
+            $decision = $service->evaluate(array(
                 'conversation_id' => $conversation,
                 'journey' => $journey,
                 'objective' => $message,
                 'answers' => $commercial ? array($message, 'current catalog', 'customer conversation') : array(),
                 'use_memory' => false,
-            ), array()), array_flip(array('outcome','selected_product_id','confidence','resulting_action'))) + array('journey' => $journey);
+                'attribution' => $attribution,
+            ), array());
+            return $decision + array('journey' => $journey);
         } catch (\Throwable $error) {
             return array('journey' => $journey, 'outcome' => 'human_review', 'selected_product_id' => null, 'resulting_action' => 'human_escalation');
         }

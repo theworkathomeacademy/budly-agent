@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.8 — AFF-001 P0 combined baseline
+
+- Integrated the verified STS-2 lineage through `5562b940a958544bf5c3e1834b558db0ecceb117` onto the accepted CCSS/Budly baseline without changing the accepted application version.
+- Added signed, product-bound recommendation-to-order correlation and existing-schema BROS revenue-event evidence while preserving the CCSS runtime recovery, public journey, security validation, and non-production boundary.
+
 ## 1.8.4
 
 - Added container-safe `CURLOPT_RESOLVE` edge resolution fallback for `runtime.cccultivate.com` to prevent hosting container DNS resolution timeouts.

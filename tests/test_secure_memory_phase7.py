@@ -11,6 +11,7 @@ class Phase7AdministrationTests(unittest.TestCase):
   cls.service=(BASE/"includes"/"SecureMemory"/"Admin"/"AdminService.php").read_text(encoding="utf-8")
   cls.repo=(BASE/"includes"/"SecureMemory"/"Admin"/"AdminRepository.php").read_text(encoding="utf-8")
   cls.page=(BASE/"includes"/"SecureMemory"/"Admin"/"AdminPage.php").read_text(encoding="utf-8")
+  cls.script=(BASE/"assets"/"budly-secure-memory-admin.js").read_text(encoding="utf-8")
 
  def test_all_approved_admin_endpoints_exist(self):
   for endpoint in ("/admin/health","/admin/audit","/admin/revoke-session","/admin/revoke-all","/admin/test-email"):
@@ -58,5 +59,29 @@ class Phase7AdministrationTests(unittest.TestCase):
   self.assertIn("budly-secure-memory-admin.js",self.page)
   self.assertIn("wp_create_nonce('wp_rest')",self.page)
   self.assertTrue((BASE/"assets"/"budly-secure-memory-admin.js").is_file())
+
+ def test_admin_audit_ui_exposes_conversation_and_decoded_metadata_read_only(self):
+  self.assertIn("item.conversation_id",self.script)
+  self.assertIn("JSON.stringify(item.metadata??{},null,2)",self.script)
+  self.assertIn("document.createElement('details')",self.script)
+  self.assertIn("metadata.textContent",self.script)
+  self.assertIn("data-audit-conversation",self.page)
+  self.assertIn("data-audit-filter",self.page)
+  self.assertNotIn("contentEditable",self.script)
+
+ def test_audit_visibility_preserves_admin_boundary_and_api_contract(self):
+  handler=self.routes.split("public static function admin_audit",1)[1].split("public static function admin_revoke_session",1)[0]
+  self.assertIn("self::admin_permission()",handler)
+  self.assertIn("ADMIN_PERMISSION_REQUIRED",handler)
+  self.assertIn("audit_log($filters",handler)
+  self.assertNotIn("conversation_id",handler)
+  self.assertNotIn("POST",handler)
+  self.assertNotIn("DELETE",handler)
+  self.assertIn("/admin/audit?per_page=100",self.script)
+  self.assertIn("item.conversation_id===query",self.script)
+
+ def test_customer_facing_ask_budly_is_not_part_of_admin_audit_ui(self):
+  self.assertNotIn("budly-sales.js",self.page)
+  self.assertNotIn("data-budly-sales",self.page)
 
 if __name__=="__main__":unittest.main()

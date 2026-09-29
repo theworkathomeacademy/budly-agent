@@ -78,7 +78,7 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
   const loadProducts=async()=>{try{const r=await fetch(cfg.storeApiUrl,{credentials:'same-origin'});if(!r.ok)throw 0;return(await r.json()).filter(p=>allowed.has(p.slug))}catch(e){return[]}};
   const money=p=>{const d=Number(p.prices?.currency_minor_unit??2),lo=Number(p.prices?.price??0)/10**d,min=Number(p.prices?.price_range?.min_amount??p.prices?.price??0)/10**d,max=Number(p.prices?.price_range?.max_amount??p.prices?.price??0)/10**d;return max&&max!==min?'$'+min.toFixed(2)+'–$'+max.toFixed(2):'$'+lo.toFixed(2)};
   const recommend=products=>{const request=(state.goal+' '+state.answers.join(' ')).toLowerCase(),words=request.match(/[a-z0-9]+/g)||[],numbers=request.match(/\$?\d+(?:\.\d+)?/g)?.map(x=>Number(x.replace('$','')))||[],budget=numbers.length>=2?{min:Math.min(...numbers.slice(-2)),max:Math.max(...numbers.slice(-2))}:null,price=p=>Number(p.prices?.price??0)/10**Number(p.prices?.currency_minor_unit??2);let scored=products.map(p=>{const cats=(p.categories||[]).map(c=>c.name);if(!state.journey.cats.some(c=>cats.includes(c)))return[-1,p];if(state.journey===journeys.culinary&&cats.includes('Education'))return[-1,p];if(state.journey!==journeys.wholesale&&cats.includes('bulk'))return[-1,p];const hay=(p.name+' '+cats.join(' ')).toLowerCase(),within=!budget||(price(p)>=budget.min&&price(p)<=budget.max);let score=words.filter(w=>w.length>2&&hay.includes(w)).length;if(request.includes('one-time')&&(hay.includes('one-time')||hay.includes('1-time')))score+=4;if(request.includes('monthly')&&hay.includes('monthly'))score+=4;if(budget&&within)score+=8;return[score,p,within]}).filter(x=>x[0]>=0);if(budget&&scored.some(x=>x[2]))scored=scored.filter(x=>x[2]);scored.sort((a,b)=>b[0]-a[0]||price(a[1])-price(b[1]));return scored[0]?.[1]||null};
-  const card=p=>{const e=document.createElement('article');e.className='budly-card';e.innerHTML='<div class="budly-label">Closest current match</div><h3>'+esc(p.name.replace(/&#8217;/g,"'").replace(/&#8211;/g,'–'))+'</h3><div class="budly-price">'+esc(money(p))+'</div><p>'+esc(safeSummary[Object.keys(journeys).find(k=>journeys[k]===state.journey)])+'</p><a href="'+esc(p.permalink)+'">View product ↗</a>';messages.append(e);messages.scrollTop=messages.scrollHeight;track('recommendation_shown',{product_url:p.permalink});e.querySelector('a').addEventListener('click',()=>track('product_clicked',{product_url:p.permalink}))};
+  const card=(p,commerceToken='')=>{const u=new URL(p.permalink,location.origin);if(commerceToken)u.searchParams.set('budly_correlation',commerceToken);const destination=u.toString(),e=document.createElement('article');e.className='budly-card';e.innerHTML='<div class="budly-label">Closest current match</div><h3>'+esc(p.name.replace(/&#8217;/g,"'").replace(/&#8211;/g,'–'))+'</h3><div class="budly-price">'+esc(money(p))+'</div><p>'+esc(safeSummary[Object.keys(journeys).find(k=>journeys[k]===state.journey)])+'</p><a href="'+esc(destination)+'">View product ↗</a>';messages.append(e);messages.scrollTop=messages.scrollHeight;track('recommendation_shown',{product_url:p.permalink});e.querySelector('a').addEventListener('click',()=>track('product_clicked',{product_url:p.permalink}))};
   const handoff=async()=>{const summary=[state.goal,...state.answers].join(' | '),body=new URLSearchParams({action:'budly_sales_handoff',nonce:cfg.nonce,name:state.name||'Website visitor',email:state.email||cfg.supportEmail,journey:state.journey?.label||'Support',summary});try{const r=await fetch(cfg.ajaxUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});const out=await r.json();if(out.success){bubble(out.data.message+' Reference: '+out.data.reference,'bot','Human support');if(!out.data.sent)link('mailto:'+cfg.supportEmail,'Email '+cfg.supportEmail)}else throw new Error(out.data?.message)}catch(e){bubble('I could not send the handoff automatically. Please email '+cfg.supportEmail+'.','bot','Human support');link('mailto:'+cfg.supportEmail,'Email '+cfg.supportEmail)}};
   const offerHumanHelp=()=>{input('<button type="button" data-human-help>Request human support</button>','');send.hidden=true;fields.querySelector('[data-human-help]').addEventListener('click',()=>{track('human_support_requested');handoff()})};
   const governedDecision=async()=>{
@@ -114,17 +114,19 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
   };
   const conversationalTurn=async(message)=>{
    const headers={'Content-Type':'application/json','X-WP-Nonce':cfg.conversationNonce||''};
+   const payload={conversation_id:state.session,message};
+   if(hasAttribution)payload.attribution=state.attribution;
    const r=await fetch(cfg.conversationUrl,{
     method:'POST',
     credentials:'same-origin',
     headers,
-    body:JSON.stringify({conversation_id:state.session,message})
+    body:JSON.stringify(payload)
    });
    const out=await r.json();
    if(!r.ok||!out.success)throw new Error(out?.error?.message||'The conversational runtime is temporarily unavailable.');
    return out.data;
   };
-  const finish=async()=>{send.hidden=true;fields.innerHTML='';const decision=await governedDecision(),products=await loadProducts(),p=products.find(x=>x.slug===decision.selected_product_id);if(decision.outcome==='human_review'){bubble('I cannot safely complete that request with an automated product recommendation. A qualified person can help.','bot','Human review');offerHumanHelp()}else if(decision.outcome==='recommended'&&p){bubble('Based on what you shared, this is the closest approved match in the current catalog.','bot',state.journey.label);card(p)}else if(decision.outcome==='clarification_required'||decision.outcome==='nurture'){bubble('I need a little more detail before making a confident match, so I will not guess.','bot','More information needed');offerHumanHelp()}else if(decision.outcome==='consent_restricted'){bubble('I continued without remembered information because the required consent was not active.','bot','Privacy protected');offerHumanHelp()}else{bubble('I do not have a confident approved catalog match, so I will not guess.','bot');offerHumanHelp()}complete();state.step='done'};
+  const finish=async()=>{send.hidden=true;fields.innerHTML='';const decision=await governedDecision(),products=await loadProducts(),p=products.find(x=>x.slug===decision.selected_product_id);if(decision.outcome==='human_review'){bubble('I cannot safely complete that request with an automated product recommendation. A qualified person can help.','bot','Human review');offerHumanHelp()}else if(decision.outcome==='recommended'&&p){bubble('Based on what you shared, this is the closest approved match in the current catalog.','bot',state.journey.label);card(p,decision.commerce_correlation_token||'')}else if(decision.outcome==='clarification_required'||decision.outcome==='nurture'){bubble('I need a little more detail before making a confident match, so I will not guess.','bot','More information needed');offerHumanHelp()}else if(decision.outcome==='consent_restricted'){bubble('I continued without remembered information because the required consent was not active.','bot','Privacy protected');offerHumanHelp()}else{bubble('I do not have a confident approved catalog match, so I will not guess.','bot');offerHumanHelp()}complete();state.step='done'};
   form.addEventListener('click',e=>{
     const returning=e.target.closest('[data-budly-returning]');
     if(returning){
@@ -167,6 +169,10 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
             const turn=await conversationalTurn(userMessage);
             bubble(turn.response.text,'bot');
             renderApprovedLinks(turn.response.links);
+            if(turn.response.selected_product_id){
+              const products=await loadProducts(),p=products.find(item=>item.slug===turn.response.selected_product_id);
+              if(p)card(p,turn.response.commerce_correlation_token||'');
+            }
             if(turn.response.resulting_action==='human_handoff'){
               offerHumanHelp();
             }else if(turn.response.resulting_action==='legacy_guided_flow'){

@@ -21,7 +21,7 @@ class CommerceAttributionV16Tests(unittest.TestCase):
     def test_versions_are_separately_governed(self):
         self.assertIn("SCHEMA_VERSION = '1.5.0'", self.config)
         self.assertIn("BROS_RULE_VERSION = 'bros-rules-1.5.0.0'", self.config)
-        self.assertIn("COMMERCE_CONFIG_VERSION = 'commerce-attribution-1.6.0.0'", self.config)
+        self.assertIn("COMMERCE_CONFIG_VERSION = 'commerce-correlation-1.8.2.0'", self.config)
 
     def test_four_promoted_tables_are_additive_and_prefixed(self):
         for name in ("commerce_events", "order_links", "affiliate_attribution", "revenue_daily"):
@@ -113,7 +113,7 @@ class CommerceAttributionV16Tests(unittest.TestCase):
 
     def test_build_manifest_contains_commerce_configuration(self):
         build = (ROOT / "scripts/build_plugin.py").read_text(encoding="utf-8")
-        self.assertIn('COMMERCE_CONFIG_VERSION = "commerce-attribution-1.6.0.0"', build)
+        self.assertIn('COMMERCE_CONFIG_VERSION = "commerce-correlation-1.8.2.0"', build)
         self.assertIn('"commerce_configuration_version": COMMERCE_CONFIG_VERSION', build)
 
 

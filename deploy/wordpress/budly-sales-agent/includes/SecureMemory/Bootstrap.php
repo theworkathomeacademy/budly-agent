@@ -25,7 +25,7 @@ final class Bootstrap {
             'Admin/AdminRepository.php','Admin/AdminService.php','Admin/AdminPage.php',
             'Cleanup/CleanupService.php',
             'Security/RequestSecurity.php',
-            '../Commerce/CommerceRepository.php','../Commerce/AttributionService.php',
+            '../Commerce/CommerceRepository.php','../Commerce/AttributionService.php','../Commerce/CommerceCorrelationService.php',
             '../Commerce/RevenueService.php','../Commerce/WooCommerceAdapter.php',
             '../Conversation/ConversationManager.php','../Lifecycle/LifecycleEngine.php',
             'Api/Routes.php',
@@ -41,6 +41,7 @@ final class Bootstrap {
         add_action('budly_secure_memory_cleanup', array('Budly\\SecureMemory\\Cleanup\\CleanupService', 'scheduled_run'));
         add_filter('rest_pre_dispatch', array('Budly\\SecureMemory\\Security\\RequestSecurity', 'before'), 10, 3);
         add_filter('rest_post_dispatch', array('Budly\\SecureMemory\\Security\\RequestSecurity', 'after'), 10, 3);
+        \Budly\Commerce\CommerceCorrelationService::register();
         \Budly\Commerce\WooCommerceAdapter::register();
         if (!wp_next_scheduled('budly_secure_memory_cleanup')) { wp_schedule_event(time()+300, 'daily', 'budly_secure_memory_cleanup'); }
     }

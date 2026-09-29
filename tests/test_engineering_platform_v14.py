@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class EngineeringPlatformV14Tests(unittest.TestCase):
     def test_version_sources_are_consistent(self):
-        found = validate_versions.validate("1.8.4")
-        self.assertEqual(set(found.values()), {"1.8.4"})
+        found = validate_versions.validate("1.8.8")
+        self.assertEqual(set(found.values()), {"1.8.8"})
 
     def test_tag_patch_zero_is_semantically_equivalent(self):
         self.assertEqual(validate_versions.normalize("budly-v1.4"), (1, 4, 0))
@@ -52,6 +52,23 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "forbidden tracked file"):
                 validate_repository.validate(root)
 
+    def test_governed_migration_sql_is_allowed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for required in validate_repository.REQUIRED_PROJECT_FILES:
+                path = root / required
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("test\n", encoding="utf-8")
+            for required in validate_repository.REQUIRED_PLUGIN_FILES:
+                path = root / validate_repository.PLUGIN / required
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("test\n", encoding="utf-8")
+            migration = root / "migrations/example/001_example.sql"
+            migration.parent.mkdir(parents=True, exist_ok=True)
+            migration.write_text("SELECT 1;\n", encoding="utf-8")
+            tracked = validate_repository.validate(root)
+            self.assertIn("migrations/example/001_example.sql", tracked)
+
     def test_build_is_byte_reproducible(self):
         with tempfile.TemporaryDirectory() as directory:
             first = Path(directory) / "first.zip"
@@ -76,7 +93,7 @@ class EngineeringPlatformV14Tests(unittest.TestCase):
             build_plugin.build(output, "abc123")
             with ZipFile(output) as archive:
                 manifest = json.loads(archive.read("budly-sales-agent/release-manifest.json"))
-            self.assertEqual(manifest["application_version"], "1.8.4")
+            self.assertEqual(manifest["application_version"], "1.8.8")
             self.assertEqual(manifest["schema_version"], "1.5.0")
             self.assertEqual(manifest["rules_version"], "bros-rules-1.5.0.0")
             self.assertEqual(manifest["source_commit"], "abc123")

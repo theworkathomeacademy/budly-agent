@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.8.2
+
+- Added a signed, bounded STS-2 commerce correlation token issued only for an authoritative Budly recommendation.
+- Preserved the correlation through the selected product, WooCommerce cart, and hidden order metadata without affecting price, tax, shipping, or fulfillment.
+- Added deterministic conversion-state reporting derived only from verified WooCommerce revenue events.
+- Added the canonical REV workflow artifact that carries validated correlation fields inside the existing `bros.revenue_event.v1` `event_payload`; no Supabase schema migration is required.
+
+## 1.8.1
+
+- Added read-only administrator visibility for decoded audit metadata and conversation identifiers returned by the existing protected audit API.
+- Added a local conversation-ID filter over the bounded administrator audit result set.
+- Application 1.8.1; schema remains 1.5.0; rules and commerce configuration are unchanged.
+
 ## 1.8.0
 
 - Added the governed conversational WordPress-to-Python/BROS integration with approved knowledge, GPT-5.6 Luna configuration, structured validation, and deterministic fallback.

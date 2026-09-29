@@ -1,0 +1,524 @@
+[
+  {
+    "id": "REVWooIntakeV1",
+    "name": "REV - Woo Order Event Intake",
+    "description": "Production REV intake with STS-2 deterministic commerce correlation; preserves established HMAC, validation, normalization, idempotency, and Supabase RPC boundaries.",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "rev/woo/order-event-intake",
+          "responseMode": "responseNode",
+          "options": {
+            "rawBody": true
+          }
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -1160,
+          0
+        ],
+        "id": "7a46aa64-1057-4b73-8be1-04cd3b1f571c",
+        "name": "Woo Order Webhook",
+        "webhookId": "7a54d296-5311-41ad-9dbc-cba3caf2cc4a"
+      },
+      {
+        "parameters": {
+          "action": "hmac",
+          "binaryData": true,
+          "binaryPropertyName": "data",
+          "type": "SHA256",
+          "dataPropertyName": "computed_signature",
+          "encoding": "base64"
+        },
+        "type": "n8n-nodes-base.crypto",
+        "typeVersion": 2,
+        "position": [
+          -940,
+          0
+        ],
+        "id": "b6730ab7-66e4-4038-9ae6-98ff4ea55d0d",
+        "name": "Compute Woo HMAC",
+        "credentials": {
+          "crypto": {
+            "id": "BROSSyntheticHmacV1",
+            "name": "BROS Woo Webhook HMAC"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "action": "hash",
+          "binaryData": true,
+          "binaryPropertyName": "data",
+          "type": "SHA256",
+          "dataPropertyName": "payload_sha256",
+          "encoding": "hex"
+        },
+        "type": "n8n-nodes-base.crypto",
+        "typeVersion": 2,
+        "position": [
+          -720,
+          0
+        ],
+        "id": "5f661548-c58c-4d56-8da7-fac9b0a65fd9",
+        "name": "Hash Raw Payload"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -610,
+          0
+        ],
+        "id": "334b7922-e0f3-4edc-ad4a-cefe298cb3a4",
+        "name": "Merge Payload Digests"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const headers = $json.headers ?? {};\nconst getHeader = (name) => {\n  const wanted = name.toLowerCase();\n  const key = Object.keys(headers).find((candidate) => candidate.toLowerCase() === wanted);\n  return key ? String(headers[key] ?? '') : '';\n};\nconst constantTimeEqual = (left, right) => {\n  left = String(left ?? '');\n  right = String(right ?? '');\n  let diff = left.length ^ right.length;\n  const length = Math.max(left.length, right.length);\n  for (let i = 0; i < length; i++) diff |= (left.charCodeAt(i) || 0) ^ (right.charCodeAt(i) || 0);\n  return diff === 0;\n};\nconst providedSignature = getHeader('x-wc-webhook-signature');\nconst computedSignature = String($json.computed_signature ?? '');\nconst signatureValid = providedSignature.length > 0 && computedSignature.length > 0 && constantTimeEqual(providedSignature, computedSignature);\nconst body = $json.body;\nconst errors = [];\nif (!body || typeof body !== 'object' || Array.isArray(body)) errors.push('body_not_object');\nif (body && (body.id === undefined || body.id === null || String(body.id) === '')) errors.push('order_id_missing');\nif (body && (!body.status || typeof body.status !== 'string')) errors.push('order_status_missing');\nif (body && (typeof body.currency !== 'string' || !/^[A-Za-z]{3}$/.test(body.currency))) errors.push('currency_invalid');\nif (body && (body.total === undefined || body.total === null || body.total === '' || !Number.isFinite(Number(body.total)) || Number(body.total) < 0)) errors.push('total_invalid');\nif (body && !Array.isArray(body.line_items)) errors.push('line_items_invalid');\nif (body && !(body.date_modified_gmt || body.date_created_gmt || body.date_modified || body.date_created)) errors.push('event_time_missing');\nconst topic = getHeader('x-wc-webhook-topic');\nconst resource = getHeader('x-wc-webhook-resource');\nconst event = getHeader('x-wc-webhook-event');\nconst webhookId = getHeader('x-wc-webhook-id');\nconst deliveryId = getHeader('x-wc-webhook-delivery-id');\nconst sourceHeader = getHeader('x-wc-webhook-source');\nif (!topic || !resource || !event || !webhookId || !deliveryId || !sourceHeader) errors.push('required_woo_headers_missing');\nif (resource && resource !== 'order') errors.push('resource_not_order');\nif (topic && !topic.startsWith('order.')) errors.push('topic_not_order');\nlet sourceSite = '';\ntry { sourceSite = new URL(sourceHeader).host.toLowerCase(); } catch { errors.push('source_invalid'); }\nreturn {\n  json: {\n    body,\n    payload_sha256: String($json.payload_sha256 ?? ''),\n    intake: {\n      signature_valid: signatureValid,\n      payload_valid: errors.length === 0,\n      validation_errors: errors,\n      topic, resource, event, webhook_id: webhookId, delivery_id: deliveryId, source_site: sourceSite,\n      received_at: new Date().toISOString(),\n      n8n_execution_id: String($execution.id ?? '')\n    }\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -500,
+          0
+        ],
+        "id": "78748ac1-cdc7-405d-a57f-370646c02fa3",
+        "name": "Verify Signature and Validate Envelope"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "71e353fe-a3d4-4432-a774-0f76e9fe11d5",
+                "leftValue": "={{ $json.intake.signature_valid }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -280,
+          0
+        ],
+        "id": "f43dabf6-7147-4b71-85a8-f7beb0ef5690",
+        "name": "Signature Valid?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "9999e1cb-3c15-4ef7-a510-95957c554256",
+                "leftValue": "={{ $json.intake.payload_valid }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -40,
+          -80
+        ],
+        "id": "f0ae01fc-d203-4719-b64b-dc3c98aa53e3",
+        "name": "Payload Valid?"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const body = $json.body;\nconst intake = $json.intake;\nconst PREFIX_RULES = [\n  { family: 'course', prefixes: ['COURSE-'] },\n  { family: 'membership', prefixes: ['MEMBER-', 'SUB-'] },\n  { family: 'service', prefixes: ['SERVICE-', 'COACH-'] },\n];\nconst classify = (sku) => {\n  const normalized = String(sku ?? '').trim().toUpperCase();\n  const rule = PREFIX_RULES.find((candidate) => candidate.prefixes.some((prefix) => normalized.startsWith(prefix)));\n  return rule?.family ?? 'unmapped';\n};\nconst amount = (value) => Number(Number(value ?? 0).toFixed(2));\nconst metaData = Array.isArray(body.meta_data) ? body.meta_data : [];\nconst metaValue = (key) => {\n  const item = metaData.find((candidate) => candidate && candidate.key === key);\n  return item && ['string', 'number'].includes(typeof item.value) ? String(item.value) : '';\n};\nconst correlationId = metaValue('_budly_commerce_correlation_id');\nconst conversationId = metaValue('_budly_conversation_id');\nconst decisionId = metaValue('_budly_decision_id');\nconst correlationValid = /^sts2_[a-f0-9]{32}$/.test(correlationId)\n  && /^(?:conv_[a-z0-9]{12,40}|[a-f0-9-]{36})$/.test(conversationId)\n  && /^dec_[a-z0-9]{12,40}$/.test(decisionId);\nconst commerceCorrelation = correlationValid ? {\n  status: 'linked',\n  correlation_id: correlationId,\n  conversation_id: conversationId,\n  decision_id: decisionId,\n} : { status: correlationId || conversationId || decisionId ? 'invalid' : 'absent' };\nconst lineItems = body.line_items.map((line) => ({\n  source_line_id: String(line.id ?? ''),\n  source_product_id: String(line.product_id ?? ''),\n  source_variation_id: line.variation_id ? String(line.variation_id) : null,\n  sku: String(line.sku ?? '').trim(),\n  quantity: Number(line.quantity ?? 0),\n  line_total: amount(line.total),\n  line_tax: amount(line.total_tax),\n  product_family: classify(line.sku),\n}));\nconst productFamilies = [...new Set(lineItems.map((line) => line.product_family))].sort();\nconst occurredRaw = body.date_modified_gmt || body.date_created_gmt || body.date_modified || body.date_created;\nconst occurredAt = /Z$|[+-]\\d{2}:?\\d{2}$/.test(occurredRaw) ? occurredRaw : `${occurredRaw}Z`;\nconst identity = ['woocommerce', intake.source_site, intake.topic, intake.event, intake.webhook_id, intake.delivery_id, String(body.id)].join('|');\nreturn {\n  json: {\n    idempotency_identity: identity,\n    revenue_event: {\n      schema_version: 'bros.revenue_event.v1',\n      source_system: 'woocommerce',\n      source_site: intake.source_site,\n      source_event_type: intake.topic,\n      source_event_id: `${intake.webhook_id}:${intake.delivery_id}`,\n      source_webhook_id: intake.webhook_id,\n      source_order_id: String(body.id),\n      source_order_number: String(body.number ?? body.id),\n      occurred_at: new Date(occurredAt).toISOString(),\n      received_at: intake.received_at,\n      order_status: String(body.status).toLowerCase(),\n      currency: String(body.currency).toUpperCase(),\n      gross_amount: amount(body.total),\n      discount_amount: amount(body.discount_total),\n      shipping_amount: amount(body.shipping_total),\n      tax_amount: amount(body.total_tax),\n      product_families: productFamilies,\n      line_items: lineItems,\n      commerce_correlation: commerceCorrelation,\n      payload_sha256: $json.payload_sha256,\n      mapping_version: 'bros-product-family-map-v1',\n      n8n_execution_id: intake.n8n_execution_id\n    }\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          -180
+        ],
+        "id": "3a69a849-a39b-4f99-ad0f-8cac34edec70",
+        "name": "Normalize Revenue Event v1"
+      },
+      {
+        "parameters": {
+          "action": "hash",
+          "binaryData": false,
+          "value": "={{ $json.idempotency_identity }}",
+          "type": "SHA256",
+          "dataPropertyName": "idempotency_key",
+          "encoding": "hex"
+        },
+        "type": "n8n-nodes-base.crypto",
+        "typeVersion": 2,
+        "position": [
+          440,
+          -180
+        ],
+        "id": "feebad78-174a-4117-8d25-711083741e09",
+        "name": "Generate Idempotency Key"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const event = { ...$json.revenue_event, idempotency_key: $json.idempotency_key };\nreturn { json: { revenue_event: event } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          660,
+          -180
+        ],
+        "id": "d7ebd248-d69a-4d43-877b-32aac3269350",
+        "name": "Finalize Persistence Payload"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://gfcgrpvvqstdohnkhmyl.supabase.co/rest/v1/rpc/bros_ingest_revenue_event",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": "identity"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "raw",
+          "rawContentType": "application/json",
+          "body": "={{ JSON.stringify({ p_event: $json.revenue_event }) }}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true,
+                "responseFormat": "autodetect"
+              }
+            },
+            "timeout": 15000
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.4,
+        "position": [
+          900,
+          -180
+        ],
+        "id": "e592cf47-e578-44cf-b99c-e9d56a01ab98",
+        "name": "Supabase Atomic Ingest RPC",
+        "continueOnFail": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "x1zWg1J1iaoDkbAv",
+            "name": "BROS Supabase Revenue Writer"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const statusCode = Number($json.statusCode ?? 0);\nconst body = $json.body ?? $json;\nconst result = Array.isArray(body) ? body[0] : body;\nconst accepted = statusCode >= 200 && statusCode < 300 && result?.status === 'accepted';\nconst duplicate = statusCode >= 200 && statusCode < 300 && result?.status === 'duplicate';\nif (accepted) return { json: { http_status: 202, response: { ok: true, status: 'accepted', event_id: result.event_id, idempotency_key: result.idempotency_key } } };\nif (duplicate) return { json: { http_status: 200, response: { ok: true, status: 'duplicate', event_id: result.event_id, idempotency_key: result.idempotency_key } } };\nconst log = { severity: 'error', component: 'rev_woo_order_event_intake', stage: 'persistence', code: 'supabase_persistence_failed', n8n_execution_id: String($execution.id ?? ''), upstream_status: statusCode || null, timestamp: new Date().toISOString() };\nconsole.error(JSON.stringify(log));\nreturn { json: { http_status: 503, response: { ok: false, status: 'persistence_failure' } } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1140,
+          -180
+        ],
+        "id": "9062727f-5d24-407e-b421-71e3c8741657",
+        "name": "Interpret Persistence Result"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const intake = $json.intake ?? {};\nconsole.error(JSON.stringify({ severity: 'warn', component: 'rev_woo_order_event_intake', stage: 'authentication', code: 'invalid_signature', source_site: intake.source_site || null, webhook_id: intake.webhook_id || null, delivery_id: intake.delivery_id || null, n8n_execution_id: String($execution.id ?? ''), timestamp: new Date().toISOString() }));\nreturn { json: { http_status: 401, response: { ok: false, status: 'invalid_signature' } } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -40,
+          200
+        ],
+        "id": "176539be-a2ec-4f57-80a4-1dc8f88d11df",
+        "name": "Log Invalid Signature"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const intake = $json.intake ?? {};\nconsole.error(JSON.stringify({ severity: 'warn', component: 'rev_woo_order_event_intake', stage: 'validation', code: 'malformed_payload', validation_errors: intake.validation_errors ?? ['unknown'], source_site: intake.source_site || null, webhook_id: intake.webhook_id || null, delivery_id: intake.delivery_id || null, n8n_execution_id: String($execution.id ?? ''), timestamp: new Date().toISOString() }));\nreturn { json: { http_status: 422, response: { ok: false, status: 'malformed_payload' } } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          40
+        ],
+        "id": "c84dadad-8244-48a5-a6b8-d5ab7f8bc8d6",
+        "name": "Log Malformed Payload"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ $json.response }}",
+          "options": {
+            "responseCode": "={{ $json.http_status }}",
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "name": "Cache-Control",
+                  "value": "no-store"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          1380,
+          40
+        ],
+        "id": "9e98d6c5-115e-4136-a6c3-aa530d65c44d",
+        "name": "Return Safe HTTP Response"
+      }
+    ],
+    "connections": {
+      "Woo Order Webhook": {
+        "main": [
+          [
+            {
+              "node": "Compute Woo HMAC",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Hash Raw Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compute Woo HMAC": {
+        "main": [
+          [
+            {
+              "node": "Merge Payload Digests",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Hash Raw Payload": {
+        "main": [
+          [
+            {
+              "node": "Merge Payload Digests",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge Payload Digests": {
+        "main": [
+          [
+            {
+              "node": "Verify Signature and Validate Envelope",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verify Signature and Validate Envelope": {
+        "main": [
+          [
+            {
+              "node": "Signature Valid?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Signature Valid?": {
+        "main": [
+          [
+            {
+              "node": "Payload Valid?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Invalid Signature",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Payload Valid?": {
+        "main": [
+          [
+            {
+              "node": "Normalize Revenue Event v1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Malformed Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Revenue Event v1": {
+        "main": [
+          [
+            {
+              "node": "Generate Idempotency Key",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Idempotency Key": {
+        "main": [
+          [
+            {
+              "node": "Finalize Persistence Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Finalize Persistence Payload": {
+        "main": [
+          [
+            {
+              "node": "Supabase Atomic Ingest RPC",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Supabase Atomic Ingest RPC": {
+        "main": [
+          [
+            {
+              "node": "Interpret Persistence Result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Interpret Persistence Result": {
+        "main": [
+          [
+            {
+              "node": "Return Safe HTTP Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Invalid Signature": {
+        "main": [
+          [
+            {
+              "node": "Return Safe HTTP Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Malformed Payload": {
+        "main": [
+          [
+            {
+              "node": "Return Safe HTTP Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveDataErrorExecution": "none",
+      "saveDataSuccessExecution": "none",
+      "saveExecutionProgress": false,
+      "saveManualExecutions": false,
+      "executionTimeout": 60,
+      "availableInMCP": false
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "tags": [],
+    "versionId": "ab087a06-8c76-4cab-90b3-a08b0fbdfad9"
+  }
+]

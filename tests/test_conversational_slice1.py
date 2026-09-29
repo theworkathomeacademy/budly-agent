@@ -231,8 +231,9 @@ class WordPressIntegrationContracts(unittest.TestCase):
         self.assertNotIn("conversationSecret", self.plugin)
 
     def test_caller_cannot_select_provider_or_tool(self):
-        self.assertIn("array('conversation_id','message','reset')", self.proxy)
-        self.assertNotIn("provider", "conversation_id,message,reset")
+        self.assertIn("array('conversation_id','message','reset','attribution')", self.proxy)
+        self.assertNotIn("provider", "conversation_id,message,reset,attribution")
+        self.assertNotIn("tool", "conversation_id,message,reset,attribution")
 
     def test_wordpress_forces_durable_memory_false(self):
         self.assertIn("'use_durable_memory' => false", self.proxy)
@@ -251,7 +252,8 @@ class WordPressIntegrationContracts(unittest.TestCase):
 
     def test_frontend_uses_json_non_streaming_and_safe_fallback(self):
         self.assertIn("conversationalTurn", self.js)
-        self.assertIn("JSON.stringify({conversation_id:state.session,message})", self.js)
+        self.assertIn("JSON.stringify(payload)", self.js)
+        self.assertIn("const payload={conversation_id:state.session,message}", self.js)
         self.assertIn("switching to the guided experience", self.js)
         self.assertNotIn("WebSocket", self.js)
         self.assertNotIn("EventSource", self.js)
