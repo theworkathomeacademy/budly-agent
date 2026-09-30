@@ -1,0 +1,84 @@
+{
+  "name": "AFF-WF-006 \u2014 Commission Maturity [NON-PRODUCTION]",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "AFF-001"
+    },
+    {
+      "name": "NON-PRODUCTION"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Manual Test Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "contract",
+      "name": "Governed Contract",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{workflow_id:'AFF-WF-006',active:false,scope:'NON_PRODUCTION_TEST_ONLY',input:$json}}];"
+      }
+    },
+    {
+      "id": "disabled",
+      "name": "Feature Gate OFF",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "errorMessage": "AFF-001 workflow is disabled by default; governed test activation required."
+      }
+    }
+  ],
+  "connections": {
+    "Manual Test Trigger": {
+      "main": [
+        [
+          {
+            "node": "Governed Contract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Governed Contract": {
+      "main": [
+        [
+          {
+            "node": "Feature Gate OFF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}

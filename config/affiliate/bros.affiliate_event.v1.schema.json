@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bros.affiliate_event.v1",
+  "title": "BROS Affiliate Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_type", "occurred_at", "source_system", "payload_version", "correlation_id", "data"],
+  "properties": {
+    "event_id": {"type": "string", "format": "uuid"},
+    "event_type": {"type": "string", "pattern": "^affiliate\\.[a-z0-9_.-]+$"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "source_system": {"type": "string", "minLength": 1, "maxLength": 64},
+    "payload_version": {"const": "1.0"},
+    "correlation_id": {"type": "string", "format": "uuid"},
+    "affiliate_id": {"type": ["string", "null"], "pattern": "^AFF-[0-9]{6}$"},
+    "session_id": {"type": ["string", "null"]},
+    "campaign_id": {"type": ["string", "null"]},
+    "order_id": {"type": ["string", "null"]},
+    "commission_id": {"type": ["string", "null"], "format": "uuid"},
+    "data": {"type": "object"}
+  }
+}

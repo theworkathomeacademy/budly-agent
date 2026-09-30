@@ -1,0 +1,20 @@
+{
+  "schema_version": "aff-001-workflows-v1",
+  "deployment_scope": "NON_PRODUCTION_TEST_ONLY",
+  "active": false,
+  "policy_authority": false,
+  "financial_truth": "Supabase/BROS",
+  "revenue_input": "bros.revenue_event.v1",
+  "workflows": [
+    {"id":"AFF-WF-001","name":"Application Intake","trigger":"authenticated_test_webhook","writes":["affiliate_applications","affiliate_audit_events"],"retry":"technical_only","quarantine":"malformed_or_duplicate_ambiguity"},
+    {"id":"AFF-WF-002","name":"Affiliate Approval and Activation","trigger":"human_operator_action","writes":["affiliates","affiliate_terms_acceptances","affiliate_audit_events"],"stop":"strategic_partner_without_project_owner"},
+    {"id":"AFF-WF-003","name":"Referral Event Processing","trigger":"governed_referral_route","writes":["affiliate_referral_events","affiliate_attribution_contexts"],"gate":"affiliate_referral_enabled"},
+    {"id":"AFF-WF-004","name":"Revenue Event Attribution Commission","trigger":"existing_bros.revenue_event.v1","writes":["affiliate_attribution_decisions","affiliate_order_line_commissions","affiliate_commissions","affiliate_commission_ledger"],"gate":"affiliate_commission_processing_enabled"},
+    {"id":"AFF-WF-005","name":"Refund and Reversal","trigger":"existing_refund_revenue_event","writes":["affiliate_commission_ledger","affiliate_commissions"],"idempotency":"authoritative_refund_event_id"},
+    {"id":"AFF-WF-006","name":"Commission Maturity","trigger":"test_schedule","writes":["affiliate_commission_ledger","affiliate_commissions"],"rule":"30_day_hold_and_no_blockers"},
+    {"id":"AFF-WF-007","name":"Payout Batch Preparation","trigger":"human_financial_operator","writes":["affiliate_payout_batches","affiliate_payout_items"],"rule":"monthly_threshold_50_by_currency"},
+    {"id":"AFF-WF-008","name":"Payout Reconciliation","trigger":"authenticated_provider_callback","writes":["affiliate_payout_items","affiliate_commission_ledger"],"gate":"affiliate_payout_submission_enabled"},
+    {"id":"AFF-WF-009","name":"Dispute Intake and Routing","trigger":"authenticated_affiliate_or_support","writes":["affiliate_disputes","affiliate_audit_events"],"authority":"human_binding_decision"},
+    {"id":"AFF-WF-010","name":"Affiliate Evidence Package and Reconciliation","trigger":"operator_request","writes":["evidence_archive_reference"],"rule":"read_only_reconstruction"}
+  ]
+}

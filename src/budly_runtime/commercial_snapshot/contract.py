@@ -112,6 +112,10 @@ ALLOWED_BUDLY_VISIBILITIES = frozenset({
     "EXCLUDED",
 })
 
+ALLOWED_AFFILIATE_ELIGIBILITY = frozenset({
+    "ELIGIBLE", "EXCLUDED", "CAMPAIGN_ONLY", "CLASS_RESTRICTED", "PAUSED"
+})
+
 
 @dataclass
 class CommercialCatalogRecord:
@@ -159,6 +163,12 @@ class CommercialCatalogRecord:
     woo_product_id: int | None = None
     woo_parent_product_id: int | None = None
     woo_variation_id: int | None = None
+    affiliate_eligibility: str | None = None
+    affiliate_commission_class: str | None = None
+    affiliate_campaign_restriction: list[str] = field(default_factory=list)
+    affiliate_class_restriction: list[str] = field(default_factory=list)
+    affiliate_effective_from: str | None = None
+    affiliate_effective_until: str | None = None
     record_checksum: str = ""
 
     def __post_init__(self) -> None:
@@ -209,6 +219,18 @@ class CommercialCatalogRecord:
             "woo_parent_product_id": self.woo_parent_product_id,
             "woo_variation_id": self.woo_variation_id,
         }
+        # Preserve legacy snapshot hashes when no Affiliate fields exist. Once an
+        # explicit governed Affiliate configuration is present, it becomes part
+        # of the immutable commercial checksum.
+        if self.affiliate_eligibility is not None:
+            canonical_payload.update({
+                "affiliate_eligibility": self.affiliate_eligibility,
+                "affiliate_commission_class": self.affiliate_commission_class,
+                "affiliate_campaign_restriction": sorted(self.affiliate_campaign_restriction),
+                "affiliate_class_restriction": sorted(self.affiliate_class_restriction),
+                "affiliate_effective_from": self.affiliate_effective_from,
+                "affiliate_effective_until": self.affiliate_effective_until,
+            })
         raw_bytes = json.dumps(canonical_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(raw_bytes).hexdigest()
 
@@ -260,6 +282,15 @@ class CommercialCatalogRecord:
         if self.budly_visibility not in ALLOWED_BUDLY_VISIBILITIES:
             errors.append(f"Unknown budly_visibility: '{self.budly_visibility}'")
 
+        if self.affiliate_eligibility is not None and self.affiliate_eligibility not in ALLOWED_AFFILIATE_ELIGIBILITY:
+            errors.append(f"Unknown affiliate_eligibility: '{self.affiliate_eligibility}'")
+
+        if self.affiliate_eligibility == "CAMPAIGN_ONLY" and not self.affiliate_campaign_restriction:
+            errors.append("CAMPAIGN_ONLY requires affiliate_campaign_restriction")
+
+        if self.affiliate_eligibility == "CLASS_RESTRICTED" and not self.affiliate_class_restriction:
+            errors.append("CLASS_RESTRICTED requires affiliate_class_restriction")
+
         # URL validation
         if not self.canonical_url or not URL_REGEX.match(self.canonical_url):
             errors.append(f"Malformed canonical_url: '{self.canonical_url}'")
@@ -301,6 +332,22 @@ class CommercialCatalogRecord:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    def affiliate_policy(self) -> dict[str, Any]:
+        """Return fail-closed Affiliate eligibility without inventing a rate."""
+        if self.affiliate_eligibility is None:
+            return {"eligible": False, "status": "EXCLUDED", "reason": "MISSING_AFFILIATE_ELIGIBILITY"}
+        if self.affiliate_eligibility not in ALLOWED_AFFILIATE_ELIGIBILITY:
+            return {"eligible": False, "status": "EXCLUDED", "reason": "UNKNOWN_AFFILIATE_ELIGIBILITY"}
+        return {
+            "eligible": self.affiliate_eligibility in {"ELIGIBLE", "CAMPAIGN_ONLY", "CLASS_RESTRICTED"},
+            "status": self.affiliate_eligibility,
+            "commission_class": self.affiliate_commission_class,
+            "campaign_restriction": list(self.affiliate_campaign_restriction),
+            "class_restriction": list(self.affiliate_class_restriction),
+            "effective_from": self.affiliate_effective_from,
+            "effective_until": self.affiliate_effective_until,
+        }
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "CommercialCatalogRecord":

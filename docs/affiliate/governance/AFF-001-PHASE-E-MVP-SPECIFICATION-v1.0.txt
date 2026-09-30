@@ -1,0 +1,3503 @@
+AFF-001 PHASE E — MVP SPECIFICATION v1.0
+
+Program: BROS Affiliate Program
+
+Parent Workstream: AFF-001 — Affiliate Program Discovery & Architecture v1.0
+
+Predecessors: AFF-001 Phase A, Phase B, Phase C, Phase D
+
+Version: 1.0
+
+Status: RATIFIED
+
+Authority: Project Owner
+
+Implementation Authority: NOT GRANTED
+
+Production Status: NOT AUTHORIZED
+
+1. PURPOSE
+
+This specification converts the ratified AFF-001 Phase D Technical Architecture into deterministic, implementation-ready MVP requirements.
+
+Its governing question is:
+
+EXACTLY WHAT MUST BE BUILT FOR THE PRIVATE AFFILIATE MVP TO WORK END TO END?
+
+The future implementation shall not require a developer, Codex session, Antigravity session, workflow author, database engineer, or AI agent to invent affiliate policy, attribution rules, commission rules, financial state transitions, payout authority, or audit behavior.
+
+Where an unresolved business, legal, economic, or vendor decision remains, this specification explicitly marks:
+
+TBD — REQUIRES PROJECT OWNER / GOVERNANCE / IMPLEMENTATION VALIDATION
+
+This document specifies implementation behavior.
+
+It does not authorize implementation.
+
+2. GOVERNING PRINCIPLES
+
+The MVP shall obey the following rules:
+
+1. EXTEND THE SPINE. DO NOT BUILD A PARALLEL BODY.
+
+2. WooCommerce remains transaction truth.
+
+3. CCSS remains approved commercial-product truth.
+
+4. BROS/Supabase remains affiliate identity, attribution, commission, ledger, dispute, audit, and payout-preparation truth.
+
+5. Budly remains an education, relationship, support, interpretation, and assistance layer.
+
+6. n8n remains orchestration, not policy authority or financial truth.
+
+7. The existing bros.revenue_event.v1 pipeline shall be reused.
+
+8. Affiliate commission processing occurs at WooCommerce order-line level.
+
+9. Financial arithmetic shall use exact decimal values.
+
+10. Financial history is append-only.
+
+11. Corrections create new records or events.
+
+12. Financial ambiguity fails closed.
+
+13. Duplicate events must never create duplicate money.
+
+14. Client-supplied affiliate information is never trusted without server-side validation.
+
+15. Human authorization remains mandatory for affiliate approval where required, Strategic Partner approval, binding disputes, exceptional financial adjustments, termination, and private-pilot payout authorization.
+
+16. No raw tax documents belong in ordinary affiliate CRM records.
+
+17. Affiliate-facing systems shall not expose customer identity merely because the affiliate generated a conversion.
+
+18. The private pilot succeeds only after one complete referral-to-reconciled-payout round trip is proven.
+
+The financial safety doctrine is:
+
+DO NOT GUESS. DO NOT PAY. DO NOT ERASE.
+
+3. MVP SYSTEM BOUNDARIES
+
+3.1 System authorities
+
+Product/order/payment/refund truth: WooCommerce
+
+Approved product/commercial eligibility: CCSS
+
+Customer relationship: Native BROS CRM
+
+Affiliate identity: BROS / Supabase
+
+Referral event history: BROS / Supabase
+
+Affiliate financial attribution: BROS / Supabase
+
+Commission-rule configuration: BROS governed configuration
+
+Commission history: Affiliate Commission Ledger
+
+Payout authorization: BROS governed human authority
+
+Funds movement: Approved external payout provider
+
+Orchestration: n8n
+
+Budly assistance: Budly + governed BROS records
+
+Governance documents: BROS Google Drive Source of Truth
+
+Operational evidence/archive: NAS where authorized
+
+Affiliate implementation shall reference existing BROS Person, Organization, CRM, session, revenue-event, order-reference, and audit identities rather than create duplicate customer systems.
+
+4. DATABASE MODEL
+
+PostgreSQL shall be used.
+
+Primary internal entities shall use UUID primary keys unless this specification explicitly defines another immutable business identifier.
+
+All timestamps shall be timestamptz stored in UTC.
+
+Currency amounts shall use numeric(20,6) internally unless the implementation validates a stricter currency-safe precision without information loss. User-facing payment amounts may be rounded to the applicable currency minor unit only at defined settlement boundaries.
+
+JSON fields shall use jsonb.
+
+No financial table may use IEEE floating-point types for monetary calculation.
+
+4.1 affiliate_applications
+
+id — uuid PK — required — generated server-side
+
+application_key — varchar(40) — required — unique immutable external application reference
+
+person_id — uuid FK → persons.id — nullable — existing BROS person when known
+
+organization_id — uuid FK → organizations.id — nullable — where applicable
+
+applicant_email — citext — required — normalized
+
+business_name — text — nullable
+
+website_url — text — nullable — validated URI
+
+social_channels — jsonb — required — default []
+
+audience_category — varchar(64) — nullable — controlled/configured
+
+estimated_audience_size — bigint — nullable — >=0
+
+promotion_methods — jsonb — required — default []
+
+geographic_market — jsonb — nullable
+
+desired_affiliate_class — affiliate_class — required
+
+application_answers — jsonb — required — default {}
+
+status — application_status — required — default SUBMITTED
+
+submitted_at — timestamptz — required
+
+reviewed_at — timestamptz — nullable
+
+reviewer_actor_type — audit_actor_type — nullable
+
+reviewer_actor_id — text — nullable
+
+decision_reason_code — text — nullable
+
+review_notes — text — nullable — admin-only
+
+linked_affiliate_id — uuid FK — nullable — unique once approved
+
+idempotency_key — varchar(128) — nullable — unique when supplied
+
+created_at — timestamptz — required
+
+updated_at — timestamptz — required
+
+Indexes: status, applicant_email, submitted_at, person_id.
+
+Duplicate handling shall not silently merge applications. Exact duplicate idempotency submissions return the original application. Probable repeat applications are linked for human review.
+
+4.2 affiliates
+
+id — uuid PK — required — internal
+
+affiliate_code — varchar(10) — required — unique immutable AFF-######
+
+person_id — uuid FK — nullable — existing CRM person
+
+organization_id — uuid FK — nullable
+
+source_application_id — uuid FK — nullable — immutable when created
+
+status — affiliate_status — required
+
+affiliate_class — affiliate_class — required
+
+display_name — text — required
+
+primary_email — citext — required — normalized
+
+business_name — text — nullable
+
+website_url — text — nullable
+
+primary_channels — jsonb — required — default []
+
+promotion_methods — jsonb — required — default []
+
+jurisdiction_context — jsonb — nullable
+
+tax_profile_status — tax_profile_status — required — default NOT_REQUIRED_OR_UNKNOWN
+
+tax_provider_reference — text — nullable — no raw form
+
+tax_verified_at — timestamptz — nullable
+
+payout_profile_status — payout_profile_status — required — default INCOMPLETE
+
+activated_at — timestamptz — nullable
+
+suspended_at — timestamptz — nullable
+
+terminated_at — timestamptz — nullable
+
+inactive_at — timestamptz — nullable
+
+created_at — timestamptz — required
+
+updated_at — timestamptz — required
+
+affiliate_code, id, and source_application_id are immutable.
+
+An affiliate record shall never be deleted merely because the relationship ends.
+
+4.3 affiliate_terms_acceptances
+
+id uuid PK
+
+affiliate_id uuid FK NOT NULL
+
+terms_version varchar(64) NOT NULL
+
+governed_document_reference text NOT NULL
+
+terms_checksum varchar(128) NOT NULL
+
+acceptance_method varchar(32) NOT NULL
+
+accepted_at timestamptz NOT NULL
+
+source_ip_hash text NULL
+
+user_agent_summary text NULL
+
+jurisdiction_context jsonb NULL
+
+evidence_reference text NULL
+
+created_at timestamptz NOT NULL
+
+Unique constraint:
+
+(affiliate_id, terms_version, terms_checksum)
+
+Rows are immutable.
+
+Material terms changes create a new terms version and new acceptance.
+
+No affiliate may transition to ACTIVE until the currently required terms version has a valid acceptance record.
+
+4.4 affiliate_referral_routes
+
+Used for canonical link routes.
+
+Required fields:
+
+id uuid PK
+
+route_key varchar(64) UNIQUE NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+campaign_id text NULL
+
+destination_key text NOT NULL
+
+product_or_topic text NULL
+
+content_id text NULL
+
+status route_status NOT NULL
+
+effective_from timestamptz NULL
+
+effective_until timestamptz NULL
+
+created_at timestamptz NOT NULL
+
+updated_at timestamptz NOT NULL
+
+Destination URLs shall be resolved from approved server-side destination configuration.
+
+Arbitrary affiliate-supplied redirect URLs are prohibited.
+
+4.5 affiliate_qr_routes
+
+Required fields:
+
+id uuid PK
+
+qr_code varchar(16) UNIQUE NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+campaign_id text NULL
+
+destination_key text NOT NULL
+
+product_or_topic text NULL
+
+content_id text NULL
+
+status route_status NOT NULL
+
+effective_from timestamptz NULL
+
+expires_at timestamptz NULL
+
+last_destination_change_at timestamptz NULL
+
+created_at timestamptz NOT NULL
+
+updated_at timestamptz NOT NULL
+
+The QR image encodes the permanent router URL, not the destination URL.
+
+Changing the governed destination must not require regenerating the QR.
+
+QR code format:
+
+AQR- + 10 uppercase Crockford Base32 characters.
+
+Example:
+
+AQR-7M4D9X2KQP
+
+Codes are randomly generated server-side, globally unique, non-sequential, and contain no PII.
+
+4.6 affiliate_referral_events
+
+Append-only.
+
+Required fields:
+
+id uuid PK
+
+event_key varchar(128) UNIQUE NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+campaign_id text NULL
+
+referral_method referral_method NOT NULL
+
+referral_route_id uuid NULL
+
+qr_route_id uuid NULL
+
+coupon_mapping_id uuid NULL
+
+content_id text NULL
+
+source text NULL
+
+platform text NULL
+
+destination_key text NOT NULL
+
+session_id text NULL
+
+anonymous_visitor_key text NULL
+
+occurred_at timestamptz NOT NULL
+
+attribution_expires_at timestamptz NOT NULL
+
+validation_status referral_validation_status NOT NULL
+
+validation_reason text NULL
+
+client_ip_hash text NULL
+
+user_agent_summary text NULL
+
+metadata jsonb NOT NULL DEFAULT '{}'
+
+correlation_id uuid NOT NULL
+
+No update may change affiliate ownership, event time, method, or route after insertion.
+
+4.7 affiliate_attribution_contexts
+
+Represents current fast-resolution context, not historical truth.
+
+Required fields:
+
+id uuid PK
+
+context_key text UNIQUE NOT NULL
+
+session_id text NULL
+
+anonymous_visitor_key text NULL
+
+person_id uuid NULL
+
+affiliate_id uuid FK NOT NULL
+
+originating_referral_event_id uuid FK NOT NULL
+
+campaign_id text NULL
+
+attribution_method attribution_method NOT NULL
+
+attribution_started_at timestamptz NOT NULL
+
+attribution_expires_at timestamptz NOT NULL
+
+last_qualified_referral_at timestamptz NOT NULL
+
+status attribution_context_status NOT NULL
+
+version integer NOT NULL DEFAULT 1
+
+updated_at timestamptz NOT NULL
+
+At least one governed linkage key must exist: session_id, anonymous_visitor_key, or person_id.
+
+Context may be superseded, but the referral events that produced it remain immutable.
+
+4.8 affiliate_attribution_decisions
+
+Every purchase-attribution resolution creates a decision record.
+
+Fields:
+
+id uuid PK
+
+decision_key varchar(128) UNIQUE NOT NULL
+
+order_id text NOT NULL
+
+revenue_event_id text NOT NULL
+
+affiliate_id uuid NULL
+
+winning_referral_event_id uuid NULL
+
+coupon_mapping_id uuid NULL
+
+campaign_id text NULL
+
+status attribution_status NOT NULL
+
+method attribution_method NULL
+
+decision_version varchar(32) NOT NULL
+
+window_started_at timestamptz NULL
+
+window_expires_at timestamptz NULL
+
+evidence jsonb NOT NULL
+
+reason_code text NOT NULL
+
+correlation_id uuid NOT NULL
+
+created_at timestamptz NOT NULL
+
+Unique constraint for ordinary resolution:
+
+(order_id, decision_version)
+
+Corrections never overwrite this row. A new override and replacement decision are created.
+
+4.9 affiliate_coupon_mappings
+
+Fields:
+
+id uuid PK
+
+coupon_code_normalized citext UNIQUE NOT NULL
+
+woocommerce_coupon_id text NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+campaign_id text NULL
+
+attribution_enabled boolean NOT NULL DEFAULT true
+
+status mapping_status NOT NULL
+
+effective_from timestamptz NULL
+
+effective_until timestamptz NULL
+
+governance_reference text NOT NULL
+
+created_at timestamptz NOT NULL
+
+updated_at timestamptz NOT NULL
+
+Coupon matching shall use the normalized coupon identity from WooCommerce, not raw client text alone.
+
+4.10 affiliate_commission_rules
+
+Fields:
+
+id uuid PK
+
+rule_code varchar(64) UNIQUE NOT NULL
+
+rule_name text NOT NULL
+
+status commission_rule_status NOT NULL
+
+affiliate_class affiliate_class NULL
+
+affiliate_id uuid NULL
+
+product_id text NULL
+
+product_class text NULL
+
+campaign_id text NULL
+
+rate_type commission_rate_type NOT NULL
+
+rate_value numeric(12,8) NOT NULL
+
+currency_code char(3) NULL
+
+effective_from timestamptz NOT NULL
+
+effective_until timestamptz NULL
+
+precedence_level smallint NOT NULL
+
+priority integer NOT NULL DEFAULT 0
+
+governance_reference text NOT NULL
+
+approved_by_actor_id text NOT NULL
+
+supersedes_rule_id uuid NULL
+
+rule_version integer NOT NULL
+
+created_at timestamptz NOT NULL
+
+MVP rate type:
+
+PERCENTAGE only.
+
+FIXED_AMOUNT is reserved but prohibited from activation until separately authorized.
+
+rate_value for percentage rules shall be between 0 and 1.
+
+4.11 affiliate_order_line_commissions
+
+One deterministic commission calculation per affiliate-eligible Woo order line.
+
+Fields:
+
+id uuid PK
+
+commission_id uuid FK NOT NULL
+
+woocommerce_order_id text NOT NULL
+
+woocommerce_order_line_id text NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+product_id text NOT NULL
+
+product_class text NULL
+
+quantity numeric(20,6) NOT NULL
+
+currency_code char(3) NOT NULL
+
+gross_line_merchandise numeric(20,6) NOT NULL
+
+line_discount numeric(20,6) NOT NULL DEFAULT 0
+
+line_tax numeric(20,6) NOT NULL DEFAULT 0
+
+line_shipping_allocated numeric(20,6) NOT NULL DEFAULT 0
+
+line_refunded_amount numeric(20,6) NOT NULL DEFAULT 0
+
+qualifying_revenue numeric(20,6) NOT NULL
+
+commission_rule_id uuid NOT NULL
+
+commission_rule_version integer NOT NULL
+
+commission_rate numeric(12,8) NOT NULL
+
+commission_amount numeric(20,6) NOT NULL
+
+calculation_version varchar(32) NOT NULL
+
+attribution_decision_id uuid NOT NULL
+
+created_at timestamptz NOT NULL
+
+Unique:
+
+(woocommerce_order_id, woocommerce_order_line_id, affiliate_id, calculation_version)
+
+4.12 affiliate_commissions
+
+Current summary state.
+
+Fields:
+
+id uuid PK
+
+commission_code varchar(32) UNIQUE NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+woocommerce_order_id text NOT NULL
+
+attribution_decision_id uuid NOT NULL
+
+currency_code char(3) NOT NULL
+
+qualifying_revenue_total numeric(20,6) NOT NULL
+
+commission_amount_total numeric(20,6) NOT NULL
+
+current_status commission_status NOT NULL
+
+hold_until timestamptz NOT NULL
+
+dispute_status dispute_status NOT NULL DEFAULT NONE
+
+compliance_hold boolean NOT NULL DEFAULT false
+
+rules_version text NOT NULL
+
+attribution_version text NOT NULL
+
+calculation_version text NOT NULL
+
+created_at timestamptz NOT NULL
+
+approved_at timestamptz NULL
+
+payable_at timestamptz NULL
+
+paid_at timestamptz NULL
+
+reversed_at timestamptz NULL
+
+updated_at timestamptz NOT NULL
+
+Unique ordinary commission:
+
+(affiliate_id, woocommerce_order_id)
+
+The summary may update state, but financial history resides in the ledger.
+
+4.13 affiliate_commission_ledger
+
+Append-only financial truth.
+
+Fields:
+
+id uuid PK
+
+ledger_event_key varchar(128) UNIQUE NOT NULL
+
+commission_id uuid FK NOT NULL
+
+affiliate_id uuid FK NOT NULL
+
+woocommerce_order_id text NOT NULL
+
+commission_line_id uuid NULL
+
+event_type commission_event_type NOT NULL
+
+amount_delta numeric(20,6) NOT NULL
+
+currency_code char(3) NOT NULL
+
+resulting_commission_balance numeric(20,6) NOT NULL
+
+reason_code text NOT NULL
+
+actor_type audit_actor_type NOT NULL
+
+actor_id text NOT NULL
+
+evidence_reference text NULL
+
+source_event_id text NULL
+
+correlation_id uuid NOT NULL
+
+occurred_at timestamptz NOT NULL
+
+created_at timestamptz NOT NULL
+
+No UPDATE or DELETE shall be available through ordinary application roles.
+
+4.14 affiliate_risk_events
+
+Fields include:
+
+id uuid PK, affiliate_id uuid, woocommerce_order_id text NULL, commission_id uuid NULL, risk_type risk_event_type, severity risk_severity, evidence jsonb, review_status risk_review_status, reviewer_actor_id text NULL, resolution_code text NULL, created_at, reviewed_at, resolved_at, correlation_id.
+
+Risk events are evidence, not guilt.
+
+4.15 affiliate_disputes
+
+Fields:
+
+id uuid PK
+
+dispute_code varchar(32) UNIQUE NOT NULL
+
+affiliate_id uuid NOT NULL
+
+commission_id uuid NULL
+
+woocommerce_order_id text NULL
+
+dispute_type dispute_type NOT NULL
+
+statement_or_notice_at timestamptz NOT NULL
+
+submitted_at timestamptz NOT NULL
+
+within_standard_window boolean NOT NULL
+
+claim_text text NOT NULL
+
+evidence jsonb NOT NULL DEFAULT '[]'
+
+status dispute_status NOT NULL
+
+assigned_actor_id text NULL
+
+decision text NULL
+
+decision_reason text NULL
+
+adjustment_ledger_event_id uuid NULL
+
+resolved_at timestamptz NULL
+
+created_at timestamptz NOT NULL
+
+Binding financial resolution requires authorized human action.
+
+4.16 affiliate_attribution_overrides
+
+Append-only corrections.
+
+Fields:
+
+id uuid PK
+
+order_id text NOT NULL
+
+original_attribution_decision_id uuid NOT NULL
+
+replacement_affiliate_id uuid NULL
+
+replacement_referral_event_id uuid NULL
+
+reason_code text NOT NULL
+
+evidence jsonb NOT NULL
+
+authorized_actor_type audit_actor_type NOT NULL
+
+authorized_actor_id text NOT NULL
+
+created_at timestamptz NOT NULL
+
+replacement_attribution_decision_id uuid NOT NULL
+
+No original decision is deleted.
+
+4.17 affiliate_payout_batches
+
+Fields:
+
+id uuid PK
+
+batch_code varchar(40) UNIQUE NOT NULL
+
+period_start date NOT NULL
+
+period_end date NOT NULL
+
+currency_code char(3) NOT NULL
+
+status payout_status NOT NULL
+
+total_affiliates integer NOT NULL
+
+total_amount numeric(20,6) NOT NULL
+
+prepared_by_actor_id text NOT NULL
+
+prepared_at timestamptz NOT NULL
+
+approved_by_actor_id text NULL
+
+approved_at timestamptz NULL
+
+submitted_at timestamptz NULL
+
+completed_at timestamptz NULL
+
+provider_code text NULL
+
+external_batch_reference text NULL
+
+reconciliation_status reconciliation_status NOT NULL
+
+created_at timestamptz NOT NULL
+
+4.18 affiliate_payout_items
+
+Fields:
+
+id uuid PK
+
+payout_batch_id uuid NOT NULL
+
+affiliate_id uuid NOT NULL
+
+currency_code char(3) NOT NULL
+
+amount numeric(20,6) NOT NULL
+
+status payout_item_status NOT NULL
+
+provider_beneficiary_reference text NOT NULL
+
+provider_idempotency_key varchar(128) UNIQUE NOT NULL
+
+external_transaction_id text NULL
+
+failure_code text NULL
+
+failure_detail text NULL
+
+paid_at timestamptz NULL
+
+created_at timestamptz NOT NULL
+
+updated_at timestamptz NOT NULL
+
+A bridge table affiliate_payout_item_commissions shall map payout items to exact commission IDs and included amounts.
+
+4.19 affiliate_quarantine_events
+
+Fields:
+
+id uuid PK
+
+quarantine_key varchar(128) UNIQUE NOT NULL
+
+source_event_type text NOT NULL
+
+source_event_id text NULL
+
+reason quarantine_reason NOT NULL
+
+status quarantine_status NOT NULL
+
+payload_reference text NOT NULL
+
+payload_hash varchar(128) NOT NULL
+
+error_class text NOT NULL
+
+error_detail text NULL
+
+correlation_id uuid NOT NULL
+
+retry_count integer NOT NULL DEFAULT 0
+
+next_retry_at timestamptz NULL
+
+review_actor_id text NULL
+
+resolution_note text NULL
+
+created_at timestamptz NOT NULL
+
+resolved_at timestamptz NULL
+
+No malformed or ambiguous financial event may be silently dropped.
+
+4.20 affiliate_audit_events
+
+Append-only operational audit.
+
+Minimum fields:
+
+id uuid PK
+
+audit_key varchar(128) UNIQUE NOT NULL
+
+actor_type audit_actor_type NOT NULL
+
+actor_id text NOT NULL
+
+action text NOT NULL
+
+entity_type text NOT NULL
+
+entity_id text NOT NULL
+
+before_state jsonb NULL
+
+after_state jsonb NULL
+
+reason_code text NULL
+
+evidence_reference text NULL
+
+correlation_id uuid NOT NULL
+
+occurred_at timestamptz NOT NULL
+
+This may use or extend the existing BROS audit infrastructure if it already satisfies these fields and immutability requirements.
+
+5. CONTROLLED VALUES
+
+5.1 Affiliate status
+
+APPROVED_PENDING_TERMS
+
+ACTIVE
+
+INACTIVE
+
+SUSPENDED
+
+TERMINATED
+
+Application states shall remain in the application table rather than overloading the active affiliate record.
+
+5.2 Affiliate class
+
+STANDARD
+
+STRATEGIC_PARTNER
+
+5.3 Application status
+
+SUBMITTED
+
+UNDER_REVIEW
+
+MORE_INFO_REQUIRED
+
+APPROVED
+
+DECLINED
+
+WITHDRAWN
+
+5.4 Product affiliate eligibility
+
+ELIGIBLE
+
+EXCLUDED
+
+CAMPAIGN_ONLY
+
+CLASS_RESTRICTED
+
+PAUSED
+
+Absence of the affiliate field equals NOT ELIGIBLE.
+
+5.5 Referral method
+
+LINK
+
+QR
+
+COUPON
+
+MANUAL_CORRECTION
+
+5.6 Attribution status
+
+ATTRIBUTED
+
+UNATTRIBUTED
+
+EXPIRED
+
+INELIGIBLE
+
+UNRESOLVED
+
+OVERRIDDEN
+
+5.7 Attribution method
+
+REFERRAL_LINK
+
+QR_REFERRAL
+
+AFFILIATE_COUPON
+
+MANUAL_CORRECTION
+
+5.8 Commission status
+
+PENDING
+
+APPROVED
+
+PAYABLE
+
+PAID
+
+REVERSED
+
+DISPUTED
+
+REJECTED
+
+5.9 Commission event type
+
+COMMISSION_CREATED
+
+COMMISSION_APPROVED
+
+COMMISSION_PAYABLE
+
+COMMISSION_PAID
+
+COMMISSION_PARTIAL_REVERSAL
+
+COMMISSION_FULL_REVERSAL
+
+COMMISSION_ADJUSTMENT_CREDIT
+
+COMMISSION_ADJUSTMENT_DEBIT
+
+COMMISSION_DISPUTED
+
+COMMISSION_DISPUTE_RESOLVED
+
+COMMISSION_REJECTED
+
+5.10 Payout status
+
+Batch:
+
+PREPARED
+
+UNDER_REVIEW
+
+APPROVED
+
+SUBMITTED
+
+COMPLETED
+
+PARTIAL_FAILURE
+
+FAILED
+
+RECONCILED
+
+CANCELLED
+
+Item:
+
+PREPARED
+
+APPROVED
+
+SUBMITTED
+
+PAID
+
+FAILED
+
+HELD
+
+RECONCILED
+
+5.11 Dispute status
+
+NONE
+
+OPEN
+
+UNDER_REVIEW
+
+RESOLVED_AFFIRMED
+
+RESOLVED_ADJUSTED
+
+RESOLVED_REJECTED
+
+CLOSED
+
+5.12 Risk event type
+
+SELF_REFERRAL_SUSPECTED
+
+DUPLICATE_IDENTITY
+
+ABNORMAL_REFUND_RATE
+
+BOT_TRAFFIC_PATTERN
+
+COUPON_LEAKAGE
+
+ATTRIBUTION_MANIPULATION
+
+UNUSUAL_CONVERSION_PATTERN
+
+PAYMENT_RISK_CLUSTER
+
+RELATED_PARTY_REVIEW
+
+OTHER_REVIEW_REQUIRED
+
+5.13 Audit actor type
+
+PROJECT_OWNER
+
+AFFILIATE_OPERATOR
+
+FINANCIAL_APPROVER
+
+SUPPORT_OPERATOR
+
+SYSTEM_SERVICE
+
+AFFILIATE_USER
+
+BUDLY
+
+EXTERNAL_PROVIDER
+
+5.14 Manual adjustment type
+
+ATTRIBUTION_CORRECTION
+
+COMMISSION_CREDIT
+
+COMMISSION_DEBIT
+
+REVERSAL_CORRECTION
+
+PAYOUT_RECONCILIATION_CORRECTION
+
+5.15 Quarantine status
+
+OPEN
+
+RETRY_SCHEDULED
+
+UNDER_REVIEW
+
+RESOLVED_REPROCESSED
+
+RESOLVED_REJECTED
+
+CLOSED
+
+6. AFFILIATE ID CONTRACT
+
+Canonical public affiliate identifier:
+
+AFF-######
+
+Regex:
+
+^AFF-[0-9]{6}$
+
+Initial range:
+
+AFF-000001 through AFF-999999.
+
+Generation shall use a database sequence reserved exclusively for affiliate codes.
+
+The sequence value is formatting input only. The database UUID remains the relational primary key.
+
+Requirements:
+
+- generated only after application approval;
+
+- not generated for declined applications;
+
+- globally unique;
+
+- never reused;
+
+- never renumbered;
+
+- never changed after issuance;
+
+- survives name, email, class, suspension, inactivity, and termination changes;
+
+- contains no PII;
+
+- may be exposed in affiliate links and affiliate-facing interfaces;
+
+- sequence gaps are valid and must not be repaired.
+
+7. APPLICATION CONTRACT
+
+Submission payload
+
+Required:
+
+applicant_email
+
+desired_affiliate_class
+
+promotion_methods
+
+terms/privacy acknowledgement for application processing
+
+application_answers required by current application_version
+
+Optional:
+
+person_id
+
+organization information
+
+business_name
+
+website_url
+
+social_channels
+
+audience_category
+
+estimated_audience_size
+
+geographic_market
+
+Strategic Partner request does not create entitlement. It requests Project Owner review.
+
+Validation shall reject malformed data but shall not auto-decline based solely on audience size.
+
+Workflow:
+
+SUBMITTED → UNDER_REVIEW → APPROVED or DECLINED
+
+Optional:
+
+UNDER_REVIEW → MORE_INFO_REQUIRED → UNDER_REVIEW
+
+Approval must identify authorized human actor.
+
+Approved application creates exactly one affiliate record with state:
+
+APPROVED_PENDING_TERMS.
+
+The affiliate does not become ACTIVE merely from approval.
+
+8. TERMS ACCEPTANCE
+
+Activation prerequisites:
+
+1. application approved;
+
+2. affiliate record created;
+
+3. current required affiliate terms available;
+
+4. required training acknowledgement recorded where enabled for pilot;
+
+5. current terms accepted;
+
+6. no blocking compliance state.
+
+Material terms changes shall be versioned.
+
+A governance change may mark a new terms version as REACCEPTANCE_REQUIRED.
+
+An ACTIVE affiliate requiring mandatory reacceptance shall not silently lose historical commissions. New promotional/earning authority may be restricted according to the separately governed transition rule.
+
+TBD — exact affiliate legal agreement wording.
+
+9. REFERRAL LINK CONTRACT
+
+Canonical routes:
+
+/r/{affiliate_id}
+
+/r/{affiliate_id}/{campaign_id}
+
+The production host is:
+
+TBD — REQUIRES IMPLEMENTATION VALIDATION
+
+The route handler shall:
+
+1. validate affiliate code syntax;
+
+2. resolve affiliate server-side;
+
+3. require ACTIVE status for a new qualified referral;
+
+4. validate campaign if supplied;
+
+5. resolve approved destination;
+
+6. create a referral event;
+
+7. establish/update server-side attribution context;
+
+8. set permitted first-party persistence marker;
+
+9. assign correlation/session identifiers;
+
+10. return HTTP redirect to governed destination.
+
+Unknown, malformed, inactive, suspended, or terminated affiliate IDs shall not create qualified attribution.
+
+Customer-facing behavior should fail safely to an approved non-attributed destination or controlled informational page rather than expose system details.
+
+Bots/crawlers may be logged separately but shall not establish financial attribution when deterministic bot classification is available.
+
+10. QR CONTRACT
+
+Canonical route:
+
+/aq/{affiliate_id}/{qr_id}
+
+A valid QR request must resolve both IDs to the same active governed record.
+
+A QR scan creates a normal qualified referral event with method QR.
+
+Financial priority is identical to a referral link.
+
+A subsequent valid referral from another affiliate may replace it under last-qualified-referral.
+
+A valid attributing affiliate coupon may override it.
+
+QR records may be disabled without destroying historical scans.
+
+Destination changes modify the QR registry, not the printed QR.
+
+11. ATTRIBUTION ALGORITHM
+
+Attribution version for initial MVP:
+
+AFF-ATTR-v1
+
+11.1 Ordered checkout resolution
+
+INPUT:
+
+  authoritative Woo order
+
+  normalized revenue event
+
+  validated coupon identities
+
+  server-side referral history/context
+
+1. Verify event authenticity and idempotency.
+
+2. Resolve Woo order and transaction state.
+
+3. Resolve any valid attributing affiliate coupon.
+
+4. IF exactly one valid attributing affiliate coupon exists:
+
+      candidate = coupon affiliate
+
+      method = AFFILIATE_COUPON
+
+   ELSE IF multiple conflicting attributing affiliate coupons exist:
+
+      status = UNRESOLVED
+
+      quarantine
+
+      STOP financial processing
+
+   ELSE:
+
+      find latest QUALIFIED referral event:
+
+          occurred_at <= qualifying transaction timestamp
+
+          attribution_expires_at >= qualifying transaction timestamp
+
+          affiliate was eligible under applicable governance
+
+          event validation_status = QUALIFIED
+
+      IF found:
+
+          candidate = referral affiliate
+
+          method = method from winning referral
+
+      ELSE:
+
+          status = UNATTRIBUTED
+
+          create auditable no-attribution decision
+
+          STOP affiliate commission processing without error
+
+5. Validate candidate affiliate and transaction eligibility.
+
+6. IF attribution is financially ambiguous:
+
+      status = UNRESOLVED
+
+      quarantine
+
+      STOP
+
+7. Write immutable attribution decision.
+
+8. Continue product eligibility and commission processing.
+
+11.2 Last-qualified referral
+
+For ordinary LINK and QR referrals:
+
+winner = MAX(occurred_at) among valid, non-expired qualified referrals.
+
+Prior referrals remain append-only.
+
+11.3 Coupon precedence
+
+A valid attribution_enabled=true affiliate coupon overrides LINK/QR referral attribution.
+
+A NON_ATTRIBUTING or disabled coupon has no affiliate financial effect.
+
+11.4 Expiration
+
+attribution_expires_at = qualified_referral_occurred_at + interval '30 days'
+
+Expiry is evaluated against the qualifying transaction timestamp, not webhook-processing time.
+
+11.5 Suspended/inactive affiliate behavior
+
+New referral events from non-ACTIVE affiliates do not qualify.
+
+Whether a previously valid referral survives a later status change shall follow the effective suspension/termination decision.
+
+Default private-pilot behavior:
+
+- suspension places affected unresolved financial processing under review;
+
+- suspension does not silently confiscate previously earned valid commission;
+
+- termination stops future referral qualification;
+
+- historical entitlement remains subject to its original rules and any documented enforcement decision.
+
+11.6 Existing customer
+
+Existing-customer status does not block affiliate attribution for a new qualifying purchase.
+
+11.7 Manual override
+
+Manual attribution correction requires an authorized actor, reason, evidence, original decision, replacement decision, affected order, and audit event.
+
+No UPDATE of the original attribution decision is permitted.
+
+12. ATTRIBUTION PERSISTENCE
+
+The MVP shall use:
+
+1. first-party browser persistence where legally and technically appropriate;
+
+2. server-side attribution context;
+
+3. BROS session linkage;
+
+4. anonymous visitor key where permitted;
+
+5. known person_id linkage after governed identity establishment.
+
+Client persistence contains only opaque identifiers sufficient to retrieve server-side context.
+
+The browser shall not be the financial source of truth.
+
+Affiliate IDs, rates, expiry dates, or entitlement supplied by the client must be revalidated server-side.
+
+Cross-device attribution is not guaranteed by MVP unless the same governed customer identity allows safe server-side linkage.
+
+Cross-site journey transfer between Wake’n’Bake and CCC must use a governed signed/opaque handoff or shared approved server-side identity mechanism.
+
+TBD — exact deployment mechanism after current domain/session architecture is validated.
+
+13. WOOCOMMERCE ORDER METADATA
+
+Canonical metadata names:
+
+_bros_affiliate_id
+
+_bros_affiliate_referral_event_id
+
+_bros_affiliate_method
+
+_bros_affiliate_campaign_id
+
+_bros_affiliate_attribution_timestamp
+
+_bros_affiliate_attribution_expiry
+
+_bros_affiliate_attribution_version
+
+_bros_affiliate_correlation_id
+
+Values shall be written by approved server-side integration during checkout/order creation or the earliest deterministic server-side order-processing stage.
+
+They are evidence, not final commission truth.
+
+Missing metadata does not authorize guessing. BROS may still resolve attribution from validated server-side history.
+
+Corrupted or conflicting metadata must be ignored as authority and may trigger quarantine/risk evidence.
+
+14. REVENUE-EVENT INTEGRATION
+
+No second Woo webhook universe shall be created.
+
+Existing path:
+
+WooCommerce
+
+→ Cloudflare
+
+→ n8n
+
+→ HMAC validation
+
+→ bros.revenue_event.v1
+
+→ idempotency
+
+→ Supabase revenue-event persistence
+
+→ affiliate processor
+
+Affiliate processing accepts relevant normalized events representing at minimum:
+
+- qualifying paid/completed order;
+
+- order-state change affecting eligibility;
+
+- full refund;
+
+- partial refund;
+
+- payment reversal/chargeback when available;
+
+- payment failure/cancellation where relevant.
+
+The affiliate processor must never acknowledge financial completion until required persistence succeeds.
+
+Correlation ID from the existing revenue event shall be reused when available.
+
+15. CCSS PRODUCT ELIGIBILITY CONTRACT
+
+CCSS affiliate fields:
+
+affiliate_eligibility
+
+affiliate_commission_class
+
+affiliate_campaign_restriction
+
+affiliate_class_restriction
+
+affiliate_effective_from
+
+affiliate_effective_until
+
+Rules:
+
+- missing affiliate_eligibility = excluded;
+
+- unknown enum = invalid snapshot;
+
+- missing commission class on otherwise eligible product = commission unresolved unless a higher-precedence explicit rule resolves safely;
+
+- campaign-only product must match current governed campaign;
+
+- class-restricted product must match affiliate class;
+
+- effective timestamps are UTC;
+
+- expired product eligibility fails closed;
+
+- PAUSED fails closed;
+
+- failed CCSS generation must not replace Current;
+
+- last-known-good CCSS remains active;
+
+- eligibility version used for each commission must be preserved.
+
+Exact pilot products remain:
+
+TBD — REQUIRES PROJECT OWNER APPROVAL + PROFITABILITY VALIDATION
+
+16. COMMISSION RULE CONTRACT
+
+Initial commission rules are configuration, never hard-coded constants.
+
+Rule selection precedence:
+
+1. explicit product + affiliate-specific approved override;
+
+2. Strategic Partner rule;
+
+3. campaign-specific rule;
+
+4. product-specific rule;
+
+5. product-class rule;
+
+6. default approved rule.
+
+Within the same precedence class, the valid rule with greatest explicit priority wins.
+
+Equal-priority overlapping rules at the same precedence level are a configuration error.
+
+Result:
+
+COMMISSION_RULE_UNRESOLVED
+
+→ quarantine
+
+→ no commission entitlement is created until resolved.
+
+Rule effective time shall be evaluated using qualifying transaction timestamp.
+
+Future lower rates cannot retroactively reduce an already earned commission.
+
+17. QUALIFYING REVENUE
+
+Per line item:
+
+net_merchandise_before_refund
+
+    = gross merchandise line amount
+
+      - allocated/order line discounts
+
+remaining_eligible_merchandise
+
+    = net_merchandise_before_refund
+
+      - refunded eligible merchandise amount
+
+      - cancelled/reversed merchandise amount
+
+qualifying_revenue
+
+    = remaining_eligible_merchandise
+
+Explicit exclusions:
+
+- tax;
+
+- shipping unless separately governed commissionable in future;
+
+- non-eligible product lines;
+
+- cancelled amounts;
+
+- refunds;
+
+- chargebacks;
+
+- gift-card value when the gift-card product itself is non-commissionable.
+
+Payment processing fees are business costs and are not deducted from affiliate qualifying revenue unless future governance expressly changes this.
+
+Discounts
+
+WooCommerce authoritative line totals after discounts should be used where available.
+
+If an order-level discount must be allocated across lines, allocation shall be proportional to eligible pre-discount merchandise values using exact decimal math, with deterministic remainder assignment to the final applicable line.
+
+Mixed cart
+
+Each line is independently evaluated.
+
+Excluded lines produce no commission.
+
+Currency
+
+One commission record may contain only one currency.
+
+Cross-currency conversion is outside MVP.
+
+No FX estimate may be used to fabricate commission entitlement.
+
+18. COMMISSION CALCULATION
+
+For MVP percentage rules:
+
+raw_commission = qualifying_revenue × rate_value
+
+Calculation occurs per order line.
+
+Internal calculation remains numeric(20,6).
+
+The settled commission amount shall round once per line to the currency minor unit using ROUND_HALF_UP.
+
+Order commission equals the exact sum of rounded line commissions.
+
+The following are stored with each calculation:
+
+- qualifying revenue;
+
+- currency;
+
+- affiliate;
+
+- product;
+
+- applicable CCSS eligibility version;
+
+- rule ID;
+
+- rule version;
+
+- rate;
+
+- attribution decision;
+
+- attribution version;
+
+- calculation version;
+
+- rounded commission amount.
+
+Initial calculation version:
+
+AFF-CALC-v1
+
+The same historical inputs must reproduce the original result.
+
+19. COMMISSION LIFECYCLE
+
+Permitted normal transitions:
+
+PENDING → APPROVED → PAYABLE → PAID
+
+Exceptional transitions:
+
+PENDING → DISPUTED
+
+APPROVED → DISPUTED
+
+PAYABLE → DISPUTED
+
+PENDING → REJECTED
+
+DISPUTED → PENDING where resolved before maturity
+
+DISPUTED → APPROVED
+
+DISPUTED → PAYABLE
+
+DISPUTED → REJECTED
+
+A full economic reversal may result in:
+
+PENDING/APPROVED/PAYABLE/PAID → REVERSED
+
+Partial reversals create ledger deltas and may retain the commission's operational state when a positive valid balance remains.
+
+PAID is only applied after external payment execution is confirmed.
+
+Invalid transitions shall return a deterministic error, create an audit event where material, and make no financial mutation.
+
+20. COMMISSION LEDGER
+
+Every financial state change creates a ledger event.
+
+The ledger is append-only.
+
+A ledger event must state:
+
+- which commission;
+
+- which affiliate;
+
+- which order;
+
+- amount delta;
+
+- currency;
+
+- resulting economic balance;
+
+- event type;
+
+- actor;
+
+- reason;
+
+- source event;
+
+- evidence;
+
+- correlation ID;
+
+- timestamp.
+
+The current commission summary is derived operational state.
+
+The ledger is historical financial truth.
+
+No reconciliation process may "fix" history by replacing prior rows.
+
+21. HOLD PERIOD
+
+Initial MVP hold:
+
+30 days
+
+Start event:
+
+the authoritative qualifying transaction reaches the governed paid/completed state.
+
+hold_until = maturity_start_at + 30 days
+
+A scheduled process evaluates PENDING commissions.
+
+To mature:
+
+- current time >= hold_until;
+
+- affiliate entitlement remains valid;
+
+- no unresolved refund;
+
+- no chargeback/payment reversal;
+
+- no active dispute;
+
+- no applicable compliance hold;
+
+- commission has positive valid balance;
+
+- source order remains qualifying.
+
+Then:
+
+PENDING → APPROVED
+
+and, if payout conditions independent of the $50 aggregate threshold are satisfied:
+
+APPROVED → PAYABLE
+
+The $50 threshold governs batch inclusion, not whether an otherwise mature commission may be identified as payable.
+
+22. REFUNDS, REVERSALS, CHARGEBACKS
+
+Full refund before payment
+
+Create COMMISSION_FULL_REVERSAL.
+
+Original commission and ledger history remain.
+
+Commission becomes REVERSED.
+
+Partial refund
+
+Recalculate qualifying revenue for affected lines.
+
+required_reversal = original_valid_commission - recalculated_valid_commission
+
+Append COMMISSION_PARTIAL_REVERSAL.
+
+Never recalculate using current rates. Use the historical rate/rule applicable to the original sale.
+
+Refund after payout
+
+Append reversal event.
+
+The paid historical event remains.
+
+The reversed value becomes an affiliate-account debit adjustment against future payable balance unless another approved recovery method applies.
+
+Chargeback/payment reversal
+
+Confirmed lost revenue invalidates the affected commission amount.
+
+Create reversal or rejection according to prior state.
+
+Do not delete commission.
+
+Duplicate refund
+
+A refund event uses source-event idempotency.
+
+Reprocessing returns the previously produced result and does not create a second reversal.
+
+23. SELF-REFERRAL DETECTION
+
+Self-referral commission is prohibited.
+
+MVP review signals may include:
+
+- normalized affiliate email = normalized purchaser verified email;
+
+- verified affiliate identity = verified purchaser identity;
+
+- same approved payment-identity token/reference where legally accessible;
+
+- strong account identity match;
+
+- repeated related transaction pattern.
+
+Shared household/address alone is insufficient for automatic rejection.
+
+Initial automated result:
+
+SELF_REFERRAL_SUSPECTED
+
+→ create risk event
+
+→ place affected commission under appropriate review/hold where authorized
+
+→ human review
+
+No signal shall be labeled proven fraud without the governed decision process.
+
+24. RISK EVENTS
+
+Risk severity:
+
+INFO
+
+LOW
+
+MEDIUM
+
+HIGH
+
+CRITICAL
+
+Review state:
+
+OPEN
+
+UNDER_REVIEW
+
+RESOLVED_NO_ACTION
+
+RESOLVED_REMEDIATION
+
+RESOLVED_HOLD
+
+RESOLVED_SUSPENSION
+
+RESOLVED_TERMINATION
+
+CLOSED
+
+A risk event is evidence.
+
+Enforcement is a separate governed action.
+
+Automated ML fraud scoring is outside MVP.
+
+Final quantitative fraud thresholds:
+
+TBD — REQUIRES GOVERNANCE / PILOT DATA
+
+25. DISPUTES
+
+Standard window:
+
+30 days after the relevant commission statement or status notice becomes available.
+
+Supported dispute types:
+
+ATTRIBUTION
+
+COMMISSION_AMOUNT
+
+REVERSAL
+
+PAYOUT
+
+STATUS
+
+OTHER
+
+Required submission:
+
+- affiliate identity;
+
+- commission/order reference if available;
+
+- dispute type;
+
+- claim;
+
+- evidence where available.
+
+Late disputes may be accepted for discretionary human review but do not automatically reopen entitlement.
+
+Budly may collect and summarize.
+
+Budly may not decide.
+
+Any financial correction creates separate attribution/ledger/audit records.
+
+26. PAYOUT ELIGIBILITY
+
+For affiliate A, currency C, payout period P:
+
+payable_balance =
+
+  sum(valid ledger economic deltas
+
+      not already allocated to a completed/submitted payout
+
+      for payable eligible commissions)
+
+Affiliate qualifies for batch inclusion only when:
+
+1. payable balance >= 50.00 in that currency;
+
+2. at least one valid PAYABLE commission exists;
+
+3. no blocking dispute applies to included funds;
+
+4. no blocking compliance/fraud hold applies;
+
+5. required payout profile is complete;
+
+6. required tax profile state is complete for applicable payout rules;
+
+7. affiliate is entitled to receive the valid earned amount;
+
+8. no unresolved reconciliation conflict exists.
+
+Balances below $50 roll forward.
+
+No balance is forfeited solely for being below threshold.
+
+27. PAYOUT BATCH
+
+Monthly cadence.
+
+Batch preparation:
+
+1. lock payout eligibility snapshot;
+
+2. identify eligible affiliate balances by currency;
+
+3. create batch;
+
+4. create payout items;
+
+5. link exact commission balances;
+
+6. calculate total;
+
+7. generate reconciliation preview;
+
+8. move to UNDER_REVIEW;
+
+9. require human FINANCIAL_APPROVER/PROJECT_OWNER approval;
+
+10. only after approval may provider submission occur.
+
+Preparation does not mark commission PAID.
+
+Provider submission does not mark commission PAID.
+
+Only confirmed external successful payment does.
+
+Partial provider failure:
+
+- successful items may complete;
+
+- failed items remain unpaid;
+
+- batch becomes PARTIAL_FAILURE;
+
+- failed amounts remain economically payable;
+
+- no duplicate payout may occur on retry.
+
+28. PAYOUT PROVIDER INTERFACE
+
+Provider-neutral adapter:
+
+prepareBeneficiary(affiliate_id)
+
+Returns provider beneficiary reference/state.
+
+submitPayout()
+
+Input:
+
+payout_item_id
+
+beneficiary_reference
+
+amount
+
+currency
+
+provider_idempotency_key
+
+Output:
+
+provider_status
+
+external_transaction_id
+
+submitted_at
+
+error_code
+
+getPayoutStatus(external_transaction_id)
+
+processProviderCallback(payload)
+
+Callbacks require authenticity validation and idempotency.
+
+Exact payout provider:
+
+TBD — REQUIRES PROJECT OWNER / IMPLEMENTATION VALIDATION
+
+29. TAX INFORMATION BOUNDARY
+
+BROS may store:
+
+tax_profile_status
+
+tax_provider_reference
+
+tax_verified_at
+
+Allowed statuses:
+
+NOT_REQUIRED_OR_UNKNOWN
+
+REQUIRED_INCOMPLETE
+
+PENDING_VERIFICATION
+
+VERIFIED
+
+BLOCKED
+
+Raw W-9/W-8 or equivalent documents shall not be stored in ordinary affiliate tables, CRM notes, Budly conversation memory, public WordPress storage, or ordinary Affiliate Drive documents.
+
+Exact provider/process:
+
+TBD — REQUIRES LEGAL / TAX / IMPLEMENTATION VALIDATION
+
+30. BUDLY INTEGRATION
+
+Budly may read approved, purpose-limited:
+
+- affiliate ID;
+
+- affiliate status;
+
+- affiliate class where appropriate;
+
+- eligible products;
+
+- approved current commission rate/rule explanation;
+
+- governed referral links;
+
+- governed QR resources;
+
+- approved campaigns;
+
+- aggregate commission states;
+
+- payout-status explanation;
+
+- performance summaries;
+
+- approved disclosures;
+
+- approved promotional guidance.
+
+Budly may request governed actions:
+
+- create/retrieve approved referral link;
+
+- retrieve QR;
+
+- retrieve affiliate program information;
+
+- retrieve commission status;
+
+- retrieve performance summary;
+
+- submit support request;
+
+- submit dispute intake;
+
+- prepare campaign/content draft.
+
+Budly shall not:
+
+- approve affiliates;
+
+- create Strategic Partner status;
+
+- change affiliate class;
+
+- change commission rate;
+
+- create financial entitlement;
+
+- override attribution;
+
+- modify ledger events;
+
+- approve payout;
+
+- mark payout paid;
+
+- change product affiliate eligibility;
+
+- waive terms;
+
+- resolve disputes financially;
+
+- terminate an affiliate;
+
+- invent promotional/health claims.
+
+31. N8N WORKFLOW SPECIFICATIONS
+
+AFF-WF-001 — Application Intake
+
+Trigger: validated application submission.
+
+Actions: normalize → validate → idempotency check → persist application → emit event → notify review queue.
+
+Stop: malformed or policy-ineligible submission state.
+
+Retry: transient persistence/notification only.
+
+Quarantine: malformed machine event or persistence exhaustion.
+
+Audit: application submitted.
+
+AFF-WF-002 — Approval / Activation
+
+Trigger: authorized human decision or terms acceptance.
+
+Approval path: approve → create affiliate identity → APPROVED_PENDING_TERMS → wait for required terms/training → ACTIVE.
+
+Decline: persist decision, no affiliate entitlement.
+
+Strategic Partner: require Project Owner actor.
+
+Audit: every state transition.
+
+AFF-WF-003 — Referral Event Processing
+
+Trigger: /r/ or /aq/ route.
+
+Actions: validate affiliate/route/campaign → create append-only referral event → update attribution context → redirect.
+
+No commission creation.
+
+AFF-WF-004 — Revenue Event → Attribution → Commission
+
+Trigger: persisted qualifying bros.revenue_event.v1.
+
+Actions: idempotency → resolve order → attribution → CCSS eligibility → qualifying revenue → commission rule → line calculations → commission summary → ledger creation → audit/event.
+
+Ambiguity: quarantine, no guessed money.
+
+AFF-WF-005 — Refund / Reversal
+
+Trigger: normalized refund/chargeback/payment-reversal revenue event.
+
+Actions: idempotency → resolve original lines → historical-rule recalculation → append reversal → update summary → audit.
+
+AFF-WF-006 — Commission Maturity
+
+Trigger: scheduled.
+
+Actions: fetch PENDING due commissions → validate blockers → APPROVED → PAYABLE where valid.
+
+No payout execution.
+
+AFF-WF-007 — Payout Batch Preparation
+
+Trigger: monthly scheduled/manual governed run.
+
+Actions: eligibility query → prepare snapshot → payout items → reconciliation preview → UNDER_REVIEW.
+
+STOP before funds movement.
+
+AFF-WF-008 — Payout Reconciliation
+
+Trigger: provider callback/status check.
+
+Actions: validate callback → idempotency → reconcile item → append PAID ledger event only on confirmed success → update batch.
+
+AFF-WF-009 — Dispute Intake / Routing
+
+Trigger: affiliate/admin/Budly dispute submission.
+
+Actions: validate identity/reference → calculate standard-window flag → persist dispute → hold affected financial item if authorized → human review queue.
+
+AFF-WF-010 — Affiliate Evidence Package / Reconciliation
+
+Trigger: scheduled period close or authorized request.
+
+Actions: compare Woo transaction truth to BROS attribution/commission/payout truth → generate mismatch report/evidence package → archive governed artifact where approved.
+
+Never modifies ledger from a report alone.
+
+32. SUPABASE RLS
+
+AFFILIATE_USER
+
+May read:
+
+- own affiliate public/profile fields;
+
+- own approved links/QR;
+
+- own permitted performance aggregates;
+
+- own commissions;
+
+- own payout history;
+
+- own disputes;
+
+- approved resource references.
+
+May create:
+
+- own support/dispute intake through controlled RPC/API.
+
+May not directly mutate financial rows.
+
+SUPPORT_OPERATOR
+
+May access support-relevant affiliate/application/dispute information.
+
+Cannot:
+
+- change commission rates;
+
+- approve payout;
+
+- write ledger;
+
+- alter attribution;
+
+- access unrestricted tax information.
+
+AFFILIATE_OPERATOR
+
+May perform delegated operational functions such as application processing, ordinary status/support tasks, governed links, and risk review within business authority.
+
+Strategic Partner approval remains Project Owner only.
+
+FINANCIAL_APPROVER
+
+May view payout and financial evidence and perform specifically governed approval operations.
+
+Cannot modify immutable ledger history.
+
+PROJECT_OWNER
+
+Full governed administrative visibility and authorized actions subject to system safeguards.
+
+SYSTEM_SERVICE
+
+Service-role deterministic backend access.
+
+Service credentials remain server-side.
+
+Affiliate-facing clients must never possess service-role credentials.
+
+Explicit affiliate-facing denial
+
+No affiliate may access:
+
+- another affiliate;
+
+- customer identity/PII;
+
+- private Budly conversations;
+
+- raw fraud/risk evidence;
+
+- admin notes;
+
+- raw tax documents;
+
+- service credentials;
+
+- payout authorization internals.
+
+RLS isolation must be tested through both UI and direct API attempts.
+
+33. ADMIN MVP
+
+The smallest operational admin surface shall provide:
+
+- application queue;
+
+- application detail;
+
+- approve/decline;
+
+- affiliate detail;
+
+- activate/inactivate/suspend;
+
+- Project Owner termination action;
+
+- terms status;
+
+- affiliate class;
+
+- approved product eligibility view;
+
+- link/QR view;
+
+- coupon mapping view;
+
+- attribution lookup;
+
+- commission detail;
+
+- calculation evidence;
+
+- immutable ledger view;
+
+- refund/reversal view;
+
+- risk-event queue;
+
+- dispute queue;
+
+- payout eligibility;
+
+- payout batch preparation;
+
+- payout approval for authorized actor;
+
+- payout reconciliation;
+
+- audit timeline;
+
+- quarantine queue.
+
+Direct raw SQL shall not be required for routine private-pilot operations.
+
+No elaborate dashboard designer is required.
+
+34. AFFILIATE-FACING MVP
+
+Authenticated affiliate view shall provide:
+
+- affiliate ID;
+
+- status;
+
+- eligible products;
+
+- canonical referral link;
+
+- approved campaign links;
+
+- QR resources where enabled;
+
+- clicks;
+
+- attributed conversions;
+
+- pending commission;
+
+- payable commission;
+
+- paid commission;
+
+- payout history;
+
+- approved resources;
+
+- disclosure guidance;
+
+- support entry;
+
+- dispute entry.
+
+Customer identities shall not be exposed.
+
+Aggregate performance shall be privacy-preserving.
+
+35. EVENT CONTRACT
+
+Canonical affiliate envelope:
+
+bros.affiliate_event.v1
+
+{
+
+  "event_id": "uuid",
+
+  "event_type": "affiliate.referral.created",
+
+  "occurred_at": "ISO-8601 UTC",
+
+  "source_system": "string",
+
+  "payload_version": "1.0",
+
+  "correlation_id": "uuid",
+
+  "affiliate_id": "AFF-000001",
+
+  "session_id": "optional-string",
+
+  "campaign_id": "optional-string",
+
+  "order_id": "optional-string",
+
+  "commission_id": "optional-uuid",
+
+  "data": {}
+
+}
+
+Required for every event:
+
+event_id
+
+event_type
+
+occurred_at
+
+source_system
+
+payload_version
+
+correlation_id
+
+data
+
+Context fields are required only when applicable.
+
+Unknown payload versions fail validation.
+
+Invalid financially relevant events quarantine.
+
+bros.affiliate_event.v1 complements bros.revenue_event.v1. It never replaces it.
+
+36. IDEMPOTENCY
+
+Idempotency shall be database-enforced.
+
+Recommended keys:
+
+Application request: caller idempotency key or canonical submission fingerprint
+
+Referral route: route-request event UUID generated server-side
+
+Revenue processing: normalized revenue event ID
+
+Attribution decision: order ID + attribution version
+
+Commission creation: affiliate ID + order ID + calculation version
+
+Line commission: order line ID + affiliate + calculation version
+
+Refund: authoritative refund/revenue event ID
+
+Chargeback: authoritative payment reversal ID
+
+Payout item: internal payout item ID mapped to provider idempotency key
+
+Provider callback: provider event/transaction ID + callback type
+
+Manual adjustment: authorized adjustment request UUID
+
+Duplicate behavior:
+
+- return original deterministic result;
+
+- do not re-run economic mutation;
+
+- optionally record duplicate-suppression metric;
+
+- never create duplicate ledger money.
+
+37. TRACEABILITY
+
+One successful conversion shall be traversable through:
+
+session_id
+
+→ referral_event_id
+
+→ attribution_decision_id
+
+→ revenue_event_id
+
+→ Woo order ID
+
+→ commission_id
+
+→ commission_line_id
+
+→ ledger_event_id
+
+→ payout_batch_id
+
+→ payout_item_id
+
+→ external_transaction_id
+
+All related events shall share or link a correlation_id.
+
+Where an upstream existing correlation ID exists, preserve it.
+
+38. QUARANTINE
+
+Required reasons:
+
+MALFORMED_EVENT
+
+INVALID_SIGNATURE
+
+UNKNOWN_AFFILIATE
+
+UNKNOWN_PRODUCT
+
+CONFLICTING_ATTRIBUTION
+
+MISSING_COMMISSION_RULE
+
+INVALID_CURRENCY
+
+INVALID_AFFILIATE_STATE
+
+IMPOSSIBLE_STATE_TRANSITION
+
+PERSISTENCE_FAILURE_RETRY_EXHAUSTED
+
+FINANCIAL_RECONCILIATION_MISMATCH
+
+UNSUPPORTED_EVENT_VERSION
+
+Transient technical failures may retry.
+
+Ambiguous business/financial failures shall not blindly retry.
+
+No quarantined event is discarded without a terminal resolution record.
+
+39. OBSERVABILITY
+
+Minimum health indicators:
+
+- referral requests total/success/failure;
+
+- qualified referral creation rate;
+
+- attribution decisions total;
+
+- attribution success count/rate;
+
+- unattributed count;
+
+- unresolved attribution count;
+
+- revenue events consumed;
+
+- revenue-event processing failures;
+
+- commissions created;
+
+- commission-rule unresolved count;
+
+- duplicate suppression count;
+
+- refunds processed;
+
+- reversal failures;
+
+- maturity workflow failures;
+
+- payout batches prepared;
+
+- payout item failures;
+
+- reconciliation mismatches;
+
+- quarantine open count;
+
+- processing latency p50/p95/p99 where practical;
+
+- database/queue health.
+
+Launch-blocking failures include:
+
+- duplicate commission money;
+
+- ledger write failure;
+
+- inability to reconstruct financial history;
+
+- attribution precedence failure;
+
+- product eligibility fail-open;
+
+- RLS data leakage;
+
+- unauthorized payout capability;
+
+- refund/reversal failure affecting financial truth;
+
+- revenue-event ingestion corruption;
+
+- inability to disable Affiliate processing without harming normal checkout.
+
+40. TEST MATRIX
+
+Every financial test records exact inputs and deterministic expected outputs.
+
+1. Standard Affiliate valid application → SUBMITTED.
+
+2. Declined application → no affiliate entitlement.
+
+3. Approved application lacking terms → APPROVED_PENDING_TERMS, not ACTIVE.
+
+4. ACTIVE referral → qualified referral + 30-day context.
+
+5. Referral older than 30 days → no referral attribution.
+
+6. Affiliate A then B → B wins if both valid.
+
+7. LINK A then QR B → B wins.
+
+8. LINK A then valid coupon B → B wins.
+
+9. Invalid/non-attributing coupon → ordinary referral remains.
+
+10. Suspended affiliate new link → no qualified attribution.
+
+11. EXCLUDED product → $0 commission.
+
+12. Mixed cart → only eligible lines calculate.
+
+13. Digital eligible line → configured digital pilot rule applied.
+
+14. Physical eligible line → configured physical pilot rule applied.
+
+15. Product-specific approved override → overrides lower-precedence rule.
+
+16. No matching rule → quarantine/no commission.
+
+17. Discounted item → qualifying revenue uses collected merchandise after discount.
+
+18. Full refund → full reversal.
+
+19. Partial refund → exact proportional recalculation.
+
+20. Refund after PAID → debit adjustment, original PAID event retained.
+
+21. Duplicate revenue event → one commission only.
+
+22. Duplicate refund → one reversal only.
+
+23. Self-referral signal → risk flag/review, not automatic fraud.
+
+24. Affiliate referral + Budly assistance → affiliate credit survives; Budly assist recorded separately.
+
+25. Existing customer + valid new referral → eligible attribution allowed.
+
+26. Dispute within 30 days → accepted OPEN.
+
+27. Late dispute → flagged outside normal window, human discretion path.
+
+28. Payable balance $49.99 → no batch inclusion.
+
+29. Payable balance $50.00 → eligible if all other conditions pass.
+
+30. Payable balance >$50 → eligible.
+
+31. Active compliance hold → payout blocked.
+
+32. Provider payout failure → commission remains unpaid/payable; no PAID ledger event.
+
+33. Provider payout success → PAID ledger event + reconciliation.
+
+34. Manual attribution correction → original preserved + replacement decision/audit.
+
+35. Corrupted client affiliate metadata → ignored as authority/server truth prevails.
+
+36. Missing attribution → auditable UNATTRIBUTED, no guessed affiliate.
+
+37. Quarantine resolution → safe deterministic reprocessing exactly once.
+
+38. RLS Affiliate A queries B → denied.
+
+39. Affiliate attempts customer PII access → denied.
+
+40. Full controlled round trip → application → approval → terms → link → referral → purchase → revenue event → attribution → line commission → hold → payable → batch → human approval → payment → reconciliation → reconstructable evidence.
+
+Additional required negative tests:
+
+41. unknown CCSS eligibility enum;
+
+42. missing affiliate eligibility field;
+
+43. duplicate payout callback;
+
+44. equal-priority conflicting commission rules;
+
+45. invalid affiliate ID format;
+
+46. QR affiliate mismatch;
+
+47. expired campaign;
+
+48. payout callback with invalid authenticity evidence;
+
+49. impossible commission-state transition;
+
+50. Affiliate system disabled while normal non-affiliate Woo sale succeeds.
+
+41. ACCEPTANCE CRITERIA
+
+The MVP cannot be classified TESTED unless:
+
+1. schema constraints are deployed in the test environment;
+
+2. affiliate identity is immutable;
+
+3. terms history is immutable;
+
+4. referral events are append-only;
+
+5. attribution obeys 30-day last-qualified rules;
+
+6. valid affiliate coupons override normal referral attribution;
+
+7. QR behaves as an ordinary referral event;
+
+8. Budly participation does not erase attribution;
+
+9. missing/ambiguous attribution fails closed;
+
+10. CCSS unresolved eligibility fails closed;
+
+11. commission precedence is deterministic;
+
+12. line calculations use exact decimal arithmetic;
+
+13. duplicate revenue events create no duplicate commission;
+
+14. duplicate refund events create no duplicate reversal;
+
+15. ledger history is append-only;
+
+16. full refunds reconcile;
+
+17. partial refunds reconcile;
+
+18. post-payment reversal creates recoverable adjustment without deleting history;
+
+19. payout eligibility derives from ledger truth;
+
+20. the $50 threshold works exactly at boundary;
+
+21. payout requires human authorization;
+
+22. external payout failure cannot mark commission paid;
+
+23. RLS prevents cross-affiliate access;
+
+24. affiliate users cannot access customer PII;
+
+25. service credentials remain server-side;
+
+26. all financial mutations are auditable;
+
+27. one correlation chain reconstructs click through payout;
+
+28. quarantine has no silent drops;
+
+29. normal WooCommerce commerce survives Affiliate-module disablement;
+
+30. complete controlled end-to-end scenario passes with evidence.
+
+42. EVIDENCE REQUIREMENTS
+
+The build shall eventually provide:
+
+- migration identifiers/hashes;
+
+- schema dump/evidence;
+
+- enum/constraint evidence;
+
+- RLS policies and test proof;
+
+- workflow version identifiers;
+
+- API/event-schema version evidence;
+
+- sample referral event;
+
+- sample attribution decision;
+
+- sample CCSS eligibility input;
+
+- sample line-item commission calculation;
+
+- commission-rule resolution evidence;
+
+- ledger sequence;
+
+- partial-refund sequence;
+
+- full-refund sequence;
+
+- post-paid reversal sequence;
+
+- self-referral flag evidence;
+
+- dispute record/evidence;
+
+- payout eligibility calculation;
+
+- payout batch;
+
+- human approval audit;
+
+- payout provider result;
+
+- reconciliation package;
+
+- idempotency proof;
+
+- quarantine/recovery proof;
+
+- observability/health checks;
+
+- rollback/disablement proof;
+
+- complete round-trip evidence package.
+
+A passing test count alone does not establish PROVEN status.
+
+43. ROLLBACK / DISABLEMENT
+
+Affiliate processing must be feature-gated.
+
+Minimum independent controls:
+
+- referral route intake enable/disable;
+
+- new attribution-context creation enable/disable;
+
+- affiliate commission processing enable/disable;
+
+- payout submission enable/disable;
+
+- affiliate-facing portal enable/disable.
+
+Disabling Affiliate functionality must not disable:
+
+- WooCommerce checkout;
+
+- normal Woo orders;
+
+- bros.revenue_event.v1;
+
+- Native CRM;
+
+- Budly non-affiliate capabilities;
+
+- CCSS;
+
+- STS marketing attribution;
+
+- non-affiliate sales.
+
+Revenue events received while commission processing is intentionally disabled must remain preserved and explicitly marked for governed later processing or non-processing. They shall not vanish.
+
+Schema rollback shall not destroy historical affiliate financial data.
+
+Deployment rollback must prefer application rollback/feature disablement over destructive database reversal once financial records exist.
+
+44. API / SERVICE CONTRACTS
+
+Exact HTTP paths may be selected during authorized implementation, but logical contracts are fixed.
+
+Required backend services:
+
+submitAffiliateApplication()
+
+reviewAffiliateApplication()
+
+acceptAffiliateTerms()
+
+activateAffiliate()
+
+suspendAffiliate()
+
+terminateAffiliate()
+
+resolveReferralRoute()
+
+resolveQrRoute()
+
+createReferralEvent()
+
+resolveAttribution()
+
+processAffiliateRevenueEvent()
+
+resolveProductEligibility()
+
+resolveCommissionRule()
+
+calculateLineCommission()
+
+processRefundOrReversal()
+
+evaluateCommissionMaturity()
+
+submitDispute()
+
+resolveDispute()
+
+preparePayoutBatch()
+
+approvePayoutBatch()
+
+submitApprovedPayoutBatch()
+
+reconcilePayout()
+
+getAffiliateOwnDashboard()
+
+getAffiliateAdminView()
+
+getBudlyAffiliateContext()
+
+Every financial service shall return a typed result containing:
+
+- success/failure;
+
+- status;
+
+- business reason code;
+
+- affected record IDs;
+
+- correlation ID;
+
+- idempotent replay indicator where applicable;
+
+- quarantine reference if blocked.
+
+45. SECURITY REQUIREMENTS
+
+- Server-side secrets only.
+
+- No secret in referral URL.
+
+- No secret in QR.
+
+- No commission amount accepted from browser as authority.
+
+- No affiliate class accepted from browser as authority.
+
+- No rate accepted from browser as authority.
+
+- Signed webhook/authenticity verification remains mandatory for upstream integrations.
+
+- RLS plus backend authorization is required.
+
+- Least privilege.
+
+- Sensitive logging minimized.
+
+- IP information, where justified, should be hashed/minimized.
+
+- Tax documents excluded from general datastore.
+
+- Customer PII excluded from affiliate-facing responses.
+
+- Admin financial actions require authenticated actor identity.
+
+- Human approvals require durable evidence.
+
+46. STS INTEGRATION
+
+STS attribution remains marketing-source truth.
+
+Affiliate attribution remains financial referral-credit truth.
+
+One transaction may therefore contain both:
+
+source
+
+platform
+
+content_id
+
+campaign_id
+
+cta_id
+
+product_or_topic
+
+session_id
+
+landing_route
+
+intent
+
+journey
+
+conversion
+
+and:
+
+affiliate_id
+
+affiliate_referral_event_id
+
+affiliate_method
+
+affiliate_campaign_id
+
+attribution_decision_id
+
+Neither overwrites the other.
+
+Before implementation uses STS-2 internals, the authorized implementer must reconcile the current canonical GitHub state and current Budly production baseline.
+
+Phase E does not authorize reopening or rewriting STS-2.
+
+47. PRIVATE-PILOT ECONOMIC CONFIGURATION
+
+Current working assumptions:
+
+- direct digital: approximately 30%;
+
+- direct physical: approximately 20%.
+
+Classification:
+
+PROVISIONAL PRIVATE-PILOT COMMISSION RATES
+
+They shall not be activated for any product until product profitability is validated and that product is explicitly approved for pilot eligibility.
+
+Current economics contain incomplete real production/fulfillment/payment/refund/channel-cost inputs.
+
+Therefore:
+
+NO PRODUCT BECOMES AFFILIATE-ELIGIBLE MERELY BECAUSE A WORKING COMMISSION PERCENTAGE EXISTS.
+
+48. NON-GOALS
+
+The private MVP excludes:
+
+- multi-level/downline commissions;
+
+- lifetime residual commissions;
+
+- automatic public recruiting;
+
+- automatic affiliate approval;
+
+- automatic Strategic Partner approval;
+
+- autonomous payout authorization;
+
+- AI financial decision authority;
+
+- elaborate gamification;
+
+- advanced ML fraud scoring;
+
+- large creator tier systems;
+
+- unnecessary native mobile app;
+
+- rebuilding WooCommerce;
+
+- replacing CCSS;
+
+- replacing CRM;
+
+- replacing STS;
+
+- a second revenue ingestion pipeline;
+
+- autonomous policy exceptions;
+
+- broad customer-data disclosure to affiliates;
+
+- tax-document storage in ordinary BROS records;
+
+- dozens of payout provider adapters.
+
+49. UNRESOLVED DEPENDENCIES
+
+The following remain explicitly outside developer authority:
+
+U-001 — Pilot Products
+
+TBD — PROJECT OWNER + PROFITABILITY VALIDATION
+
+U-002 — Final Product-Level Economics
+
+TBD — VALIDATED COST DATA REQUIRED
+
+U-003 — Payout Provider
+
+TBD — PROJECT OWNER / IMPLEMENTATION VALIDATION
+
+U-004 — Tax Documentation Provider/Process
+
+TBD — LEGAL/TAX/SECURITY VALIDATION
+
+U-005 — Affiliate Legal Agreement
+
+TBD — GOVERNANCE / LEGAL REVIEW
+
+U-006 — Privacy Notice
+
+TBD — GOVERNANCE / LEGAL REVIEW
+
+U-007 — Jurisdiction-Specific Cannabis Advertising Controls
+
+TBD — CURRENT LEGAL/REGULATORY VALIDATION BEFORE APPLICABLE PILOT ACTIVITY
+
+U-008 — Quantitative Fraud Thresholds
+
+TBD — GOVERNANCE + PILOT DATA
+
+U-009 — Pilot Participant Count
+
+TBD — PROJECT OWNER
+
+U-010 — Production Referral/QR Host and Cross-Site Persistence Mechanism
+
+TBD — MATT/MWB/CURRENT RUNTIME VALIDATION BEFORE IMPLEMENTATION
+
+None of these may silently become developer assumptions.
+
+50. IMPLEMENTATION BOUNDARIES
+
+When production build is separately authorized, implementation shall:
+
+- extend existing BROS schema/services where appropriate;
+
+- reuse existing revenue-event ingestion;
+
+- reuse Native CRM identities;
+
+- preserve WooCommerce as transaction authority;
+
+- preserve CCSS;
+
+- preserve STS;
+
+- keep WordPress logic thin;
+
+- place deterministic financial logic in governed backend code;
+
+- make material rules configurable/versioned;
+
+- preserve immutable evidence;
+
+- include rollback;
+
+- include tests before deployment.
+
+Implementation shall not invent:
+
+- new commission rates;
+
+- pilot products;
+
+- new attribution precedence;
+
+- new payout threshold;
+
+- new hold duration;
+
+- new residual rights;
+
+- new Strategic Partner treatment;
+
+- legal policy;
+
+- tax treatment;
+
+- affiliate exceptions.
+
+51. RECOMMENDED FUTURE BUILD ORDER
+
+Upon separate production-build authorization:
+
+1. Data foundation and enums
+
+2. Affiliate identity/application/terms
+
+3. Referral link + QR infrastructure
+
+4. Attribution persistence/engine
+
+5. CCSS affiliate eligibility
+
+6. Revenue-event consumer
+
+7. Commission-rule engine
+
+8. Line-item calculations
+
+9. Immutable ledger
+
+10. Refund/reversal handling
+
+11. Maturity workflow
+
+12. Dispute/risk controls
+
+13. Payout preparation/provider adapter
+
+14. RLS/security
+
+15. Admin MVP
+
+16. Affiliate-facing MVP
+
+17. Budly interface
+
+18. Reconciliation/evidence
+
+19. Full acceptance test suite
+
+20. Controlled private-pilot proof
+
+Front-end polish must not outrun financial truth.
+
+52. PRIVATE MVP DEFINITION OF DONE
+
+The implementation is not PROVEN merely because its individual modules function.
+
+The required business proof is:
+
+Affiliate application submitted
+
+→ human approval
+
+→ current terms accepted
+
+→ permanent affiliate identity issued
+
+→ active affiliate receives governed referral route
+
+→ customer follows route
+
+→ referral captured
+
+→ 30-day attribution established
+
+→ customer may interact with Budly
+
+→ customer buys explicitly affiliate-eligible product through WooCommerce
+
+→ existing BROS revenue event captures transaction
+
+→ BROS resolves financial attribution
+
+→ qualifying revenue calculated from authoritative line data
+
+→ historical commission rule selected
+
+→ exact commission calculated
+
+→ immutable ledger entry created
+
+→ commission held
+
+→ refund/reversal capability demonstrated
+
+→ commission matures
+
+→ payable balance satisfies threshold
+
+→ payout batch prepared
+
+→ authorized human approves
+
+→ approved external provider executes payment
+
+→ payout reconciled
+
+→ commission becomes PAID
+
+→ complete chain can be reconstructed from evidence.
+
+That is the Affiliate MVP heartbeat.
+
+53. PHASE E GOVERNANCE EFFECT
+
+Phase E v1.0 is RATIFIED and becomes the implementation specification beneath ratified Phase A-D.
+
+Ratification authorizes future build planning and implementation handoff preparation consistent with separate Project Owner authorization.
+
+Ratification itself does not authorize:
+
+- Supabase migration;
+
+- production coding;
+
+- WordPress changes;
+
+- WooCommerce changes;
+
+- n8n deployment;
+
+- CCSS modification;
+
+- Budly modification;
+
+- public enrollment;
+
+- affiliate recruitment;
+
+- pilot activation;
+
+- payout execution.
+
+Those remain separate authorization gates.
+
+54. PHASE E STATUS
+
+Document: AFF-001 Phase E — MVP Specification v1.0
+
+Status: RATIFIED
+
+Production Changes: NONE
+
+Google Drive Publication: SAVED TO BROS → Affiliate
+
+Next Governance Action: Separate Project Owner decision on Affiliate MVP build handoff / implementation authorization.
+
+No Phase F, implementation, migrations, workflow deployment, affiliate creation, payout activity, or production modification is authorized by this ratification.

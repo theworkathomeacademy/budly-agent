@@ -1,0 +1,8 @@
+{
+  "schema_version": "aff-001-feature-flags-v1",
+  "affiliate_referral_enabled": false,
+  "affiliate_attribution_enabled": false,
+  "affiliate_commission_processing_enabled": false,
+  "affiliate_portal_enabled": false,
+  "affiliate_payout_submission_enabled": false
+}

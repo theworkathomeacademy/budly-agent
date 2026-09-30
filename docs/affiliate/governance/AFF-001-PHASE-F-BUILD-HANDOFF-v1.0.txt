@@ -1,0 +1,1875 @@
+AFF-001 PHASE F — BUILD AUTHORIZATION & IMPLEMENTATION HANDOFF v1.0
+
+Program: BROS Affiliate Program
+
+Parent Workstream: AFF-001 — Affiliate Program Discovery & Architecture
+
+Predecessor: AFF-001 Phase E — MVP Specification v1.0
+
+Project Owner / Final Authority: d-mac
+
+Status: RATIFIED
+
+Build Authorization: NOT YET GRANTED
+
+Production Deployment: NOT AUTHORIZED
+
+Private Pilot: NOT AUTHORIZED
+
+1. PURPOSE
+
+Phase F creates the explicit boundary between SPECIFICATION and TECHNICAL BUILD.
+
+The purpose is to determine exactly what an authorized implementation agent may build, what existing systems must be preserved, what must first be reconciled, how implementation will be sequenced, how success will be tested, what evidence must be returned, and where execution must stop.
+
+Phase F exists specifically to prevent accidental production implementation, developers inventing policy, rebuilding existing capabilities, destroying proven infrastructure, coding against stale branches, uncontrolled migrations, premature deployment, and premature private-pilot activation.
+
+The governing sequence remains:
+
+ANALYZE → RECOMMEND → d-mac DECIDES → AUTHORIZED EXECUTION → VERIFY → REPORT
+
+2. GOVERNING AUTHORITY
+
+Implementation must comply with:
+
+- AFF-001 — Affiliate Program Discovery & Architecture v1.0
+
+- AFF-001 Phase A — Business Model Brainstorm v1.0
+
+- AFF-001 Phase B — Affiliate Program Model v1.0
+
+- AFF-001 Phase C — Governance Gap Closure v1.0
+
+- AFF-001 Phase D — Technical Architecture v1.0
+
+- AFF-001 Phase E — MVP Specification v1.0
+
+Phase E is the controlling implementation specification.
+
+Where earlier supporting or historical documents conflict with ratified Phase A-E:
+
+RATIFIED PHASE A-E CONTROL.
+
+Supporting references may inform implementation but may not restore superseded policy.
+
+3. PHASE F OBJECTIVE
+
+Phase F answers:
+
+WHAT EXACTLY MAY THE AUTHORIZED BUILD AGENT BUILD, AGAINST WHICH CURRENT BASELINE, IN WHAT ORDER, WITH WHAT TESTS, EVIDENCE, ROLLBACK, AND STOP CONDITIONS?
+
+The output of Phase F is a copy/paste-ready implementation command.
+
+Phase F itself does not perform that implementation.
+
+4. CURRENT IMPLEMENTATION RECONCILIATION
+
+4.1 Governance
+
+Confirmed:
+
+- Phase A RATIFIED
+
+- Phase B RATIFIED
+
+- Phase C RATIFIED
+
+- Phase D RATIFIED
+
+- Phase E RATIFIED
+
+- Phase E saved as AFF-001 Phase E — MVP Specification v1.0
+
+- Phase E stored in Google Drive → BROS → Affiliate
+
+Governance specification is therefore sufficiently complete to support Phase F.
+
+5. GITHUB CURRENT STATE
+
+Canonical known repository:
+
+theworkathomeacademy/budly-agent
+
+Default branch:
+
+main
+
+Connected repository access confirms the repository remains active and accessible.
+
+5.1 Current branch inventory relevant to Affiliate work
+
+Observed branches include:
+
+- main
+
+- release/budly-v1.7
+
+- release/budly-v1.7.1
+
+- release/budly-v1.9.0-runtime-ccss
+
+- sts-1-production-attribution
+
+- other active BROS/BAE branches
+
+Not observed in the current connected branch inventory:
+
+sts-2-attributed-revenue
+
+This is significant because prior governance/history identifies that branch as the STS-2 implementation branch.
+
+6. GITHUB BASELINE DISCREPANCY
+
+The repository's default main branch presently exposes documentation describing the older Budly v1.7/v1.7.1 lineage.
+
+However, the separate branch release/budly-v1.9.0-runtime-ccss contains later work including Budly runtime evolution, changelog entries through at least 1.8.4, CCSS-related documentation, current commercial-source reconciliation material, runtime components, expanded tests, and later BROS work.
+
+Therefore:
+
+MAIN CANNOT BE ASSUMED TO BE THE CORRECT AFFILIATE BUILD BASELINE MERELY BECAUSE IT IS THE DEFAULT BRANCH.
+
+Likewise:
+
+release/budly-v1.9.0-runtime-ccss cannot automatically be declared canonical production truth merely because it is newer.
+
+The authorized build must establish provenance first.
+
+7. STS-1 CURRENT STATE
+
+The branch sts-1-production-attribution is currently present.
+
+Repository evidence describes STS-1 as built and verified for the conversion spine:
+
+social attribution
+
+→ Ask Budly
+
+→ session/journey persistence
+
+→ intent
+
+→ qualification
+
+→ governed recommendation.
+
+Historical project governance additionally records STS-1 as PROVEN IN PRODUCTION for the controlled Instagram → Ask Budly → recommendation journey.
+
+Affiliate implementation must extend this capability rather than create a separate customer journey attribution universe.
+
+8. STS-2 RECONCILIATION BLOCKER
+
+Historical records identify:
+
+Branch:
+
+sts-2-attributed-revenue
+
+Implementation commit:
+
+745d6c2e29147ebbb80148216a73c9c90856b54d
+
+Evidence commit:
+
+5562b940a958544bf5c3e1834b558db0ecceb117
+
+Historical result:
+
+257/257 PASS
+
+Historical production state:
+
+NOT PROVEN IN PRODUCTION
+
+Current connected GitHub inspection did not find the STS-2 branch in the branch inventory.
+
+Attempts to resolve the historical implementation SHA against the currently connected repository did not succeed.
+
+Therefore:
+
+STS-2 PROVENANCE IS CURRENTLY UNRESOLVED.
+
+This shall be treated as a build-preflight issue.
+
+The authorized implementation agent shall:
+
+1. inspect local clones/remotes if available;
+
+2. inspect remote refs;
+
+3. inspect tags;
+
+4. inspect reflog/local objects where appropriate;
+
+5. search archived evidence;
+
+6. search known Codex/Antigravity work artifacts where authorized;
+
+7. identify whether STS-2 was rebased, renamed, merged, archived, or otherwise moved;
+
+8. compare any recovered implementation against current Budly/CCSS baseline.
+
+It shall not rewrite STS-2 from scratch merely because the historical branch is absent.
+
+If provenance cannot be recovered:
+
+STOP AND REPORT TO d-mac.
+
+9. CCSS CURRENT STATE
+
+The release/budly-v1.9.0-runtime-ccss branch contains CCSS-related architecture and implementation evidence including material such as:
+
+- current-retrieval audit;
+
+- live-source reconciliation;
+
+- n8n workflow specification;
+
+- public-catalog exclusions;
+
+- commercial source-authority matrix.
+
+This supports the conclusion that substantial CCSS/runtime work already exists.
+
+Affiliate implementation therefore shall EXTEND CCSS with Phase E affiliate fields.
+
+It shall not build another product database, another approved-offer snapshot, or another commercial catalog cache.
+
+Affiliate-specific commercial fields remain:
+
+affiliate_eligibility
+
+affiliate_commission_class
+
+affiliate_campaign_restriction
+
+affiliate_class_restriction
+
+affiliate_effective_from
+
+affiliate_effective_until
+
+Existing CCSS last-known-good behavior must remain intact.
+
+10. SUPABASE CURRENT STATE
+
+Connected Supabase inventory currently shows project:
+
+budly-bros-dev
+
+Project reference:
+
+gfcgrpvvqstdohnkhmyl
+
+Region:
+
+us-east-1
+
+Observed state:
+
+INACTIVE
+
+Attempted schema/migration inspection could not complete because the database connection timed out.
+
+Therefore:
+
+CURRENT SUPABASE SCHEMA IS NOT YET VERIFIED FOR PHASE F.
+
+This does not authorize creating a new project.
+
+It does not authorize waking, modifying, migrating, or replacing the existing project.
+
+Before migration design is finalized, the authorized implementation agent must reconcile:
+
+- correct BROS Supabase project;
+
+- current environment;
+
+- current schema;
+
+- migration history;
+
+- existing CRM tables;
+
+- existing revenue-event tables;
+
+- existing RLS;
+
+- existing audit infrastructure;
+
+- existing RPCs;
+
+- whether public.revenue_events remains the current target;
+
+- whether bros_ingest_revenue_event remains current.
+
+If the connected project is obsolete or not production-relevant:
+
+STOP AND REPORT THE CORRECT PROJECT CANDIDATE.
+
+Do not guess.
+
+11. EXISTING REVENUE INFRASTRUCTURE
+
+The build must preserve the governed revenue spine:
+
+WooCommerce
+
+→ Cloudflare Named Tunnel
+
+→ n8n intake
+
+→ HMAC-SHA256 verification
+
+→ bros.revenue_event.v1
+
+→ idempotency
+
+→ Supabase revenue event persistence
+
+→ governed processing.
+
+Affiliate processing is downstream of normalized revenue truth.
+
+No second WooCommerce webhook intake shall be built.
+
+No second general-purpose revenue ledger shall be built.
+
+12. BUILD DOCTRINE
+
+The Affiliate MVP build shall:
+
+ADD AFFILIATE CAPABILITY TO THE EXISTING BROS SPINE.
+
+It shall not create:
+
+- Affiliate CRM 2.0;
+
+- Commerce Database 2.0;
+
+- STS 2.0 replacement;
+
+- Revenue Pipeline 2.0;
+
+- Catalog 2.0;
+
+- parallel Woo webhook infrastructure.
+
+The architecture remains:
+
+EXTEND THE SPINE. DO NOT BUILD A PARALLEL BODY.
+
+13. IMPLEMENTATION AGENT RECOMMENDATION
+
+Primary implementation agent:
+
+Codex
+
+Rationale:
+
+The work is repository-heavy and requires provenance reconciliation, code changes, schema/migrations, deterministic logic, tests, evidence, version control, branch management, and repeatable implementation.
+
+Supporting execution may use, where appropriate:
+
+- MATT for tooling/runtime reconciliation;
+
+- Antigravity for local runtime or mechanical implementation;
+
+- Supabase tooling for database work;
+
+- n8n for workflow deployment;
+
+- WordPress/Woo tooling for approved checkout integration;
+
+- deterministic scripts for evidence/reconciliation.
+
+No supporting agent receives independent policy authority.
+
+14. BUILD PRECONDITIONS
+
+Before writing Affiliate implementation code, the authorized build session must complete Preflight P0.
+
+P0 must establish:
+
+P0.1 Repository Truth
+
+Identify:
+
+- current accepted production baseline;
+
+- current working engineering baseline;
+
+- current runtime/CCSS branch relationship;
+
+- relevant tags/releases;
+
+- whether later Budly 1.8.x/1.9.x work is merged or branch-contained.
+
+P0.2 STS-2 Provenance
+
+Recover or explicitly fail to recover the historical STS-2 implementation.
+
+P0.3 Supabase Truth
+
+Confirm the correct project and current schema.
+
+P0.4 Revenue Truth
+
+Confirm current bros.revenue_event.v1 and ingestion path.
+
+P0.5 CCSS Truth
+
+Confirm Current snapshot implementation and field-extension point.
+
+P0.6 Budly Truth
+
+Confirm current production/runtime integration surface used for customer journeys.
+
+P0.7 WordPress/Woo Truth
+
+Confirm existing checkout/order metadata extension point.
+
+P0 performs reconciliation only.
+
+If a major conflict appears:
+
+STOP. DO NOT BUILD OVER UNKNOWN PROVENANCE.
+
+15. PROPOSED BUILD BRANCH
+
+After P0 establishes the correct baseline, create a dedicated branch:
+
+aff-001-mvp-private-pilot
+
+The branch shall originate from the verified current engineering baseline, not automatically from main.
+
+The P0 report must state:
+
+BASELINE_BRANCH
+
+BASELINE_COMMIT
+
+WHY_THIS_BASELINE_IS_AUTHORITATIVE
+
+before branch creation.
+
+No force-push over existing protected/canonical release history.
+
+16. MVP BUILD SCOPE
+
+The build scope is limited to the Phase E private-pilot system.
+
+Required capabilities:
+
+1. affiliate application;
+
+2. human approval;
+
+3. affiliate identity;
+
+4. versioned terms acceptance;
+
+5. activation;
+
+6. governed referral routes;
+
+7. affiliate QR routes;
+
+8. referral-event capture;
+
+9. 30-day attribution persistence;
+
+10. last-qualified-referral resolution;
+
+11. affiliate coupon precedence;
+
+12. STS/Budly journey continuity;
+
+13. Woo order evidence handoff;
+
+14. existing revenue-event consumption;
+
+15. CCSS affiliate eligibility;
+
+16. commission rule resolution;
+
+17. line-item qualifying revenue;
+
+18. exact commission calculation;
+
+19. commission summary;
+
+20. append-only commission ledger;
+
+21. refund/reversal processing;
+
+22. maturity/hold workflow;
+
+23. self-referral/risk flags;
+
+24. disputes;
+
+25. payout eligibility;
+
+26. payout batch preparation;
+
+27. provider-neutral payout interface;
+
+28. human payout approval gate;
+
+29. payout reconciliation;
+
+30. Supabase RLS;
+
+31. admin MVP;
+
+32. affiliate-facing MVP;
+
+33. Budly read/request interface;
+
+34. affiliate events;
+
+35. idempotency;
+
+36. correlation;
+
+37. quarantine;
+
+38. observability;
+
+39. evidence generation;
+
+40. feature-gated rollback.
+
+17. EXPLICIT NON-BUILD ITEMS
+
+The implementation agent shall not build:
+
+- public affiliate recruiting;
+
+- automatic affiliate approval;
+
+- lifetime commissions;
+
+- multilevel commissions;
+
+- automatic Strategic Partner approval;
+
+- autonomous payout authorization;
+
+- ML fraud scoring;
+
+- elaborate gamification;
+
+- full affiliate social network;
+
+- mobile app;
+
+- second CRM;
+
+- second commerce catalog;
+
+- second revenue pipeline;
+
+- autonomous financial decisions.
+
+18. DATA LAYER BUILD
+
+Subject to verified schema reconciliation, implementation must add or map Phase E entities for:
+
+- affiliate applications;
+
+- affiliates;
+
+- affiliate terms acceptance;
+
+- referral routes;
+
+- QR routes;
+
+- referral events;
+
+- attribution contexts;
+
+- attribution decisions;
+
+- coupon mappings;
+
+- commission rules;
+
+- order-line commissions;
+
+- commission summaries;
+
+- commission ledger;
+
+- risk events;
+
+- disputes;
+
+- attribution overrides;
+
+- payout batches;
+
+- payout items;
+
+- payout-item/commission bridge;
+
+- quarantine events;
+
+- audit integration.
+
+Existing BROS tables should be reused where they satisfy Phase E requirements.
+
+Do not duplicate Person, Organization, CRM identity, customer/order linkage, general audit infrastructure, or general revenue events.
+
+19. MIGRATION REQUIREMENTS
+
+Migrations must be additive wherever possible, idempotent where applicable, reviewable, reversible through safe rollback/disablement, non-destructive to existing commerce, explicit about indexes, explicit about FKs, explicit about constraints, explicit about RLS, explicit about grants, and explicit about immutable-event protections.
+
+Migration naming shall follow the current repository/Supabase convention discovered during P0.
+
+The implementation agent shall not invent a migration naming scheme before verifying current convention.
+
+No migration may drop or rewrite existing transaction history.
+
+20. FEATURE FLAGS
+
+Affiliate MVP shall be independently gateable.
+
+At minimum:
+
+affiliate_referral_enabled
+
+affiliate_attribution_enabled
+
+affiliate_commission_processing_enabled
+
+affiliate_portal_enabled
+
+affiliate_payout_submission_enabled
+
+Default deployment state before Phase G authorization:
+
+OFF / SAFE
+
+The code may exist without creating real financial behavior.
+
+21. REFERRAL INFRASTRUCTURE
+
+Implement:
+
+/r/{affiliate_id}
+
+/r/{affiliate_id}/{campaign_id}
+
+/aq/{affiliate_id}/{qr_id}
+
+Requirements:
+
+- server validation;
+
+- approved destination resolution;
+
+- ACTIVE affiliate requirement for new referral;
+
+- immutable event creation;
+
+- server-side context;
+
+- no arbitrary affiliate redirect URL;
+
+- bot handling;
+
+- tamper resistance;
+
+- audit correlation.
+
+Production route host remains subject to P0/MWB/MATT reconciliation.
+
+No route should be exposed publicly before Phase G authorization.
+
+22. ATTRIBUTION ENGINE
+
+Implement exactly:
+
+30-day window
+
+last qualified referral
+
+coupon beats LINK/QR
+
+QR = ordinary referral event
+
+Budly does not erase affiliate credit
+
+manual correction creates new history
+
+Unresolved ownership:
+
+ATTRIBUTION_UNRESOLVED
+
+→ quarantine
+
+→ no commission.
+
+23. STS INTEGRATION BUILD RULE
+
+Affiliate attribution shall attach additional fields to the existing customer journey where applicable:
+
+affiliate_id
+
+affiliate_referral_event_id
+
+affiliate_method
+
+affiliate_campaign_id
+
+Affiliate financial attribution must remain distinct from STS marketing attribution.
+
+Do not replace source, platform, content_id, campaign_id, cta_id, session_id, or existing journey metadata.
+
+24. WOOCOMMERCE BUILD SCOPE
+
+Woo integration is limited to the minimum evidence/handoff required by Phase E.
+
+Proposed metadata:
+
+_bros_affiliate_id
+
+_bros_affiliate_referral_event_id
+
+_bros_affiliate_method
+
+_bros_affiliate_campaign_id
+
+_bros_affiliate_attribution_timestamp
+
+_bros_affiliate_attribution_expiry
+
+_bros_affiliate_attribution_version
+
+_bros_affiliate_correlation_id
+
+Woo metadata remains evidence.
+
+BROS remains final attribution authority.
+
+Complex commission logic shall not be placed in WordPress.
+
+25. CCSS BUILD SCOPE
+
+Extend the existing normalized snapshot with:
+
+affiliate_eligibility
+
+affiliate_commission_class
+
+affiliate_campaign_restriction
+
+affiliate_class_restriction
+
+affiliate_effective_from
+
+affiliate_effective_until
+
+Rules:
+
+- absent eligibility = excluded;
+
+- invalid enum rejects build;
+
+- failed build does not replace Current;
+
+- LKG behavior retained;
+
+- snapshot version stored with commission evidence.
+
+No pilot product is activated merely because fields exist.
+
+26. COMMISSION ENGINE
+
+Implement rule precedence exactly:
+
+1. product + affiliate-specific approved override;
+
+2. Strategic Partner rule;
+
+3. campaign rule;
+
+4. product rule;
+
+5. product-class rule;
+
+6. default rule.
+
+No match:
+
+NO COMMISSION
+
+Ambiguous equal-precedence/equal-priority rules:
+
+QUARANTINE
+
+No guessed rate.
+
+27. COMMISSION ARITHMETIC
+
+Implement:
+
+commission_amount = qualifying_revenue × approved_rate
+
+at order-line level.
+
+Use exact decimal arithmetic.
+
+No floating point.
+
+Preserve original qualifying amounts, rate, rule ID/version, attribution version, CCSS version, calculation version, and rounded result.
+
+Initial Phase E algorithms remain authoritative.
+
+28. LEDGER BUILD
+
+Commission summary and financial history remain separate.
+
+Ledger shall be append-only.
+
+Required financial events include:
+
+- creation;
+
+- approval;
+
+- payable;
+
+- paid;
+
+- partial reversal;
+
+- full reversal;
+
+- adjustment credit;
+
+- adjustment debit;
+
+- dispute;
+
+- dispute resolution;
+
+- rejection.
+
+Ordinary roles shall not UPDATE or DELETE ledger events.
+
+29. REFUND / REVERSAL BUILD
+
+Reuse normalized revenue/refund events.
+
+Do not create separate Woo refund ingestion.
+
+Partial refunds use historical commission rule/rate.
+
+Post-payment refunds create recoverable debit history.
+
+Original payment/commission evidence remains intact.
+
+Duplicate refunds must be idempotently suppressed.
+
+30. PAYOUT BUILD SCOPE
+
+Phase F authorizes specification of the build, but actual build authorization must explicitly cover payout components.
+
+MVP payout system shall build:
+
+- eligibility calculation;
+
+- monthly batch preparation;
+
+- $50 threshold;
+
+- human approval gate;
+
+- provider-neutral adapter;
+
+- submission idempotency;
+
+- callback/status reconciliation.
+
+No autonomous payout approval.
+
+No provider choice may be invented if still unresolved.
+
+Provider integration may use a test/fake adapter until d-mac selects the real provider.
+
+31. BUDLY BUILD SCOPE
+
+Budly may receive read-only governed Affiliate context and invoke bounded request APIs.
+
+Budly integration shall initially favor READ + REQUEST rather than unrestricted direct database write access.
+
+Allowed examples:
+
+- get affiliate status;
+
+- get eligible products;
+
+- get approved rate explanation;
+
+- get link;
+
+- get QR;
+
+- get commission state;
+
+- get performance summary;
+
+- submit support request;
+
+- intake dispute;
+
+- prepare draft promotional content.
+
+Prohibited operations remain exactly as governed.
+
+32. N8N IMPLEMENTATION SCOPE
+
+Future authorized implementation shall produce:
+
+AFF-WF-001 — Application Intake
+
+AFF-WF-002 — Affiliate Approval / Activation
+
+AFF-WF-003 — Referral Event Processing
+
+AFF-WF-004 — Revenue Event → Attribution → Commission
+
+AFF-WF-005 — Refund / Reversal
+
+AFF-WF-006 — Commission Maturity
+
+AFF-WF-007 — Payout Batch Preparation
+
+AFF-WF-008 — Payout Reconciliation
+
+AFF-WF-009 — Dispute Intake / Routing
+
+AFF-WF-010 — Affiliate Evidence Package / Reconciliation
+
+Workflow logic must use governed backend/database services for financial decisions.
+
+n8n must not independently calculate policy from prose.
+
+33. ADMIN MVP BUILD
+
+Required pilot operator capabilities:
+
+- review application;
+
+- approve/decline;
+
+- view affiliate;
+
+- activate/inactivate;
+
+- suspend;
+
+- Project Owner termination;
+
+- inspect terms state;
+
+- inspect product eligibility;
+
+- inspect referral attribution;
+
+- inspect commissions;
+
+- inspect line calculations;
+
+- inspect ledger;
+
+- inspect reversals;
+
+- inspect risk flags;
+
+- resolve/rout disputes;
+
+- prepare payout;
+
+- approve payout when authorized;
+
+- inspect reconciliation;
+
+- inspect audit;
+
+- inspect quarantine.
+
+Routine operation must not require raw SQL.
+
+34. AFFILIATE MVP BUILD
+
+Required authenticated affiliate view:
+
+- affiliate ID;
+
+- status;
+
+- eligible products;
+
+- referral link;
+
+- approved QR;
+
+- clicks;
+
+- conversions;
+
+- pending commission;
+
+- payable commission;
+
+- paid commission;
+
+- payout history;
+
+- approved resources;
+
+- disclosures;
+
+- support;
+
+- dispute intake.
+
+No customer identity.
+
+35. RLS BUILD REQUIREMENTS
+
+Implement Phase E roles:
+
+AFFILIATE_USER
+
+SUPPORT_OPERATOR
+
+AFFILIATE_OPERATOR
+
+FINANCIAL_APPROVER
+
+PROJECT_OWNER
+
+SYSTEM_SERVICE
+
+Affiliate isolation must be ownership-based, not merely authenticated.
+
+Service-role credentials remain backend-only.
+
+Security-definer functions shall not be introduced casually as an RLS workaround.
+
+Every exposed table must receive explicit access review.
+
+36. TEST REQUIREMENTS
+
+Implementation must satisfy all Phase E tests.
+
+At minimum, execute the complete 50-scenario matrix defined in Phase E.
+
+Financial tests must assert exact amounts.
+
+Tests must cover positive cases, negative cases, duplicates, missing data, invalid states, RLS isolation, refunds, payout failure, and rollback.
+
+No acceptance based merely on HTTP 200 responses.
+
+37. REGRESSION REQUIREMENTS
+
+Affiliate changes must not break:
+
+- existing Woo checkout;
+
+- existing non-affiliate orders;
+
+- Ask Budly;
+
+- existing STS-1 attribution;
+
+- CCSS Current;
+
+- CRM;
+
+- existing revenue ingestion;
+
+- existing Budly recommendations;
+
+- current WordPress behavior;
+
+- existing refund processing.
+
+The existing applicable repository test suite must pass in addition to Affiliate-specific tests.
+
+38. REQUIRED BUILD EVIDENCE
+
+Git:
+
+- baseline branch;
+
+- baseline commit;
+
+- new branch;
+
+- commits;
+
+- diff summary;
+
+- files changed.
+
+Database:
+
+- migration files;
+
+- migration hashes;
+
+- schema evidence;
+
+- constraint evidence;
+
+- index evidence;
+
+- RLS evidence.
+
+Logic:
+
+- event examples;
+
+- attribution examples;
+
+- commission examples;
+
+- reversal examples;
+
+- ledger sequence;
+
+- payout eligibility example.
+
+Tests:
+
+- exact command;
+
+- pass/fail count;
+
+- failing-test output if any;
+
+- regression results;
+
+- acceptance results.
+
+Security:
+
+- RLS cross-user denial;
+
+- service-role isolation;
+
+- client tamper test;
+
+- webhook authenticity test.
+
+Operations:
+
+- quarantine example;
+
+- observability output;
+
+- feature-flag evidence;
+
+- disablement proof.
+
+Rollback:
+
+- rollback procedure;
+
+- test evidence that normal commerce survives Affiliate disablement.
+
+39. BUILD STOP CONDITIONS
+
+The authorized implementation session must STOP and return to d-mac if:
+
+1. canonical baseline cannot be established;
+
+2. STS-2 provenance conflict affects required implementation;
+
+3. correct Supabase project cannot be verified;
+
+4. Phase E conflicts with current BROS schema materially;
+
+5. implementation requires changing a ratified business rule;
+
+6. implementation requires selecting an unresolved payout provider;
+
+7. implementation requires selecting pilot products;
+
+8. implementation requires finalizing unresolved legal text;
+
+9. migration would destructively alter existing financial history;
+
+10. existing revenue pipeline must be replaced rather than extended;
+
+11. CCSS would need to lose last-known-good guarantees;
+
+12. Woo checkout would require unsafe redesign;
+
+13. a security secret would need exposure;
+
+14. tests reveal duplicate financial events;
+
+15. financial logic cannot fail closed.
+
+The agent shall not solve governance conflicts by improvisation.
+
+40. ROLLBACK REQUIREMENTS
+
+Affiliate functionality shall be disableable independently.
+
+Rollback order:
+
+1. disable affiliate payout submission;
+
+2. disable commission processing;
+
+3. disable new attribution;
+
+4. disable referral entry;
+
+5. disable affiliate portal;
+
+6. preserve records/evidence;
+
+7. preserve Woo/revenue ingestion;
+
+8. restore prior application/runtime package where required.
+
+Never erase affiliate financial history as rollback.
+
+Existing non-affiliate commerce must continue.
+
+41. DEVELOPMENT ENVIRONMENT
+
+Implementation should begin in a controlled non-production environment.
+
+Production data should not be used casually for testing.
+
+If Supabase branching or a separate development project is used, its creation/cost/authorization must follow current tooling and Project Owner rules.
+
+Phase F does not itself authorize purchasing or creating new paid infrastructure.
+
+42. BUILD ORDER
+
+BUILD 0 — Provenance & Baseline
+
+Repository, STS-2, CCSS, Supabase, runtime reconciliation.
+
+BUILD 1 — Data Foundation
+
+Enums, affiliate tables, append-only records, audit integration.
+
+BUILD 2 — Identity
+
+Application, approval, terms, affiliate IDs.
+
+BUILD 3 — Referral
+
+Link router, QR router, referral events, persistence.
+
+BUILD 4 — Attribution
+
+30-day context, coupon precedence, decision records, STS linkage.
+
+BUILD 5 — Commerce
+
+Woo metadata evidence + existing revenue-event consumer.
+
+BUILD 6 — Eligibility
+
+CCSS fields + fail-closed eligibility.
+
+BUILD 7 — Financial Engine
+
+Qualifying revenue, rule selection, line commissions, summaries.
+
+BUILD 8 — Ledger/Reversal
+
+Append-only ledger, refunds, chargebacks, adjustments.
+
+BUILD 9 — Maturity/Payout
+
+30-day hold, payable state, $50 threshold, batches, provider abstraction.
+
+BUILD 10 — Risk/Disputes
+
+Signals, reviews, manual corrections.
+
+BUILD 11 — Security
+
+RLS, role controls, service boundaries.
+
+BUILD 12 — Operator UI
+
+Admin MVP.
+
+BUILD 13 — Affiliate UI
+
+Affiliate-facing MVP.
+
+BUILD 14 — Budly
+
+Read/request integration.
+
+BUILD 15 — Orchestration
+
+AFF-WF-001 through 010.
+
+BUILD 16 — Acceptance
+
+50-scenario matrix + regression + evidence.
+
+BUILD 17 — Pilot Readiness Package
+
+Package only.
+
+STOP BEFORE REAL PRIVATE-PILOT ACTIVITY.
+
+Phase G requires separate authorization.
+
+43. IMPLEMENTATION REPORT FORMAT
+
+The implementation agent must report:
+
+BUILD STATUS
+
+Baseline reconciled: YES/NO
+
+Baseline branch:
+
+Baseline commit:
+
+STS-2 provenance:
+
+- RECOVERED
+
+- SUPERSEDED WITH VERIFIED LINEAGE
+
+- UNRESOLVED
+
+Supabase project verified: YES/NO
+
+Revenue spine verified: YES/NO
+
+CCSS extension point verified: YES/NO
+
+Budly integration point verified: YES/NO
+
+Implemented:
+
+- database
+
+- application/identity
+
+- terms
+
+- links
+
+- QR
+
+- attribution
+
+- Woo evidence
+
+- revenue integration
+
+- CCSS
+
+- commissions
+
+- ledger
+
+- refunds
+
+- maturity
+
+- risk
+
+- disputes
+
+- payout preparation
+
+- RLS
+
+- admin
+
+- affiliate UI
+
+- Budly
+
+- n8n
+
+- quarantine
+
+- observability
+
+- rollback
+
+Tests:
+
+X / X PASS
+
+Regression:
+
+X / X PASS
+
+Known failures:
+
+NONE or explicit list
+
+Production deployment:
+
+NONE
+
+Private-pilot activity:
+
+NONE
+
+Evidence location:
+
+explicit references
+
+Rollback verified:
+
+YES/NO
+
+Then provide:
+
+RECOMMENDATION FOR PHASE G READINESS
+
+No pilot shall start from the implementation agent's recommendation alone.
+
+44. COPY/PASTE IMPLEMENTATION HANDOFF
+
+The following handoff becomes executable only after Phase F ratification and d-mac's explicit build authorization.
+
+AFF-001 AFFILIATE MVP — AUTHORIZED BUILD HANDOFF
+
+Project Owner: d-mac
+
+Mission: Implement the ratified Affiliate MVP defined by AFF-001 Phase A-E without inventing business rules or replacing existing BROS infrastructure.
+
+Authority
+
+Follow:
+
+ANALYZE → RECOMMEND → d-mac DECIDES → AUTHORIZED EXECUTION → VERIFY → REPORT
+
+This command authorizes only the technical build/test scope expressly approved by d-mac.
+
+It does not authorize:
+
+- public launch;
+
+- private-pilot enrollment;
+
+- real affiliate recruitment;
+
+- real commission payout;
+
+- autonomous financial decisions;
+
+- policy changes.
+
+Governing Specifications
+
+Use:
+
+- AFF-001 Phase A v1.0
+
+- AFF-001 Phase B v1.0
+
+- AFF-001 Phase C v1.0
+
+- AFF-001 Phase D v1.0
+
+- AFF-001 Phase E v1.0
+
+- ratified Phase F build package
+
+Phase A-F control over older provisional material.
+
+Repository
+
+Primary repository:
+
+theworkathomeacademy/budly-agent
+
+Do not assume main is the correct baseline.
+
+FIRST ACTION — P0 PRE-FLIGHT
+
+Before modifying code:
+
+1. fetch all refs;
+
+2. inspect current branches/tags/releases;
+
+3. identify the currently accepted Budly/runtime/CCSS baseline;
+
+4. reconcile main vs release/budly-v1.9.0-runtime-ccss;
+
+5. recover or reconcile STS-2 lineage;
+
+6. verify current Supabase project/schema/migrations;
+
+7. verify existing revenue event implementation;
+
+8. verify CCSS Current implementation;
+
+9. verify Woo/WordPress integration point;
+
+10. produce P0 findings.
+
+Do not build until the baseline is coherent.
+
+If STS-2 provenance or the production lineage cannot be safely determined:
+
+STOP AND REPORT.
+
+Branch
+
+After successful P0 only:
+
+create:
+
+aff-001-mvp-private-pilot
+
+from the verified baseline.
+
+Core Rule
+
+EXTEND THE SPINE. DO NOT BUILD A PARALLEL BODY.
+
+Reuse:
+
+- Woo transaction truth;
+
+- existing bros.revenue_event.v1;
+
+- Native CRM identities;
+
+- CCSS;
+
+- STS;
+
+- BROS/Supabase;
+
+- existing audit infrastructure;
+
+- existing n8n patterns.
+
+Build Scope
+
+Implement Phase E private Affiliate MVP:
+
+application
+
+→ approval
+
+→ terms
+
+→ affiliate ID
+
+→ link/QR
+
+→ referral persistence
+
+→ attribution
+
+→ Woo evidence
+
+→ normalized revenue event
+
+→ CCSS eligibility
+
+→ commission rule
+
+→ qualifying revenue
+
+→ line commission
+
+→ ledger
+
+→ refund/reversal
+
+→ maturity
+
+→ payout eligibility
+
+→ payout batch
+
+→ human approval boundary
+
+→ reconciliation
+
+→ evidence.
+
+Financial Rules
+
+30-day attribution.
+
+Last qualified referral.
+
+Valid attributing coupon overrides referral.
+
+QR participates as ordinary referral.
+
+30-day hold.
+
+$50 payout threshold.
+
+Monthly cadence.
+
+Human payout authorization.
+
+No lifetime residuals.
+
+No self-referral commission.
+
+No guessed commission rule.
+
+Exact decimal arithmetic.
+
+Append-only history.
+
+Safety
+
+DO NOT GUESS.
+
+DO NOT PAY.
+
+DO NOT ERASE.
+
+Quarantine unresolved financial ambiguity.
+
+Testing
+
+Implement and pass every Phase E acceptance scenario, including all 50 required tests.
+
+Also execute applicable existing regression suites.
+
+Duplicate events must not duplicate money.
+
+Evidence
+
+Return:
+
+- baseline;
+
+- branch/commits;
+
+- migrations;
+
+- schema;
+
+- RLS;
+
+- exact test output;
+
+- sample referral;
+
+- attribution decision;
+
+- commission calculation;
+
+- ledger;
+
+- reversal;
+
+- payout preparation;
+
+- security proof;
+
+- quarantine proof;
+
+- rollback proof.
+
+Deployment Boundary
+
+Technical test/staging deployment is allowed only if explicitly included in d-mac's build authorization.
+
+Production deployment is not implied.
+
+No real Affiliate Private Pilot begins until Phase G authorization.
+
+STOP
+
+After implementation, testing, and evidence packaging:
+
+STOP.
+
+Do not:
+
+- recruit affiliates;
+
+- activate real affiliates;
+
+- execute real payout;
+
+- publicly expose enrollment;
+
+- begin Phase G;
+
+- begin Phase H;
+
+- begin Phase I.
+
+Report to d-mac.
+
+45. PHASE F ACCEPTANCE CRITERIA
+
+Phase F is ready for ratification when:
+
+1. exact MVP build scope is defined;
+
+2. known current infrastructure is identified;
+
+3. existing capabilities are marked for reuse;
+
+4. STS-2 discrepancy is documented;
+
+5. Supabase verification gap is documented;
+
+6. build baseline cannot be guessed;
+
+7. branch strategy is defined;
+
+8. migrations are bounded;
+
+9. sequence is defined;
+
+10. tests are defined;
+
+11. evidence is defined;
+
+12. rollback is defined;
+
+13. stop conditions are defined;
+
+14. a copy/paste implementation handoff exists;
+
+15. Phase G remains separately gated.
+
+46. CURRENT PHASE F FINDINGS
+
+PROVEN / REUSABLE
+
+- Ratified Phase A-E governance
+
+- existing Woo/BROS revenue architecture as governing spine
+
+- STS-1 architecture and production proof history
+
+- existing Budly codebase
+
+- existing CCSS work
+
+- existing audit/idempotency concepts
+
+- existing WordPress/Woo commerce integration foundation
+
+IMPLEMENTED BUT REQUIRES CURRENT RECONCILIATION
+
+- later Budly runtime work
+
+- CCSS runtime branch
+
+- current revenue processing implementation
+
+- current Supabase schema
+
+- current WordPress production package
+
+- current n8n production workflow state
+
+HISTORICALLY IMPLEMENTED BUT CURRENT PROVENANCE UNRESOLVED
+
+- STS-2 attributed-revenue candidate
+
+NOT YET AFFILIATE-MVP IMPLEMENTED
+
+- Affiliate Registry per Phase E
+
+- application/approval service
+
+- terms versioning
+
+- affiliate links
+
+- affiliate QR
+
+- affiliate attribution engine
+
+- CCSS affiliate eligibility fields
+
+- Affiliate commission rules
+
+- Affiliate ledger
+
+- Affiliate payout preparation
+
+- Affiliate RLS
+
+- Affiliate admin MVP
+
+- Affiliate-facing MVP
+
+- Affiliate Budly operations integration
+
+- Affiliate workflow suite AFF-WF-001 through AFF-WF-010
+
+47. PHASE F RECOMMENDATION
+
+Ratification of this Phase F package establishes the implementation plan and build handoff.
+
+Because the current repository and Supabase reconciliation surfaced real provenance gaps, implementation authorization should begin with:
+
+P0 — RECONCILIATION / PRE-FLIGHT
+
+followed immediately by the governed build if and only if P0 resolves the baseline without a material conflict.
+
+This avoids unnecessary delay while preserving the rule:
+
+DO NOT BUILD ON AN UNKNOWN BASELINE.
+
+48. PHASE F STATUS
+
+Document: AFF-001 Phase F — Build Authorization & Implementation Handoff v1.0
+
+Status: RATIFIED
+
+Phase E: RATIFIED
+
+Phase F: RATIFIED
+
+Production Changes: NONE
+
+GitHub Changes: NONE
+
+Supabase Changes: NONE
+
+n8n Changes: NONE
+
+WooCommerce Changes: NONE
+
+WordPress Changes: NONE
+
+Private Pilot: NOT AUTHORIZED
+
+Public Program: NOT AUTHORIZED
+
+Next Required Action:
+
+Verify saved Phase F v1.0 in BROS → Affiliate, then STOP and await explicit Project Owner authorization to execute the Phase F build handoff.
+
+Technical build begins only after d-mac explicitly authorizes execution of the Phase F build handoff.
+
+PHASE F STOP CONDITION ACTIVE.
