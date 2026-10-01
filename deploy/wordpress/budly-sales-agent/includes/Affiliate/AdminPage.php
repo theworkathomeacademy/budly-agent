@@ -5,6 +5,10 @@ if (!defined('ABSPATH')) { exit; }
 
 final class AdminPage {
     public static function register() {
+        add_action('admin_menu', array(__CLASS__, 'add_menu'));
+    }
+
+    public static function add_menu() {
         add_submenu_page('tools.php', 'BROS Affiliate MVP', 'BROS Affiliate MVP', 'manage_options', 'budly-affiliate-mvp', array(__CLASS__, 'render'));
     }
 
