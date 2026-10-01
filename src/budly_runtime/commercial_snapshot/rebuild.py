@@ -197,6 +197,12 @@ def normalize_catalog_entry(
         woo_product_id=woo_product_id,
         woo_parent_product_id=raw_entry.get("woo_parent_product_id") or raw_entry.get("parent_id"),
         woo_variation_id=raw_entry.get("woo_variation_id"),
+        affiliate_eligibility=raw_entry.get("affiliate_eligibility") or enrichment.get("affiliate_eligibility") or "EXCLUDED",
+        affiliate_commission_class=raw_entry.get("affiliate_commission_class") or enrichment.get("affiliate_commission_class"),
+        affiliate_campaign_restriction=list(raw_entry.get("affiliate_campaign_restriction") or enrichment.get("affiliate_campaign_restriction") or []),
+        affiliate_class_restriction=list(raw_entry.get("affiliate_class_restriction") or enrichment.get("affiliate_class_restriction") or []),
+        affiliate_effective_from=raw_entry.get("affiliate_effective_from") or enrichment.get("affiliate_effective_from"),
+        affiliate_effective_until=raw_entry.get("affiliate_effective_until") or enrichment.get("affiliate_effective_until"),
     )
     return record
 
@@ -299,7 +305,7 @@ def rebuild_catalog(
         if source_path.exists():
             with open(source_path, "r", encoding="utf-8") as f:
                 source_data = json.load(f)
-            raw_entries = source_data.get("entries", [])
+            raw_entries = source_data.get("entries", []) if isinstance(source_data, dict) else source_data
             for entry in raw_entries:
                 rec = normalize_catalog_entry(entry, version, now_iso)
                 all_records.append(rec)
