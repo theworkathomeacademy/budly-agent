@@ -1,0 +1,45 @@
+[
+  {
+    "id": "G9DWooSyntheticV1",
+    "name": "G9D - Woo-Compatible Synthetic Event",
+    "description": "Disabled isolated proof derived from REV-Woo-Order-Event-Intake-STS2. Normalizes one synthetic Woo payload into bros.revenue_event.v1; it has no webhook, credential, or production activation.",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [-500, 0],
+        "id": "5d4ec690-263e-4bd8-a4b4-d2c9156e88c1",
+        "name": "Manual Synthetic Trigger"
+      },
+      {
+        "parameters": {
+          "jsCode": "const body = { id: 'G9D-ORDER-001', number: 'G9D-ORDER-001', status: 'completed', currency: 'USD', total: '200.00', discount_total: '0', shipping_total: '0', total_tax: '0', date_modified_gmt: '2026-10-04T14:00:00', line_items: [{ id: 1, product_id: 'SYNTH-WELLNESS', sku: 'WELLNESS-SYNTH-001', quantity: 1, total: '200.00', total_tax: '0' }], meta_data: [{ key: '_bros_affiliate_referral_event_id', value: '90000000-0000-0000-0000-000000000001' }] }; const amount = (v) => Number(Number(v ?? 0).toFixed(2)); const lines = body.line_items.map((line) => ({ source_line_id: String(line.id), source_product_id: String(line.product_id), source_variation_id: null, sku: String(line.sku).trim(), quantity: Number(line.quantity), line_total: amount(line.total), line_tax: amount(line.total_tax), product_family: 'wellness' })); return [{ json: { schema_version: 'bros.revenue_event.v1', source_system: 'woocommerce', source_site: 'g9d-isolated.local', source_event_type: 'order.updated', source_event_id: 'g9d-webhook:g9d-delivery-001', source_webhook_id: 'g9d-webhook', source_order_id: String(body.id), source_order_number: String(body.number), occurred_at: `${body.date_modified_gmt}Z`, received_at: '2026-10-04T14:00:01Z', order_status: body.status, currency: body.currency, gross_amount: amount(body.total), discount_amount: amount(body.discount_total), shipping_amount: amount(body.shipping_total), tax_amount: amount(body.total_tax), product_families: ['wellness'], line_items: lines, commerce_correlation: { status: 'linked', affiliate_referral_event_id: '90000000-0000-0000-0000-000000000001' }, payload_sha256: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', mapping_version: 'bros-product-family-map-v1', n8n_execution_id: $execution.id, synthetic_classification: 'TEST_SYNTHETIC_NON_PRODUCTION_PERSON' } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [-220, 0],
+        "id": "ebae2f10-8da3-4481-96fd-eb3f89f67aca",
+        "name": "Normalize Woo Event"
+      }
+    ],
+    "connections": {
+      "Manual Synthetic Trigger": {
+        "main": [[{"node": "Normalize Woo Event", "type": "main", "index": 0}]]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveDataErrorExecution": "none",
+      "saveDataSuccessExecution": "none",
+      "saveManualExecutions": false,
+      "availableInMCP": false
+    },
+    "staticData": null,
+    "meta": {"production": false, "scope": "G9D"},
+    "pinData": {},
+    "tags": [],
+    "versionId": "f0fdce5b-2d28-4cc6-9c43-9630a599e9e4"
+  }
+]

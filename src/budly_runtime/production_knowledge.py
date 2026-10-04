@@ -27,6 +27,7 @@ class ApprovedRepositoryKnowledgeAdapter:
     products_path: Path
     education_path: Path | None = None
     commercial_path: Path | None = None
+    affiliate_path: Path | None = None
     commercial_snapshot_path: Path | None = None
     commercial_snapshot_enabled: bool = False
     commerce_url: str = "https://cccultivate.com/wp-json/wc/store/v1/products?per_page=100"
@@ -647,6 +648,20 @@ class ApprovedRepositoryKnowledgeAdapter:
                             "source_reference": f"offer_rel://{rel['offer_id']}",
                             "content": json.dumps(rel_record, separators=(",", ":")),
                         })
+        if self.affiliate_path is not None:
+            affiliate = self._read_json(self.affiliate_path)
+            if affiliate.get("approval_status") != "owner_approved" or affiliate.get("program_state") != "PRIVATE_PILOT":
+                raise ValueError("affiliate knowledge is not owner approved private-pilot truth")
+            for fact in affiliate.get("public_facts", []):
+                if fact.get("classification") != "Public" or fact.get("status") != "Active":
+                    continue
+                items.append({
+                    "knowledge_id": str(fact["fact_id"]), "title": str(fact["title"]),
+                    "version": str(affiliate["version"]), "domain": "affiliate_program",
+                    "status": "Active", "classification": "Public",
+                    "source_reference": f"repository://config/budly_runtime/affiliate-public-knowledge-g9d-v1.json#{fact['fact_id']}",
+                    "content": json.dumps(fact, separators=(",", ":"))[:4000],
+                })
         return items
 
     @staticmethod

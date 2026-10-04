@@ -184,6 +184,7 @@ class ProductionConversationRuntime:
             knowledge_root / "policies.json", knowledge_root / "products.json",
             knowledge_root / "budly_runtime" / "education-corpus-v0.1.json",
             knowledge_root / "budly_runtime" / "commercial-knowledge-v1.0.json",
+            knowledge_root / "budly_runtime" / "affiliate-public-knowledge-g9d-v1.json",
             commercial_snapshot_path=snapshot_path,
             commercial_snapshot_enabled=snapshot_enabled,
         )

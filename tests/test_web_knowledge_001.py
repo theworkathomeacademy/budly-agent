@@ -208,7 +208,7 @@ class WebKnowledgeTests(unittest.TestCase):
                     t, i, j = "In retail topicals, we offer the Therapeutic Body Butter 1-time purchase ($75.00).", "catalog_inquiry", "wellness"
                 return type("Resp", (), {"payload": {"text": t, "intent": i, "journey": j, "resulting_action": "continue_conversation", "selected_product_id": None, "requires_human": False}})()
         
-        runtime = ProductionConversationRuntime(settings, ROOT, model_adapter=MockReplayModel())
+        runtime = ProductionConversationRuntime(settings, ROOT, model_adapter=MockReplayModel(), knowledge_adapter=self.adapter())
         conv = "conv_exact_owner_test_123"
         turns = [
             "Help me compare products",
@@ -258,7 +258,7 @@ class WebKnowledgeTests(unittest.TestCase):
                 captured_requests.append(req)
                 return type("Resp", (), {"payload": {"text": "Grounded answer.", "intent": "inquiry", "journey": "wellness", "resulting_action": "continue_conversation", "selected_product_id": None, "requires_human": False}})()
         
-        runtime = ProductionConversationRuntime(settings, ROOT, model_adapter=CaptureModel())
+        runtime = ProductionConversationRuntime(settings, ROOT, model_adapter=CaptureModel(), knowledge_adapter=self.adapter())
         runtime.turn({"conversation_id": "conv_grounding_test", "message": "Do you carry creams?", "correlation_id": "11111111-1111-1111-1111-111111111111", "channel": "ccc_website"})
         self.assertEqual(len(captured_requests), 1)
         raw_system = captured_requests[0].prompt_package["provider_input"][0]["content"]
