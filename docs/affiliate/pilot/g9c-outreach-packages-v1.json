@@ -1,0 +1,79 @@
+{
+  "schema_version": "g9c-outreach-package-v1",
+  "package_state": "READY_COPY",
+  "authorization_state": "NOT_AUTHORIZED_FOR_SEND",
+  "real_outreach_count": 0,
+  "notes": "Preserved copy only. Recruitment is paused. This file is not a scheduler or send queue.",
+  "candidates": [
+    {
+      "candidate": "Tammy Pettigrew",
+      "instagram": "@thecannabiscutie",
+      "email": "tammy@thecannabiscutie.com",
+      "contact_source": "Official The Cannabis Cutie website public organization contact data",
+      "contact_verification": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "message_version": "G9C-FIRST-TOUCH-v1",
+      "email_subject": "Private Wake’n’Bake Lounge Affiliate Pilot Invitation",
+      "email_copy": "Hi Tammy,\n\nI’m reaching out from Wake’n’Bake Lounge because your cannabis education work and the community you’ve built around approachable plant education made you a natural person for us to consider for something we’re preparing.\n\nWe’re launching a small five-person private Affiliate pilot with selected creators before opening the program more broadly.\n\nIt’s a paid Affiliate partnership built around products, education, wellness, and Wake’n’Bake Lounge experiences, with Budly available to help with campaign ideas, compliant content, links, and other Affiliate support.\n\nI’m also reaching out to you through Instagram from @wakenbakelounge this morning so you know the two messages are connected.\n\nIf you’re interested, I’d be happy to send over the private pilot details and let you decide whether it feels like a good fit.\n\nWake’n’Bake Lounge\nCompassionate Care Cultivators",
+      "dm_copy": "Hey Tammy 👋🏽 We’re reaching out from Wake’n’Bake Lounge because we’d like to invite you to a small five-person private Affiliate pilot we’re preparing.\n\nYour cannabis education work made you an especially natural fit for what we’re building.\n\nI also sent you an email this morning with a little more context so you know the messages are connected.\n\nIf you’re interested, we’d love to send over the pilot details and let you decide if it feels right for you. 🌿",
+      "email_message_hash": "042229962bdea8ae824a4f1e8c65b818982c4c84395ffa04bc9b0cf4dcb0ab77",
+      "dm_message_hash": "85ca9fe102f4a3799246a7cfbcfca07f1c12d7c60bcaae77a4cda8d34f74a2b8",
+      "send_state": "NOT_AUTHORIZED_FOR_SEND"
+    },
+    {
+      "candidate": "Sanzida Haider",
+      "instagram": "@sanzidaah",
+      "email": "sanzidaahcollab@gmail.com",
+      "contact_source": "Authenticated Instagram profile public collaboration email",
+      "contact_verification": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "message_version": "G9C-FIRST-TOUCH-v1",
+      "email_subject": "Private Wake’n’Bake Lounge Affiliate Pilot Invitation",
+      "email_copy": "Hi Sanzida,\n\nI’m reaching out from Wake’n’Bake Lounge because your fitness, fashion, wellness, and lifestyle content caught our attention while we were selecting creators for a small private Affiliate pilot.\n\nWe’re inviting five creators to help us prove the program before we open it more broadly.\n\nIt’s a paid Affiliate partnership with opportunities across wellness, self-care, lifestyle products, education, and other Wake’n’Bake Lounge experiences.\n\nI’m also reaching out to you through Instagram from @wakenbakelounge this morning so you know the two messages are connected.\n\nIf you’re interested, I’d be happy to send you the private pilot details and let you decide if it fits your brand.\n\nWake’n’Bake Lounge\nCompassionate Care Cultivators",
+      "dm_copy": "Hey Sanzida 👋🏽 We’re reaching out from Wake’n’Bake Lounge because we’d like to invite you to a small five-person private Affiliate pilot.\n\nYour fitness, fashion, wellness, and lifestyle content stood out to us while we were selecting creators.\n\nI also sent you an email this morning with more context so you know the messages are connected.\n\nIf you’re interested, we’d love to send you the pilot details and let you decide whether it fits your brand. 🌿",
+      "email_message_hash": "dde1189b7e08c5f261a0f2a8404daca5d80b63a99fac3083eae7f5ff29448e6f",
+      "dm_message_hash": "cf344225172c84585280bf60fff7e6e5fdd0628bcbaa83d0a34742623aa1363b",
+      "send_state": "NOT_AUTHORIZED_FOR_SEND"
+    },
+    {
+      "candidate": "Celeste",
+      "instagram": "@celestefitt",
+      "email": "Celestrefitt@tsptalent.co",
+      "contact_source": "Authenticated @celestefitt Instagram profile public business email",
+      "contact_verification": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "message_version": "G9C-FIRST-TOUCH-v1",
+      "email_subject": "Private Wake’n’Bake Lounge Affiliate Pilot Invitation",
+      "email_copy": "Hi Celeste,\n\nI’m reaching out from Wake’n’Bake Lounge because your fitness and lifestyle content stood out while we were selecting creators for a small private Affiliate pilot.\n\nWe’re inviting five creators to help us prove the program before wider enrollment.\n\nIt’s a paid Affiliate partnership with opportunities around wellness, self-care, lifestyle, education, and other Wake’n’Bake Lounge experiences.\n\nI’m also reaching out through Instagram at @celestefitt this morning so you know the two messages are connected.\n\nIf you’re interested, I’d be happy to send over the private pilot details so you can decide whether it fits your audience and content.\n\nWake’n’Bake Lounge\nCompassionate Care Cultivators",
+      "dm_copy": "Hey Celeste 👋🏽 We’re reaching out from Wake’n’Bake Lounge because we’d like to invite you to a small five-person private Affiliate pilot.\n\nYour fitness and lifestyle content at @celestefitt stood out while we were selecting creators.\n\nI also sent you an email this morning with a little more context.\n\nIf you’re interested, we’d love to send over the pilot details and let you decide whether it fits your audience. 🌿",
+      "email_message_hash": "eb64e0f7f3ab52e1bf1a1e2b4f9edc2ab1534442cb7854d65fd1582d31a38dfa",
+      "dm_message_hash": "7c017ea70e9358edce737ec13f1f59c7488a2ff07801f9b327a0570b877da320",
+      "send_state": "NOT_AUTHORIZED_FOR_SEND"
+    },
+    {
+      "candidate": "Saleema Mansur",
+      "instagram": "@saleemarrm1",
+      "email": "UNRESOLVED",
+      "contact_source": "Authenticated Instagram profile and linked official public surfaces",
+      "contact_verification": "UNRESOLVED_NO_GUESSED_ADDRESS",
+      "message_version": "G9C-FIRST-TOUCH-v1",
+      "email_subject": "Private Wake’n’Bake Lounge Affiliate Pilot Invitation",
+      "email_copy": "Hi Saleema,\n\nI’m reaching out from Wake’n’Bake Lounge because your fitness, fashion, and lifestyle work stood out while we were selecting creators for a small private Affiliate pilot.\n\nWe’re inviting five creators before opening the program more broadly.\n\nIt’s a paid Affiliate partnership with opportunities across wellness, self-care, lifestyle products, botanical education, and other Wake’n’Bake Lounge experiences.\n\nI’m also reaching out through Instagram from @wakenbakelounge this morning so you know the two messages are connected.\n\nIf you’re interested, I’d be happy to send over the private pilot details and let you decide whether it feels like a good fit.\n\nWake’n’Bake Lounge\nCompassionate Care Cultivators",
+      "dm_copy": "Hey Saleema 👋🏽 We’re reaching out from Wake’n’Bake Lounge because we’d like to invite you to a small five-person private Affiliate pilot.\n\nYour fitness, fashion, and lifestyle work stood out while we were selecting creators.\n\nI also sent you an email this morning with more context so you know the messages are connected.\n\nIf you’re interested, we’d love to send over the pilot details and let you decide whether it feels like a fit. 🌿",
+      "email_message_hash": "cc29ccc3051bb7e60ee11408858e5edc63ef9714717e3111b06c243cfbabbb1e",
+      "dm_message_hash": "e75d5c66eded10edc81d968199eb9dddc2f36e3748e2610d921a74a2dfba5095",
+      "send_state": "NOT_AUTHORIZED_FOR_SEND"
+    },
+    {
+      "candidate": "Avi Rossum",
+      "instagram": "@avi.babyyyy",
+      "email": "UNRESOLVED",
+      "contact_source": "Authenticated Instagram profile public surfaces",
+      "contact_verification": "UNRESOLVED_NO_GUESSED_ADDRESS",
+      "message_version": "G9C-FIRST-TOUCH-v1",
+      "email_subject": "Private Wake’n’Bake Lounge Affiliate Pilot Invitation",
+      "email_copy": "Hi Avi,\n\nI’m reaching out from Wake’n’Bake Lounge because your lifestyle content and visual storytelling stood out while we were selecting creators for a small private Affiliate pilot.\n\nWe’re inviting five creators before opening the program more broadly.\n\nIt’s a paid Affiliate partnership with opportunities across premium self-care, lifestyle products, botanical education, community experiences, and other Wake’n’Bake Lounge offerings.\n\nI’m also reaching out through Instagram from @wakenbakelounge this morning so you know the two messages are connected.\n\nIf you’re interested, I’d be happy to send over the private pilot details and let you decide whether it fits your brand.\n\nWake’n’Bake Lounge\nCompassionate Care Cultivators",
+      "dm_copy": "Hey Avi 👋🏽 We’re reaching out from Wake’n’Bake Lounge because we’d like to invite you to a small five-person private Affiliate pilot.\n\nYour lifestyle content and visual storytelling stood out while we were selecting creators.\n\nI also sent you an email this morning with more context so you know the messages are connected.\n\nIf you’re interested, we’d love to send over the pilot details and let you decide whether it fits your brand. 🌿",
+      "email_message_hash": "b7357364c9bbdebda1c2a66ccdb5d767a7ac603a47b3debe13148007be6fe1d8",
+      "dm_message_hash": "5cdd96656c2e9c634a4677dc02cf728af8fb811c49a33ec5b0b5e931cbb72ed5",
+      "send_state": "NOT_AUTHORIZED_FOR_SEND"
+    }
+  ]
+}
