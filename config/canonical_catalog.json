@@ -66,8 +66,8 @@
       "woo_parent_product_id": 150,
       "woo_variation_id": null,
       "record_checksum": "da8af67973c04c249dff417286835180ca88195ceb0e0b3c5286754c526a03a8",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "COURSE_FULL_15"
     },
     {
       "canonical_id": "ccc:course:culinary-cannabis:payment-plan",
@@ -200,8 +200,8 @@
       "woo_parent_product_id": 151,
       "woo_variation_id": null,
       "record_checksum": "efe44d91909c552556009e1c9a471a54e9a7555d716a46988d2cbb0b73732cf2",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "COURSE_FULL_15"
     },
     {
       "canonical_id": "ccc:course:grow-cannabis-home:payment-plan",
@@ -333,8 +333,8 @@
       "woo_parent_product_id": 152,
       "woo_variation_id": null,
       "record_checksum": "365e9c556f3a06ec08de24d3f795c53dcd0e70fb0c63549ca036f7ff5ea54152",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "COURSE_FULL_15"
     },
     {
       "canonical_id": "ccc:course:grow-cook-with-me:payment-plan",
@@ -471,7 +471,7 @@
       "woo_parent_product_id": 87,
       "woo_variation_id": null,
       "record_checksum": "eee59839f1f550012b8655ab786b301aaf39914b74a25f66bdbf4f8866bac36f",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "INFUSED_BASICS_25"
     },
     {
@@ -545,8 +545,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "bc3f1809ba3aa9d03d9270754bb66df5534e8d4e328a3c9eac8ab57037b9357b",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "CONSULTATION_30"
     },
     {
       "canonical_id": "wnb:community:lounge-pass",
@@ -811,8 +811,8 @@
       "woo_parent_product_id": 212,
       "woo_variation_id": null,
       "record_checksum": "c5848430c21694c635bfabfc2bc4d83ffd1c2b147249260a4976249dc4803161",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:azurea-skye:bronze",
@@ -865,7 +865,7 @@
       "woo_parent_product_id": 212,
       "woo_variation_id": 277,
       "record_checksum": "a163046f16289696d73c39b3777fe1d4baec31ce89bc0b30d5f8c1dc178e302f",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -919,7 +919,7 @@
       "woo_parent_product_id": 212,
       "woo_variation_id": 278,
       "record_checksum": "56718d942aa62da79a9b6addb5f97aefb803d9ce2e8c36c13ec4c049723daf30",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -973,7 +973,7 @@
       "woo_parent_product_id": 212,
       "woo_variation_id": 279,
       "record_checksum": "c1fdf9501f20c00e2015c31baeaeb9ba088169b57edfd108145950f86fcd8791",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1027,7 +1027,7 @@
       "woo_parent_product_id": 212,
       "woo_variation_id": 280,
       "record_checksum": "01731dae8ba2269447f7c14fb5e2edf23d9d4ce2fb370c75555b46c8a54a103d",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1081,8 +1081,8 @@
       "woo_parent_product_id": 214,
       "woo_variation_id": null,
       "record_checksum": "9316e1eff2b48dcc34db7d85e452fdea62bc025587e491deeb641d294a31ea4e",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:cookie-cutter:bronze",
@@ -1135,7 +1135,7 @@
       "woo_parent_product_id": 214,
       "woo_variation_id": 281,
       "record_checksum": "571cbdfd25d86460dae36d01a71227f8d62d11f5ca1e3341a428cc57a692d699",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1189,7 +1189,7 @@
       "woo_parent_product_id": 214,
       "woo_variation_id": 282,
       "record_checksum": "1416e657538a3f5c50efcf53a0b61d68eff44f565536c25ed3b8e9d58120a2d3",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1243,7 +1243,7 @@
       "woo_parent_product_id": 214,
       "woo_variation_id": 283,
       "record_checksum": "3008287914d3d66ad47642f6ef392decf2aa198dea624242ebacf153cd6bd7a9",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1297,7 +1297,7 @@
       "woo_parent_product_id": 214,
       "woo_variation_id": 284,
       "record_checksum": "acb59e8b1c6d20eb4a4df713dc5317b64d38eb5d21a3dd42c6d617ad8c77574b",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1351,8 +1351,8 @@
       "woo_parent_product_id": 216,
       "woo_variation_id": null,
       "record_checksum": "6666ba197bbdc3e7e147abdaf044226b6ba1f4fe175156248bc6659b4d646d50",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:dizel:bronze",
@@ -1405,7 +1405,7 @@
       "woo_parent_product_id": 216,
       "woo_variation_id": 285,
       "record_checksum": "4e8ce51637050b9ed30cc7d0aebccf0eb0301d3506b643c911b79e74a49ec03c",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1459,7 +1459,7 @@
       "woo_parent_product_id": 216,
       "woo_variation_id": 286,
       "record_checksum": "5fd65763d489d9f1a35364117d49e1059824cebc0287bc4fb6ac6f9798244bd7",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1513,7 +1513,7 @@
       "woo_parent_product_id": 216,
       "woo_variation_id": 287,
       "record_checksum": "b19f57a2514dab271b0b1d2d00c8af507e04845acba806907c248c9c7b350ea7",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1567,7 +1567,7 @@
       "woo_parent_product_id": 216,
       "woo_variation_id": 288,
       "record_checksum": "b5a9ad2c36f6de2b0c5ed62e9cbb40de362b1cb9ccc6ec78c1a387df8bf01b08",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1621,8 +1621,8 @@
       "woo_parent_product_id": 218,
       "woo_variation_id": null,
       "record_checksum": "4f324175ffd2532b6436934df0bcf38fd49002952b486369499fca2a673c9445",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:the-monarch:bronze",
@@ -1675,7 +1675,7 @@
       "woo_parent_product_id": 218,
       "woo_variation_id": 289,
       "record_checksum": "e927908b72257b49a3e8c73f64c4f9c99f706e35fdaa5fb1361b0feb74fa751b",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1729,7 +1729,7 @@
       "woo_parent_product_id": 218,
       "woo_variation_id": 290,
       "record_checksum": "e6916073893847abd985002895c66f9a1e4729d63717dc8e761b2ba73e94f477",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1783,7 +1783,7 @@
       "woo_parent_product_id": 218,
       "woo_variation_id": 291,
       "record_checksum": "207d624e4aa9ff8eed45d1a8763ddd8710908917190d09080de27c5a8e08f8b6",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1837,7 +1837,7 @@
       "woo_parent_product_id": 218,
       "woo_variation_id": 292,
       "record_checksum": "5e8f4cd6adcaeca6548e85867712daa861e52f9e9803686e2453b5044199f951",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1891,8 +1891,8 @@
       "woo_parent_product_id": 220,
       "woo_variation_id": null,
       "record_checksum": "265a8e0c05d7ffcee0143eb991b974b23d78a78c4f1d2a27669eb5f8ed1e074a",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:the-original-guardian:bronze",
@@ -1945,7 +1945,7 @@
       "woo_parent_product_id": 220,
       "woo_variation_id": 293,
       "record_checksum": "d5572df01b8fe40f9b0bf734f4cda0e5e5aa43b12ac4cab55d0c7f536fe77b67",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -1999,7 +1999,7 @@
       "woo_parent_product_id": 220,
       "woo_variation_id": 294,
       "record_checksum": "4f08fbb648393cf9cc6a1de1a4c7bdab81722f4403a0b59af1bb50e2d044b7f7",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2053,7 +2053,7 @@
       "woo_parent_product_id": 220,
       "woo_variation_id": 295,
       "record_checksum": "ee7c1a442358cdf796a8066d674e75be3a360b84da4006b9f230e1b767e8f2a8",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2107,7 +2107,7 @@
       "woo_parent_product_id": 220,
       "woo_variation_id": 296,
       "record_checksum": "f56490cb03ab25fa81bd37aff4234ae1cd9442af4aabbf13fa26738fa96d2549",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2161,8 +2161,8 @@
       "woo_parent_product_id": 825,
       "woo_variation_id": null,
       "record_checksum": "61f5947e688cc50c749e1d7ab948e8cb00730654036ca7baf28da21a1937d2fe",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:the-don:bronze",
@@ -2215,7 +2215,7 @@
       "woo_parent_product_id": 825,
       "woo_variation_id": 826,
       "record_checksum": "29119e6cf89056c181e4d2f0bc26acadc9bc73d5eeffb047e7496c264415631e",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2269,7 +2269,7 @@
       "woo_parent_product_id": 825,
       "woo_variation_id": 827,
       "record_checksum": "ef4da18e921e7b1779d4b5269d0f536fdce10deec95a97adab30f687ffcc7a06",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2323,7 +2323,7 @@
       "woo_parent_product_id": 825,
       "woo_variation_id": 828,
       "record_checksum": "e903aa9ffcac23e1e78e34f2724ce82f2adb5c109c9b2ee03a47d73ee1847015",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2377,7 +2377,7 @@
       "woo_parent_product_id": 825,
       "woo_variation_id": 829,
       "record_checksum": "9df2e401e30528a48193debde68c79e33245fa4266f2364700b0a8796ffdf7d6",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2431,8 +2431,8 @@
       "woo_parent_product_id": 831,
       "woo_variation_id": null,
       "record_checksum": "616a395c5bd6754dbcda46fd7c7c3b114482c694ee8511a5b05f98704ae6a2b9",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:gamma-blaze:bronze",
@@ -2485,7 +2485,7 @@
       "woo_parent_product_id": 831,
       "woo_variation_id": 867,
       "record_checksum": "1d401dbcb4e74f82e8f9d00613bca80b4c2f578373753352cb56ab05e37d089b",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2539,7 +2539,7 @@
       "woo_parent_product_id": 831,
       "woo_variation_id": 868,
       "record_checksum": "85561c8b1654715ce615c5e9d80adfa75ec090da4ec4402c6ff8873829b1a251",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2593,7 +2593,7 @@
       "woo_parent_product_id": 831,
       "woo_variation_id": 869,
       "record_checksum": "f1674bce9094727ba018ea989e03f221d13deb95f84605a0ecc69c3f6c9e41e1",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2647,7 +2647,7 @@
       "woo_parent_product_id": 831,
       "woo_variation_id": 870,
       "record_checksum": "291eaf5591bb2f1f000cb381275cbb859a1ed7b047f08cbba771435d8ab03ca6",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2701,8 +2701,8 @@
       "woo_parent_product_id": 833,
       "woo_variation_id": null,
       "record_checksum": "ca9c406b73613fe969e827c6b13199a9344a6b8c296d787fb6d1f2f84e548f14",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:berry-bliss:bronze",
@@ -2755,7 +2755,7 @@
       "woo_parent_product_id": 833,
       "woo_variation_id": 871,
       "record_checksum": "39393105ef8278b4a89e1dd19921e159c213006ced6d2adda8dd0e25f03788d7",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2809,7 +2809,7 @@
       "woo_parent_product_id": 833,
       "woo_variation_id": 872,
       "record_checksum": "fb9373a5ede683a92ba519c5ece38cd0c917748494fd465f6d8d3d5021c93305",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2863,7 +2863,7 @@
       "woo_parent_product_id": 833,
       "woo_variation_id": 873,
       "record_checksum": "898a9d884e75f2bc53a273598989c51c4a5ae806a979e48589d29f9c0bc2c99f",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2917,7 +2917,7 @@
       "woo_parent_product_id": 833,
       "woo_variation_id": 874,
       "record_checksum": "e57572cfc3c5081526d9de8efaf0a8bcbc9c5f0553c7521566f7587397bb7424",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -2988,8 +2988,8 @@
       "woo_parent_product_id": 875,
       "woo_variation_id": null,
       "record_checksum": "c0bcb96fe221e7b087c0217e4d5a7bedad65d7956c84d5484dd3c177ce7382c9",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:torque:bronze",
@@ -3055,7 +3055,7 @@
       "woo_parent_product_id": 875,
       "woo_variation_id": 877,
       "record_checksum": "779d1bc2e217033697981e84cc148caf1277c4e8481e1cd997aa27c36ced1673",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3122,7 +3122,7 @@
       "woo_parent_product_id": 875,
       "woo_variation_id": 878,
       "record_checksum": "944d5bd6a388c1d4427ade977e2864ddd2a45ab2f0095294005a6938f659a574",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3189,7 +3189,7 @@
       "woo_parent_product_id": 875,
       "woo_variation_id": 879,
       "record_checksum": "4508c7dbc8d6af6a729d8663ffb3d2add5501ab74121d7fded5687fba39ce222",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3256,7 +3256,7 @@
       "woo_parent_product_id": 875,
       "woo_variation_id": 880,
       "record_checksum": "406ab568b217f3c2546ab0811872cd9ed1e3207df657f4b986b2cf69a82ad0fc",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3310,8 +3310,8 @@
       "woo_parent_product_id": 882,
       "woo_variation_id": null,
       "record_checksum": "50f068725625300bde5a05e4183592cca9cc60649b5eb07d1bdd04feedea695e",
-      "affiliate_eligibility": "ELIGIBLE",
-      "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
+      "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+      "affiliate_commission_class": null
     },
     {
       "canonical_id": "wnb:nft:the-chemist:bronze",
@@ -3364,7 +3364,7 @@
       "woo_parent_product_id": 882,
       "woo_variation_id": 883,
       "record_checksum": "9226c1c0e5cc82d4ccbd443c8d07a7b0dc3e0907449314f11598b041a7a130ce",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3418,7 +3418,7 @@
       "woo_parent_product_id": 882,
       "woo_variation_id": 884,
       "record_checksum": "05f3f7fb24042a6c2afed34d4594c604fedcaea5b89ab12123889ba161c5c64a",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3472,7 +3472,7 @@
       "woo_parent_product_id": 882,
       "woo_variation_id": 885,
       "record_checksum": "00109699a1135bcdb5274933d88d8c5549bcb53c397a10a8aa785326dff44be5",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3526,7 +3526,7 @@
       "woo_parent_product_id": 882,
       "woo_variation_id": 886,
       "record_checksum": "fa641a35613183af3f1d715a6f9f8fac696acb45f907afcfa0e6b05bc9bd4016",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10"
     },
     {
@@ -3580,7 +3580,7 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "275378e5d319f3ac5abfd265c732b244a403ea36da56973cd17df709de8e98fa",
-      "affiliate_eligibility": "ELIGIBLE",
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
       "affiliate_commission_class": "BOTANICAL_COLLECTION_25"
     },
     {
@@ -3634,8 +3634,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "9498e3882cd953bd038ab2d7726c74a2c7f6ac5a65eef8093d90a808aaa1c53e",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "WELLNESS_SUB_30_5"
     },
     {
       "canonical_id": "ccc:product:therapeutic-oil-tincture-1-time",
@@ -3688,8 +3688,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "f0a3762f8ca22436d8e93344cd3e689f22bf7706a9cb6df472f5361db9c18715",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "WELLNESS_PHYSICAL_30"
     },
     {
       "canonical_id": "ccc:product:therapeutic-body-butter-monthly",
@@ -3742,8 +3742,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "9608993130513591dbeef48c2d6105c4760c7807661c074e90149fbb89ef7c74",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "WELLNESS_SUB_30_5"
     },
     {
       "canonical_id": "ccc:product:therapeutic-combo-monthly-subscription",
@@ -3796,8 +3796,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "b6bae427c12b46e7c99a90a50f2d146705253e667d9903e3b833c5cc16ec1ce0",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "WELLNESS_SUB_30_5"
     },
     {
       "canonical_id": "ccc:product:therapeutic-combo-one-time-purchase",
@@ -3850,8 +3850,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "ac0aadb7516c0212d20f6fc6dbc7ad6bc9572ab022f6319b829837c7e1cffd82",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "WELLNESS_PHYSICAL_30"
     },
     {
       "canonical_id": "ccc:product:white-label-oil-per-1oz-min-10oz",
@@ -4336,8 +4336,8 @@
       "woo_parent_product_id": null,
       "woo_variation_id": null,
       "record_checksum": "5abc7780280845326eab9d3795516cdefa8d569dd750b200b538a240d53961f8",
-      "affiliate_eligibility": "EXCLUDED",
-      "affiliate_commission_class": null
+      "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+      "affiliate_commission_class": "WELLNESS_PHYSICAL_30"
     }
   ]
 }

@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0",
+  "catalog_version": "1.9.3-affiliate-g9b7",
+  "generated_at": "2026-10-03T01:34:48.161983+00:00",
+  "source_max_updated_at": "2026-09-14T20:25:43.608003+00:00",
+  "event_reason": "AFFILIATE_PILOT_G9B7_ALIGNMENT",
+  "triggering_entity": "D_MAC_G9B7_AUTHORIZATION",
+  "source_record_count": 76,
+  "output_record_count": 73,
+  "generator_version": "1.0.0",
+  "csv_sha256": "3e57a2931821207c0ec7a2b6b15d80c6742c2ee5b2cc3027a6db9b2c7ffe884e",
+  "json_sha256": "f54507e7ed75eb09e3edb9abe15752d5ecfa97ac43d3a918d96ed2273ac3634b",
+  "validation_status": "PASSED",
+  "source_inventory_count": 76,
+  "public_record_count": 73,
+  "excluded_record_count": 3,
+  "pre_release_record_count": 0,
+  "internal_only_record_count": 0,
+  "visibility_policy": "CCS-006",
+  "visibility_policy_version": "0.1",
+  "previous_catalog_version": null
+}

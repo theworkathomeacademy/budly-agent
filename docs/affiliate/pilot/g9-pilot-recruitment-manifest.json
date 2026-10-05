@@ -1,0 +1,111 @@
+[
+  {
+    "slot": 1,
+    "candidate_ref": "CAN-001",
+    "name": "Marcus T.",
+    "archetype": "Existing Customer / Community Advocate",
+    "intended_class": "STANDARD",
+    "audience_tier": "NANO",
+    "audience_range": "< 10,000",
+    "channels": [
+      "Word-of-Mouth",
+      "Personal Social",
+      "Direct Messaging"
+    ],
+    "existing_relationship": "Verified customer; purchased Botanical Collection Vol. 1 and participated in community feedback.",
+    "invitation_id": "INV-CAN-001-4912287D",
+    "token_hash": "9e5dce3063139360...",
+    "created_at": "2026-10-01T18:50:00+00:00",
+    "expires_at": "2026-10-31T18:50:00+00:00",
+    "delivery_status": "SENT",
+    "application_status": "INVITED",
+    "notes": "Direct verified customer contact dispatched."
+  },
+  {
+    "slot": 2,
+    "candidate_ref": "CAN-002",
+    "name": "Elena R.",
+    "archetype": "Nano / Micro Visual Creator",
+    "intended_class": "STANDARD",
+    "audience_tier": "MICRO",
+    "audience_range": "10,000 - 50,000 (18.5k)",
+    "channels": [
+      "Instagram Reels",
+      "Lifestyle Videos",
+      "Linktree Bio"
+    ],
+    "existing_relationship": "Prior collaborator on visual botanical product presentations and wellness aesthetics.",
+    "invitation_id": "INV-CAN-002-743E3B88",
+    "token_hash": "a38d6d5730a2a850...",
+    "created_at": "2026-10-01T18:50:00+00:00",
+    "expires_at": "2026-10-31T18:50:00+00:00",
+    "delivery_status": "SENT",
+    "application_status": "INVITED",
+    "notes": "Direct creator channel dispatched."
+  },
+  {
+    "slot": 3,
+    "candidate_ref": "CAN-003",
+    "name": "Dr. Sarah L.",
+    "archetype": "Cannabis & Holistic Wellness Educator",
+    "intended_class": "STANDARD",
+    "audience_tier": "MICRO",
+    "audience_range": "10,000 - 50,000 (12.2k)",
+    "channels": [
+      "Educational Newsletter / Substack",
+      "Herbal Workshops"
+    ],
+    "existing_relationship": "Reviewed Infused Basics draft chapters; highly respected holistic health coach.",
+    "invitation_id": "INV-CAN-003-C6653B35",
+    "token_hash": "f0f9b380467ef7ce...",
+    "created_at": "2026-10-01T18:50:00+00:00",
+    "expires_at": "2026-10-31T18:50:00+00:00",
+    "delivery_status": "SENT",
+    "application_status": "INVITED",
+    "notes": "Direct educator email dispatched."
+  },
+  {
+    "slot": 4,
+    "candidate_ref": "CAN-004",
+    "name": "Chef Julian K.",
+    "archetype": "Content Creator / Culinary Recipe Publisher",
+    "intended_class": "STANDARD",
+    "audience_tier": "MID_TIER",
+    "audience_range": "50,000 - 200,000 (78k)",
+    "channels": [
+      "Culinary Recipe Blog",
+      "YouTube Tutorials",
+      "Pinterest"
+    ],
+    "existing_relationship": "Culinary partner; demonstrates edible infusions and kitchen dosage calculators.",
+    "invitation_id": "INV-CAN-004-7371E817",
+    "token_hash": "ab4c294c6e7bf520...",
+    "created_at": "2026-10-01T18:50:00+00:00",
+    "expires_at": "2026-10-31T18:50:00+00:00",
+    "delivery_status": "SENT",
+    "application_status": "INVITED",
+    "notes": "Direct culinary partner channel dispatched."
+  },
+  {
+    "slot": 5,
+    "candidate_ref": "CAN-005",
+    "name": "David 'Dave' V.",
+    "archetype": "Strategic Partner / Community Builder",
+    "intended_class": "STRATEGIC_PARTNER",
+    "audience_tier": "MID_TIER",
+    "audience_range": "50,000 - 200,000 (65k)",
+    "channels": [
+      "Community Discord",
+      "Lounge Events",
+      "Audio Spaces"
+    ],
+    "existing_relationship": "Early Web3 community organizer and host for Wake'n'Bake Lounge events.",
+    "invitation_id": "INV-CAN-005-1397E22C",
+    "token_hash": "7d32417ce7cf59bd...",
+    "created_at": "2026-10-01T18:50:00+00:00",
+    "expires_at": "2026-10-31T18:50:00+00:00",
+    "delivery_status": "SENT",
+    "application_status": "INVITED",
+    "notes": "Direct strategic partner channel dispatched."
+  }
+]

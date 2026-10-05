@@ -56,16 +56,22 @@
     "source_ids": {
       "woo_parent_product_id": 150,
       "woo_variation_id": null,
-      "wix_entity": "PaidPlans/Plans/culinary-cannabis-1000"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 150,
     "woo_parent_product_id": 150,
     "woo_variation_id": null,
-    "record_checksum": "a569d58334f0eef6fcdcab2257287d570e3b32eb409b9efb084030271c262452"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "62a77f9e49e6c1e1bd8f919c5adce01a4377f6eec77851b23a32d4a5fe794018"
   },
   {
     "canonical_id": "ccc:course:culinary-cannabis:payment-plan",
@@ -120,16 +126,22 @@
     "source_ids": {
       "woo_parent_product_id": 455,
       "woo_variation_id": null,
-      "wix_entity": "PaidPlans/Plans/culinary-cannabis-300"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 455,
     "woo_parent_product_id": 455,
     "woo_variation_id": null,
-    "record_checksum": "0463489b1bb054305033b47dfcbe4e730106354cb6ef3082898d4614285a06e2"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "ae7b476a3e91b573c3ebda7c46efbba5c69d3f8b800baaf9c98a0c5af2d358bc"
   },
   {
     "canonical_id": "ccc:course:grow-cannabis-home",
@@ -188,16 +200,22 @@
     "source_ids": {
       "woo_parent_product_id": 151,
       "woo_variation_id": null,
-      "wix_entity": "PaidPlans/Plans/grow-cannabis-home-1500"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 151,
     "woo_parent_product_id": 151,
     "woo_variation_id": null,
-    "record_checksum": "a1a4dfc6c25740443ef02d7076b95c2d4b61e5569168104c04beef1feb430289"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "858a71d95245f692326e7faa746538417bd303baaf4fc7f15d37a00deea58866"
   },
   {
     "canonical_id": "ccc:course:grow-cannabis-home:payment-plan",
@@ -252,16 +270,22 @@
     "source_ids": {
       "woo_parent_product_id": 457,
       "woo_variation_id": null,
-      "wix_entity": "PaidPlans/Plans/grow-cannabis-home-425"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 457,
     "woo_parent_product_id": 457,
     "woo_variation_id": null,
-    "record_checksum": "b9d4316a28278445d1c72d19eb32698d0fe1ee3b8f57e91ff95bf2b4e0385406"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "2f34f775d961648a0289fd155212b62a45e97f29307d2ff54c06b4a25b3fae25"
   },
   {
     "canonical_id": "ccc:course:grow-cook-with-me",
@@ -319,16 +343,22 @@
     "source_ids": {
       "woo_parent_product_id": 152,
       "woo_variation_id": null,
-      "wix_entity": "PaidPlans/Plans/grow-cook-with-me-2500"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 152,
     "woo_parent_product_id": 152,
     "woo_variation_id": null,
-    "record_checksum": "a961716de53eaeb7c87c6af0b219d4aa14ca3218c76c60691e49442339c95db2"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5021f7c02cdd94626eec348c371c442b3ea6858893d620e11f404f36faa2f163"
   },
   {
     "canonical_id": "ccc:course:grow-cook-with-me:payment-plan",
@@ -383,16 +413,22 @@
     "source_ids": {
       "woo_parent_product_id": 460,
       "woo_variation_id": null,
-      "wix_entity": "PaidPlans/Plans/grow-cook-with-me-675"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 460,
     "woo_parent_product_id": 460,
     "woo_variation_id": null,
-    "record_checksum": "e888a0551a2d8046ebf7e68c3bf4625098b95b36b1fe1c5088bb88444cba6f82"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "4ebecb137979d9ff24d8d67125dc61cefe1a2aa522f5d17f15fb34653b632904"
   },
   {
     "canonical_id": "ccc:book:infused-basics",
@@ -455,16 +491,22 @@
     "source_ids": {
       "woo_parent_product_id": 87,
       "woo_variation_id": null,
-      "wix_entity": "Pages/infusedbasics"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 87,
     "woo_parent_product_id": 87,
     "woo_variation_id": null,
-    "record_checksum": "5538924fcdda1dcffe99414bb122c9bf1a33b60d136e6674d4f85694afd33c26"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "INFUSED_BASICS_25",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "7a62b1b01bdf26f621bc5ae0b1fb0e50ad2b33fa0a32d95bbf6658b401099bcc"
   },
   {
     "canonical_id": "ccc:service:is-cannabis-right-for-me",
@@ -528,16 +570,22 @@
     "source_ids": {
       "woo_parent_product_id": null,
       "woo_variation_id": null,
-      "wix_entity": "Bookings/Services/is-cannabis-right-for-me"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 1046,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "6d70d849cce5309c46d9df7e69f3f5ba1ccc3d8443dbaca0747723a2a911aade"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "fd72c181a81f94ee8cab33eb2ba82abbfaff917855afe4227c55fd9685556a93"
   },
   {
     "canonical_id": "wnb:nft:azurea-skye",
@@ -581,16 +629,22 @@
     "source_ids": {
       "woo_parent_product_id": 212,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
     "woo_parent_product_id": 212,
     "woo_variation_id": null,
-    "record_checksum": "6f5624f221c4205c70cbf6edeb4807d7bfdf1da696d3c665523b0ef955f70791"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "d5fb11128990f31238829f5ae756c4c5187201aaad0a784abc12830aff6f173c"
   },
   {
     "canonical_id": "wnb:nft:azurea-skye:bronze",
@@ -634,16 +688,22 @@
     "source_ids": {
       "woo_parent_product_id": 212,
       "woo_variation_id": 277,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
     "woo_parent_product_id": 212,
     "woo_variation_id": 277,
-    "record_checksum": "c47c9264e6011e3f759101d50584170d6e61220559718e937ed7ef536770cfd8"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "03031fffb2a3af00af6b4525830cb26819e8ba6c7bb32380ec90993597083897"
   },
   {
     "canonical_id": "wnb:nft:azurea-skye:copper",
@@ -687,16 +747,22 @@
     "source_ids": {
       "woo_parent_product_id": 212,
       "woo_variation_id": 278,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
     "woo_parent_product_id": 212,
     "woo_variation_id": 278,
-    "record_checksum": "c2bd0572257733a18f9788fa6f7e26ff7b4ddc23533a474878e45d6109848f76"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "c24b50462658887afcd34efc59f128f8ca17f7626dddb9aaa28993c430901ed4"
   },
   {
     "canonical_id": "wnb:nft:azurea-skye:titanium",
@@ -740,16 +806,22 @@
     "source_ids": {
       "woo_parent_product_id": 212,
       "woo_variation_id": 279,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
     "woo_parent_product_id": 212,
     "woo_variation_id": 279,
-    "record_checksum": "af94a44fd10c6f79faf8fef74cce19595690f995c849d3c4ddb5b6870cbf06fa"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "7eee784884765b7b39658a9622861345e4801d6b6ff2eb566247490fe2b2dde0"
   },
   {
     "canonical_id": "wnb:nft:azurea-skye:platinum",
@@ -793,16 +865,22 @@
     "source_ids": {
       "woo_parent_product_id": 212,
       "woo_variation_id": 280,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
     "woo_parent_product_id": 212,
     "woo_variation_id": 280,
-    "record_checksum": "8b0568efabfcd18f3ce3b6f93aac62c847476a68a42b0b8bb54b090d7c5d56a4"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "3f018126d2197af94a667bf227ad087f8ab99e1a947bdf93a7a4319f932942f1"
   },
   {
     "canonical_id": "wnb:nft:cookie-cutter",
@@ -846,16 +924,22 @@
     "source_ids": {
       "woo_parent_product_id": 214,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
     "woo_parent_product_id": 214,
     "woo_variation_id": null,
-    "record_checksum": "2566d997b02da029540c04c0e65514575af42be482e7fe5bc6e1cc9c6b8ff851"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "148e5cb1f303f8432e96480d02f319fe7f855fde07f4b8551a6a84292b40d028"
   },
   {
     "canonical_id": "wnb:nft:cookie-cutter:bronze",
@@ -899,16 +983,22 @@
     "source_ids": {
       "woo_parent_product_id": 214,
       "woo_variation_id": 281,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
     "woo_parent_product_id": 214,
     "woo_variation_id": 281,
-    "record_checksum": "65262635fe5fce1287a69fe654a9f9562112bd6b2d238833bf2225457654cf09"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "d8861c650a373211ca6aef11f849399741358de5b013be3161018b17f96e2450"
   },
   {
     "canonical_id": "wnb:nft:cookie-cutter:copper",
@@ -952,16 +1042,22 @@
     "source_ids": {
       "woo_parent_product_id": 214,
       "woo_variation_id": 282,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
     "woo_parent_product_id": 214,
     "woo_variation_id": 282,
-    "record_checksum": "d731e5db79af88f21a8bb42175a8a1e6d13086be495dad1f8285ac308b2b4621"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5f78dff9d1fa208ebab654da3dcad8f4ce383d25418595db0f735d164f41ddf1"
   },
   {
     "canonical_id": "wnb:nft:cookie-cutter:titanium",
@@ -1005,16 +1101,22 @@
     "source_ids": {
       "woo_parent_product_id": 214,
       "woo_variation_id": 283,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
     "woo_parent_product_id": 214,
     "woo_variation_id": 283,
-    "record_checksum": "d481740fea619951367af62fa4d3dc39fef8f88fcd4c4f5ef01d8e1cc89089c1"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "8216ad970001ab574b897af9f385c4fc96650f2b4cfd21b8c3e2c905913c1f6b"
   },
   {
     "canonical_id": "wnb:nft:cookie-cutter:platinum",
@@ -1058,16 +1160,22 @@
     "source_ids": {
       "woo_parent_product_id": 214,
       "woo_variation_id": 284,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
     "woo_parent_product_id": 214,
     "woo_variation_id": 284,
-    "record_checksum": "f5a0fb88020fed1c5a7bf2409f3b125ef5fe5c31fd972c4512c0abd586403a2d"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "692ca87ceaa263a97c21ee2bcc97cc462f92be43118edd2c0bfb27685e3b9382"
   },
   {
     "canonical_id": "wnb:nft:dizel",
@@ -1111,16 +1219,22 @@
     "source_ids": {
       "woo_parent_product_id": 216,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
     "woo_parent_product_id": 216,
     "woo_variation_id": null,
-    "record_checksum": "f7c7e5d5ae1b841b5b18b5472e636ba72c90a8de3f9487155879ab6f0b5fe89d"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "24dfbfd7f940942951a424264e69a80a4aec50234773c70b45ba161133f69d31"
   },
   {
     "canonical_id": "wnb:nft:dizel:bronze",
@@ -1164,16 +1278,22 @@
     "source_ids": {
       "woo_parent_product_id": 216,
       "woo_variation_id": 285,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
     "woo_parent_product_id": 216,
     "woo_variation_id": 285,
-    "record_checksum": "fdc5b2f67f183b0c3e92f0b639348074943c15e5e8da0b9f6a3f47d2740c05eb"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "cde9fe4e9c7202baceee514472426c6ceaa6475110ef709a30f6ddee393b9449"
   },
   {
     "canonical_id": "wnb:nft:dizel:copper",
@@ -1217,16 +1337,22 @@
     "source_ids": {
       "woo_parent_product_id": 216,
       "woo_variation_id": 286,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
     "woo_parent_product_id": 216,
     "woo_variation_id": 286,
-    "record_checksum": "405b18010815435ba670c512b6b477000f12c116a8d0b63b80c4906475bf509b"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "9b58913b5f4b8ce6409feda381c31229bd5484a55a4b9a48dae90d7824501623"
   },
   {
     "canonical_id": "wnb:nft:dizel:titanium",
@@ -1270,16 +1396,22 @@
     "source_ids": {
       "woo_parent_product_id": 216,
       "woo_variation_id": 287,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
     "woo_parent_product_id": 216,
     "woo_variation_id": 287,
-    "record_checksum": "065ea0fff4c3e36859c669c44777cf7f782e4eb5042a7e66862c2a68f2346731"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "455b2577fd1e4e052f33520d4438e31e8e21d9cef7da1d2ca9bb67b3b42ce8a8"
   },
   {
     "canonical_id": "wnb:nft:dizel:platinum",
@@ -1323,16 +1455,22 @@
     "source_ids": {
       "woo_parent_product_id": 216,
       "woo_variation_id": 288,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
     "woo_parent_product_id": 216,
     "woo_variation_id": 288,
-    "record_checksum": "5ea0ec4b8620f5cbcedca1d95dc6b4ac4a963ebea8d770d9bde0298256e8afe8"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "dd2c072f5de8acf47ba70c6b4854da9f7f7cdd68809a7e34e2fdac04af5d49c7"
   },
   {
     "canonical_id": "wnb:nft:the-monarch",
@@ -1376,16 +1514,22 @@
     "source_ids": {
       "woo_parent_product_id": 218,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
     "woo_parent_product_id": 218,
     "woo_variation_id": null,
-    "record_checksum": "0e43d68a072914f935a9acfccbd6578e301ba4ad8ba49888dae6667a1da69ff9"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5912baa282e264de34fed95271abbd711355b55066826e9b1181632b43ff67fa"
   },
   {
     "canonical_id": "wnb:nft:the-monarch:bronze",
@@ -1429,16 +1573,22 @@
     "source_ids": {
       "woo_parent_product_id": 218,
       "woo_variation_id": 289,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
     "woo_parent_product_id": 218,
     "woo_variation_id": 289,
-    "record_checksum": "30f10314691a7e97b4b83ae7144f2ddf953a17cea71c6f4f5899c2a9da1c62a0"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "f564426d2a5cb8e6fc73e0a55dfde7989dd20607650a8d917c872b6b5f1692d0"
   },
   {
     "canonical_id": "wnb:nft:the-monarch:copper",
@@ -1482,16 +1632,22 @@
     "source_ids": {
       "woo_parent_product_id": 218,
       "woo_variation_id": 290,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
     "woo_parent_product_id": 218,
     "woo_variation_id": 290,
-    "record_checksum": "d64e1074f0fb3eaf95f54bae4849a0fe510bfc11a613fdfe1a94616b9d21caff"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "aacd1bdb085f8a572694862270329df9bba7304c33fb3b5b7c936f2ed79f8af3"
   },
   {
     "canonical_id": "wnb:nft:the-monarch:titanium",
@@ -1535,16 +1691,22 @@
     "source_ids": {
       "woo_parent_product_id": 218,
       "woo_variation_id": 291,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
     "woo_parent_product_id": 218,
     "woo_variation_id": 291,
-    "record_checksum": "e7d77d555e73f0b347d5f90118af1b27ef53b0da7cd8fe46e72b22f8b2dec59d"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "30384e210a83d638366c1c593781a2cbc185e5c72d498f0c3dcf565ac0644344"
   },
   {
     "canonical_id": "wnb:nft:the-monarch:platinum",
@@ -1588,16 +1750,22 @@
     "source_ids": {
       "woo_parent_product_id": 218,
       "woo_variation_id": 292,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
     "woo_parent_product_id": 218,
     "woo_variation_id": 292,
-    "record_checksum": "c1bc3ac755a105cbbd189e5910ce2ddf273acaafce6561cf04920aeb72e469ce"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "aff38c3c601cb715fac8570556e7b02ad6b54483482e2762dacb9b5f5ba5e4d6"
   },
   {
     "canonical_id": "wnb:nft:the-original-guardian",
@@ -1641,16 +1809,22 @@
     "source_ids": {
       "woo_parent_product_id": 220,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
     "woo_parent_product_id": 220,
     "woo_variation_id": null,
-    "record_checksum": "6a6f8cea8d61c13fa8293e6237c3986b45a9adbbcd4f857b68de63f63161019d"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "1b5ce6b8d9321aa8778fcebc0d2181eb0a3babc314d43f4ec2b8c5a2beb3a975"
   },
   {
     "canonical_id": "wnb:nft:the-original-guardian:bronze",
@@ -1694,16 +1868,22 @@
     "source_ids": {
       "woo_parent_product_id": 220,
       "woo_variation_id": 293,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
     "woo_parent_product_id": 220,
     "woo_variation_id": 293,
-    "record_checksum": "28223ad8d50e076a7a12d790e3c0f7345aceb3313d919fd879c7389d2411a53a"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "52fe2eb478992012c69db360a50cd27c7fb2dd70b83c329ddba0b2794cf0f98d"
   },
   {
     "canonical_id": "wnb:nft:the-original-guardian:copper",
@@ -1747,16 +1927,22 @@
     "source_ids": {
       "woo_parent_product_id": 220,
       "woo_variation_id": 294,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
     "woo_parent_product_id": 220,
     "woo_variation_id": 294,
-    "record_checksum": "63fc688a3723a3488c05a5f2a284679b271a02f87005b5fb37ffdf195601f71a"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "c55d759088ff739f1f360874e9473522070a6e27fa0d180671c35fff3969be52"
   },
   {
     "canonical_id": "wnb:nft:the-original-guardian:titanium",
@@ -1800,16 +1986,22 @@
     "source_ids": {
       "woo_parent_product_id": 220,
       "woo_variation_id": 295,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
     "woo_parent_product_id": 220,
     "woo_variation_id": 295,
-    "record_checksum": "f20bacd28a6b1d3180cf6b1936183482b99a45493a0bc53ff68aba70fbd91665"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "e91ebb182c2f31be769ccdb9013070cf0817bbd06a07c6139d7f76a0965a51ab"
   },
   {
     "canonical_id": "wnb:nft:the-original-guardian:platinum",
@@ -1853,16 +2045,22 @@
     "source_ids": {
       "woo_parent_product_id": 220,
       "woo_variation_id": 296,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
     "woo_parent_product_id": 220,
     "woo_variation_id": 296,
-    "record_checksum": "6c63f72719fbedb96ef886c534ed0b7d614236bfeea691a025f63b518c9f166e"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "3955f1cf315b5a26cb8b5f3419a5fe56b92aed9097b05af96818fc93caa2651a"
   },
   {
     "canonical_id": "wnb:nft:the-don",
@@ -1906,16 +2104,22 @@
     "source_ids": {
       "woo_parent_product_id": 825,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
     "woo_parent_product_id": 825,
     "woo_variation_id": null,
-    "record_checksum": "2ee4d23cdd22202d46495b5a10f140d5793571169448013e98fbe773b0750a1c"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "435a46352a45bd50da24649c328535a4c7d6f618118b27b880a8496ba776eab3"
   },
   {
     "canonical_id": "wnb:nft:the-don:bronze",
@@ -1959,16 +2163,22 @@
     "source_ids": {
       "woo_parent_product_id": 825,
       "woo_variation_id": 826,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
     "woo_parent_product_id": 825,
     "woo_variation_id": 826,
-    "record_checksum": "22d272b8462e810fe89db51fbce47024997d801c79c663f283efac67bcb0fdde"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "b7ca355e045075c4b3b92269b256b979281b263b2614ec71588c283d755ea4b6"
   },
   {
     "canonical_id": "wnb:nft:the-don:copper",
@@ -2012,16 +2222,22 @@
     "source_ids": {
       "woo_parent_product_id": 825,
       "woo_variation_id": 827,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
     "woo_parent_product_id": 825,
     "woo_variation_id": 827,
-    "record_checksum": "3f9eecc2abd9ce74dcc4f16f823fc543ed43d9ecb2584b3b57026b13543a3cf9"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "8356606ac0bf00502cf56309ba0634957f55de8a9668be36c8a87acdda099caf"
   },
   {
     "canonical_id": "wnb:nft:the-don:titanium",
@@ -2065,16 +2281,22 @@
     "source_ids": {
       "woo_parent_product_id": 825,
       "woo_variation_id": 828,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
     "woo_parent_product_id": 825,
     "woo_variation_id": 828,
-    "record_checksum": "def8e32970c76eef36ba21e07580e702fd199597061da1f2c051fef78eae78d8"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "39d37aa4c49de5b1d7985bb4b977031e7d3bdf9a2ef651b23b193ba754a95b37"
   },
   {
     "canonical_id": "wnb:nft:the-don:platinum",
@@ -2118,16 +2340,22 @@
     "source_ids": {
       "woo_parent_product_id": 825,
       "woo_variation_id": 829,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
     "woo_parent_product_id": 825,
     "woo_variation_id": 829,
-    "record_checksum": "b6deab1a61bc93ea8e5b15f1ec444bc31cc24ed95839039a56c0bf39e698aeec"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "fdaf8c02a180dbe885dd42dc800b42dffbf7255017f61dea57d1fc71e2633f5e"
   },
   {
     "canonical_id": "wnb:nft:gamma-blaze",
@@ -2171,16 +2399,22 @@
     "source_ids": {
       "woo_parent_product_id": 831,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
     "woo_parent_product_id": 831,
     "woo_variation_id": null,
-    "record_checksum": "97e8ca496c93e085cb721a85fecd79cbbe7d4c891f385171f1fc89714e13c812"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5cdd04547953b6941c9576a58ba44f40340b1b26e82346615e1b9eff2b5a95a4"
   },
   {
     "canonical_id": "wnb:nft:gamma-blaze:bronze",
@@ -2224,16 +2458,22 @@
     "source_ids": {
       "woo_parent_product_id": 831,
       "woo_variation_id": 867,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
     "woo_parent_product_id": 831,
     "woo_variation_id": 867,
-    "record_checksum": "981945f2f1a9785b921c615727c3eb7e92d1d6fc21d5057d6d3fa46a0255955c"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "8178304003976da2dff7a42c5ff9dcf60a7ccdda4bd8dc148b934be435218b65"
   },
   {
     "canonical_id": "wnb:nft:gamma-blaze:copper",
@@ -2277,16 +2517,22 @@
     "source_ids": {
       "woo_parent_product_id": 831,
       "woo_variation_id": 868,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
     "woo_parent_product_id": 831,
     "woo_variation_id": 868,
-    "record_checksum": "0bb2ef498528df81aa4d0cab44d8edd1c76674e900eeceef20031b067f81bff9"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "89e0fa8f8e546be6554d1c432098293ec3bf2987aed0ae34fce2e2911a26c82a"
   },
   {
     "canonical_id": "wnb:nft:gamma-blaze:titanium",
@@ -2330,16 +2576,22 @@
     "source_ids": {
       "woo_parent_product_id": 831,
       "woo_variation_id": 869,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
     "woo_parent_product_id": 831,
     "woo_variation_id": 869,
-    "record_checksum": "ae7f1c4e8f44e1597f47f5bf3dbb867e3424d35e8ac279305148a96c160a1b34"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "6c43f0a5d94cc232456e4b2d3054ee5883b186799fb993b63fd7ff41cb01491d"
   },
   {
     "canonical_id": "wnb:nft:gamma-blaze:platinum",
@@ -2383,16 +2635,22 @@
     "source_ids": {
       "woo_parent_product_id": 831,
       "woo_variation_id": 870,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
     "woo_parent_product_id": 831,
     "woo_variation_id": 870,
-    "record_checksum": "c8b31c42be33bad05044a10421a8b86553c098a9226cd5c3be3c61174c7de472"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "f8fccfdd5cf035aae044cd0c75067c92a84cc2cca6166bf57c0460b2993aedcf"
   },
   {
     "canonical_id": "wnb:nft:berry-bliss",
@@ -2436,16 +2694,22 @@
     "source_ids": {
       "woo_parent_product_id": 833,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
     "woo_parent_product_id": 833,
     "woo_variation_id": null,
-    "record_checksum": "4d055e1149fd381a6f523bb2a55fe9e376b4580db437dbb11d9a46bf8141911f"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5d8fa1f68e1e0788b459d94351eef790c928416a3436bed723bb3a7d72f52c9d"
   },
   {
     "canonical_id": "wnb:nft:berry-bliss:bronze",
@@ -2489,16 +2753,22 @@
     "source_ids": {
       "woo_parent_product_id": 833,
       "woo_variation_id": 871,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
     "woo_parent_product_id": 833,
     "woo_variation_id": 871,
-    "record_checksum": "12fcbb28413ddcadf5147a2b173e3faa51d296f3d2f6ba1af77dcaa50d3f34c2"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5cfa8ee005cade801478a960e9912de8ac738ba31f6f9f3fda8729f94fd2c9fd"
   },
   {
     "canonical_id": "wnb:nft:berry-bliss:copper",
@@ -2542,16 +2812,22 @@
     "source_ids": {
       "woo_parent_product_id": 833,
       "woo_variation_id": 872,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
     "woo_parent_product_id": 833,
     "woo_variation_id": 872,
-    "record_checksum": "c94ab737471720715a7a6b1237f3f0e4d4924d7568317763cf1655920b2fc1e6"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "bacf765cf097d62c8090a55c17aefbd8a311baa4d061d13a753e081c6891772d"
   },
   {
     "canonical_id": "wnb:nft:berry-bliss:titanium",
@@ -2595,16 +2871,22 @@
     "source_ids": {
       "woo_parent_product_id": 833,
       "woo_variation_id": 873,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
     "woo_parent_product_id": 833,
     "woo_variation_id": 873,
-    "record_checksum": "07cfa9bb714bc7d0da37c53810ddae688f396bf8ee3c70d8b497102f7e9ab1f2"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "58d73269f6183f7133f1b44dfc2f45d26a1263152724d575bbf8db35dadfd11c"
   },
   {
     "canonical_id": "wnb:nft:berry-bliss:platinum",
@@ -2648,16 +2930,22 @@
     "source_ids": {
       "woo_parent_product_id": 833,
       "woo_variation_id": 874,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
     "woo_parent_product_id": 833,
     "woo_variation_id": 874,
-    "record_checksum": "51fa251847c26296a9030dc40f0417dbc501671c63524dfafd49ef04a4653cfe"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "dc9182a5c747bb6195fa6958aca482d79364a233f60ca86ddbabbe956f93ce6c"
   },
   {
     "canonical_id": "wnb:nft:torque",
@@ -2718,16 +3006,22 @@
     "source_ids": {
       "woo_parent_product_id": 875,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
     "woo_parent_product_id": 875,
     "woo_variation_id": null,
-    "record_checksum": "c98363c5213b52cb2600f5a363d0fc050f9f3eb47852cd3d0ea96ac253faccc8"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "37e74b6ade5f4f3e9bd7e25d0aebc9bf39bf2e95db76c7eb1ab98b6bb9379d72"
   },
   {
     "canonical_id": "wnb:nft:torque:bronze",
@@ -2784,16 +3078,22 @@
     "source_ids": {
       "woo_parent_product_id": 875,
       "woo_variation_id": 877,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
     "woo_parent_product_id": 875,
     "woo_variation_id": 877,
-    "record_checksum": "3e3963bc296a0b774fd1e015edfc72e8280e3b5fbbc729ffb6c841c40ca36485"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5b1460973b15d4f2f38bb3f008743184e2ba6843a8f8c6fd4be86938612a0dee"
   },
   {
     "canonical_id": "wnb:nft:torque:copper",
@@ -2850,16 +3150,22 @@
     "source_ids": {
       "woo_parent_product_id": 875,
       "woo_variation_id": 878,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
     "woo_parent_product_id": 875,
     "woo_variation_id": 878,
-    "record_checksum": "4bc9b24a4e61780dc17955531184d3a454aff83bfcfacecba3ba993526e5fa43"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "75902099eec61461287a81ccae4f2fc3b44ddbca139cb61b24ba7712c302db05"
   },
   {
     "canonical_id": "wnb:nft:torque:titanium",
@@ -2916,16 +3222,22 @@
     "source_ids": {
       "woo_parent_product_id": 875,
       "woo_variation_id": 879,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
     "woo_parent_product_id": 875,
     "woo_variation_id": 879,
-    "record_checksum": "313ee3ace3b6f3caf1a91b655c8372c7a8f4f3da8ba087adbadee0bf1efaefc2"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "64782ef18a74f0ef8fa7457c9d984990273721fbbb8a17255ac771e5c0381e2d"
   },
   {
     "canonical_id": "wnb:nft:torque:platinum",
@@ -2982,16 +3294,22 @@
     "source_ids": {
       "woo_parent_product_id": 875,
       "woo_variation_id": 880,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
     "woo_parent_product_id": 875,
     "woo_variation_id": 880,
-    "record_checksum": "979951603f372c2b6e5e2ad66052c73de70639f9fb8dbfd9faf336e211df2207"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "22797899f1be3a9131c2bf1d86f82513239cdd20128e22ac2628fec71284a010"
   },
   {
     "canonical_id": "wnb:nft:the-chemist",
@@ -3035,16 +3353,22 @@
     "source_ids": {
       "woo_parent_product_id": 882,
       "woo_variation_id": null,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
     "woo_parent_product_id": 882,
     "woo_variation_id": null,
-    "record_checksum": "6c4d373fa54df520e0d68ced3f7860b9abc9bd8dacda69d2fef4a2979114e77a"
+    "affiliate_eligibility": "ATTRIBUTABLE_ONLY",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "6d6de9be33876cf60bdcb1608c1f48cf24bec044d744cfa154fd306929edfb1e"
   },
   {
     "canonical_id": "wnb:nft:the-chemist:bronze",
@@ -3088,16 +3412,22 @@
     "source_ids": {
       "woo_parent_product_id": 882,
       "woo_variation_id": 883,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
     "woo_parent_product_id": 882,
     "woo_variation_id": 883,
-    "record_checksum": "e9b66d8af2477ad4c9b263847cc381d5fff552af23afddb1466eeb971cb11119"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "6b08fe616094d19ba8cf8e91a072ad509f550632b12d8d70039435829fe79e50"
   },
   {
     "canonical_id": "wnb:nft:the-chemist:copper",
@@ -3141,16 +3471,22 @@
     "source_ids": {
       "woo_parent_product_id": 882,
       "woo_variation_id": 884,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
     "woo_parent_product_id": 882,
     "woo_variation_id": 884,
-    "record_checksum": "f605ad507e9439ba7396c9903deaf56f8f622324d0504d74970eeb12cc91712a"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "29dce61c2d39584a6c616084e72402621268a1754d065d94c7bd4a0def4a9d6f"
   },
   {
     "canonical_id": "wnb:nft:the-chemist:titanium",
@@ -3194,16 +3530,22 @@
     "source_ids": {
       "woo_parent_product_id": 882,
       "woo_variation_id": 885,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
     "woo_parent_product_id": 882,
     "woo_variation_id": 885,
-    "record_checksum": "e7b12f4b64f84d6523ab297f1203cd48327835909cb1daf3f13b0875d1d51502"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "f49220196d225f65b54417b68d6651bc6a5b6f3d982b8d86d317b77cb6c59a08"
   },
   {
     "canonical_id": "wnb:nft:the-chemist:platinum",
@@ -3247,16 +3589,22 @@
     "source_ids": {
       "woo_parent_product_id": 882,
       "woo_variation_id": 886,
-      "wix_entity": "Legends/Hub"
+      "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
     "woo_parent_product_id": 882,
     "woo_variation_id": 886,
-    "record_checksum": "e568b4841604ba7720b66916bbf4820e34374b78436ca9f943f5b1773d0e47cd"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "LEGENDS_MEMBERSHIP_10",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "8dbdadd67b77dc7866b9ca13b4d165a3af8d0015518135b5e0af14dc0beab688"
   },
   {
     "canonical_id": "ccc:book:wakenbake-lounge-cannabis-botanical-collection-volume-1",
@@ -3302,14 +3650,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "62297bb110686fc0a799d5e6d07cbcddd36b98eb49d4bcd3cb61e8d43de1dd59"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "BOTANICAL_COLLECTION_25",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "e9a21815b81a09e4fa67789af8bbd338092fa1a2c4525a543deb0faa71d4609c"
   },
   {
     "canonical_id": "ccc:product:therapeutic-oil-tincture-monthly",
@@ -3355,14 +3709,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "9ab7051ab61827f88d3194c6536dde5fbdd03be181c83db84742c9a23c0e91a2"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "a41768d2ee18eccb98cc0ef719b9ce3bd9da8ab302702c431ce1add57163ea00"
   },
   {
     "canonical_id": "ccc:product:therapeutic-oil-tincture-1-time",
@@ -3408,14 +3768,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "697c73da2064e48c12fc66fbfb5914bbf91ac9371969ca4a96d2273b3f7d5706"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "WELLNESS_PHYSICAL_30",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "2282ca5421b5e3624923ee85d6a1f67de75df41633b7e977250431c478a07d58"
   },
   {
     "canonical_id": "ccc:product:therapeutic-body-butter-monthly",
@@ -3461,14 +3827,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "8ae227360f872c4e6c88a4f12f6a6b68e86eb6814f500c636289e3fb8a86bae6"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "2ad6f471466a3948467ba25d5cefba59770ef22759ecbe79921551e498afe6be"
   },
   {
     "canonical_id": "ccc:product:therapeutic-combo-monthly-subscription",
@@ -3514,14 +3886,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "71abf72c2b9f5fdc93c0190efdd7f027368ee213723899f9f08c16d435dd66be"
+    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "4e8f2165c00ec895909abedb34a51862a90ce5cce4fb6fdd153a84189c527a30"
   },
   {
     "canonical_id": "ccc:product:therapeutic-combo-one-time-purchase",
@@ -3567,14 +3945,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "08ff473f8b10e54826b004d739f9b82cb759c278a600ac9995d745ed7433b473"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "WELLNESS_PHYSICAL_30",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "7c0ddce1e9e1ee209b7d027563efa2d1db6a1706fa0f44a77d4ef4b9f055e7e2"
   },
   {
     "canonical_id": "ccc:product:white-label-oil-per-1oz-min-10oz",
@@ -3620,14 +4004,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "e10819f30bf108f7f472665536b1aca79f07dcd877187a0ff793dd78ef568d9c"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "9f4c01be19c62b06cddd7d4d492b02795bbe29d14aa898438c23f5e423d1b7d7"
   },
   {
     "canonical_id": "ccc:product:white-label-cbd-combo-per-1oz",
@@ -3673,14 +4063,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "99a7e179dd7e2c4c926d0c12af97149b2487cd49a2333ac48125c391507291c9"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "13c6f1a6bf909141d32a4cecdfa78734aa94fb425b5808f05ebbe4899f214223"
   },
   {
     "canonical_id": "ccc:product:infused-cooking-oil-4oz",
@@ -3726,14 +4122,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "2e9798bc1637e1c2d6850fa489a1c113b7aa3680739b1082f1bf38bbc2539cd8"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "13af6e97799315876e7fd9ad2621cd5a35a56c683320d840709d483b303dc11c"
   },
   {
     "canonical_id": "ccc:product:white-label-butter-per-1oz-min-16oz",
@@ -3779,14 +4181,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "78cf6eaa4da016c7fe1f88de3685c9280b65537b317037bc9a5f9b3b186c9333"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "bd7791854c7d3fc8f7b54ae70cef270b41bb4fb1219831054cdf05f5ebf4f716"
   },
   {
     "canonical_id": "ccc:product:infused-cooking-oil-8oz",
@@ -3832,14 +4240,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "e81fba2273e244750e59c75f82d9e2020a0f1e5fe8175050da0c9949f32069d6"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "3a7fce638aa353f35483028f29789d13cd8f089b1cbef6c29c3b8598ed56b613"
   },
   {
     "canonical_id": "ccc:product:infused-cooking-oil-12oz",
@@ -3885,14 +4299,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "a3a7881731a59bbf72f4af5f5af5475459ff5a82d9a2cf50b040e046379cf206"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "5d079144c04dbb446c925e52995306d64e12977370a910d7c8fabdc5d5e3873e"
   },
   {
     "canonical_id": "ccc:product:infused-cooking-oil-16oz",
@@ -3938,14 +4358,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "378634484ad353a16bf4c9074bd3ded98883f7a3e16a415983e9c90e3d4646ef"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "ec115fb05093f1a85a10efb5710c2ec431b8eab36d85dc8a4a5eaa2abb520df6"
   },
   {
     "canonical_id": "ccc:product:bulk-butter",
@@ -3991,14 +4417,20 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "2929ad63d7f9eb39ed66f9852a7131f632baea0d4e2414d2fcd62b6abf692400"
+    "affiliate_eligibility": "EXCLUDED",
+    "affiliate_commission_class": null,
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "e1ae8b3d3de823299cf029e55606015e3fd35fc958e9ab66cd1e8b1bf187ece6"
   },
   {
     "canonical_id": "ccc:product:therapeutic-body-butter",
@@ -4044,13 +4476,19 @@
       "woo_variation_id": null,
       "wix_entity": null
     },
-    "source_updated_at": "2026-09-16T21:38:18.126987+00:00",
-    "snapshot_generated_at": "2026-09-16T21:38:18.126987+00:00",
+    "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
+    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "record_checksum": "e52ce74e215f30461f9afe4243e87e8715b8c51918f93392f98589790199fa55"
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "WELLNESS_PHYSICAL_30",
+    "affiliate_campaign_restriction": [],
+    "affiliate_class_restriction": [],
+    "affiliate_effective_from": null,
+    "affiliate_effective_until": null,
+    "record_checksum": "149897e34ee5e930d75ad61e8e731e4beed16a2686cb53849fd0632cc9576f5b"
   }
 ]

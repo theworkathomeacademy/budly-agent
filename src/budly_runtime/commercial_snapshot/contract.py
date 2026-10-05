@@ -113,7 +113,9 @@ ALLOWED_BUDLY_VISIBILITIES = frozenset({
 })
 
 ALLOWED_AFFILIATE_ELIGIBILITY = frozenset({
-    "ELIGIBLE", "EXCLUDED", "CAMPAIGN_ONLY", "CLASS_RESTRICTED", "PAUSED"
+    "ELIGIBLE", "AFFILIATE_ELIGIBLE", "ELIGIBLE_RATE_REQUIRED",
+    "ATTRIBUTABLE_ONLY", "EXCLUDED", "CAMPAIGN_ONLY", "CLASS_RESTRICTED",
+    "PAUSED", "NEEDS_REVIEW"
 })
 
 
@@ -340,7 +342,7 @@ class CommercialCatalogRecord:
         if self.affiliate_eligibility not in ALLOWED_AFFILIATE_ELIGIBILITY:
             return {"eligible": False, "status": "EXCLUDED", "reason": "UNKNOWN_AFFILIATE_ELIGIBILITY"}
         return {
-            "eligible": self.affiliate_eligibility in {"ELIGIBLE", "CAMPAIGN_ONLY", "CLASS_RESTRICTED"},
+            "eligible": self.affiliate_eligibility in {"ELIGIBLE", "AFFILIATE_ELIGIBLE", "CAMPAIGN_ONLY", "CLASS_RESTRICTED"},
             "status": self.affiliate_eligibility,
             "commission_class": self.affiliate_commission_class,
             "campaign_restriction": list(self.affiliate_campaign_restriction),

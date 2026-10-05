@@ -19,7 +19,11 @@ MONEY_QUANTUM = Decimal("0.000001")
 RATE_QUANTUM = Decimal("0.00000001")
 AFFILIATE_CODE = re.compile(r"^AFF-[0-9]{6}$")
 QR_CODE = re.compile(r"^AQR-[0-9A-HJKMNP-TV-Z]{10}$")
-ALLOWED_ELIGIBILITY = {"ELIGIBLE", "EXCLUDED", "CAMPAIGN_ONLY", "CLASS_RESTRICTED", "PAUSED"}
+ALLOWED_ELIGIBILITY = {
+    "ELIGIBLE", "AFFILIATE_ELIGIBLE", "ELIGIBLE_RATE_REQUIRED",
+    "ATTRIBUTABLE_ONLY", "EXCLUDED", "CAMPAIGN_ONLY", "CLASS_RESTRICTED",
+    "PAUSED", "NEEDS_REVIEW"
+}
 
 
 class DomainError(ValueError):
@@ -102,8 +106,20 @@ class CommissionRule:
     product_id: str | None = None
     product_class: str | None = None
     campaign_id: str | None = None
+    payment_number_min: int | None = None
+    payment_number_max: int | None = None
     version: int = 1
     active: bool = True
+
+
+STANDARD_COMMISSION_CLASS_RATES: dict[str, Decimal] = {
+    "WELLNESS_PHYSICAL_30": Decimal("0.30000000"),
+    "BOTANICAL_COLLECTION_25": Decimal("0.25000000"),
+    "INFUSED_BASICS_25": Decimal("0.25000000"),
+    "LEGENDS_MEMBERSHIP_10": Decimal("0.10000000"),
+    "COURSE_FULL_15": Decimal("0.15000000"),
+    "CONSULTATION_30": Decimal("0.30000000"),
+}
 
 
 @dataclass
@@ -158,6 +174,7 @@ class AffiliateEngine:
         self.qr_owners: dict[str, str] = {}
         self.campaign_windows: dict[str, tuple[datetime, datetime]] = {}
         self.rules: list[CommissionRule] = []
+        self.subscriptions: dict[str, dict[str, Any]] = {}
         self.decisions: dict[str, AttributionDecision] = {}
         self.commissions: dict[str, Commission] = {}
         self.order_commission: dict[tuple[str, str], str] = {}
@@ -290,40 +307,79 @@ class AffiliateEngine:
         return self._decision(order_id, None, "UNRESOLVED", None, reason, None, correlation)
 
     def add_rule(self, **kwargs: Any) -> CommissionRule:
-        rate = Decimal(str(kwargs.pop("rate"))).quantize(RATE_QUANTUM)
+        rate = Decimal(str(kwargs.pop("rate"))).quantize(RATE_QUANTUM, rounding=ROUND_HALF_UP)
         if rate < 0 or rate > 1:
             raise DomainError("INVALID_COMMISSION_RATE")
         rule = CommissionRule(id=self._id(), rate=rate, **kwargs)
         self.rules.append(rule)
         return rule
 
-    def resolve_rule(self, affiliate: Affiliate, product: dict[str, Any], campaign_id: str | None, at: datetime | None = None) -> CommissionRule:
+    def resolve_rule(
+        self,
+        affiliate: Affiliate,
+        product: dict[str, Any],
+        campaign_id: str | None,
+        at: datetime | None = None,
+        payment_number: int = 1,
+    ) -> CommissionRule:
         eligibility = product.get("affiliate_eligibility")
         if eligibility not in ALLOWED_ELIGIBILITY:
             raise DomainError("UNKNOWN_OR_MISSING_CCSS_ELIGIBILITY")
-        if eligibility in {"EXCLUDED", "PAUSED"}:
+        if eligibility in {"EXCLUDED", "PAUSED", "ATTRIBUTABLE_ONLY", "ELIGIBLE_RATE_REQUIRED", "NEEDS_REVIEW"}:
             raise DomainError("PRODUCT_NOT_ELIGIBLE")
         if eligibility == "CAMPAIGN_ONLY" and not campaign_id:
             raise DomainError("PRODUCT_NOT_ELIGIBLE")
         if eligibility == "CLASS_RESTRICTED" and affiliate.affiliate_class not in product.get("affiliate_class_restriction", []):
             raise DomainError("PRODUCT_NOT_ELIGIBLE")
+
+        commission_class = product.get("affiliate_commission_class") or product.get("product_class")
+        product_id = str(product.get("product_id") or product.get("canonical_id") or "")
+
+        has_product_rule = any(r.active and r.product_id and r.product_id == product_id for r in self.rules)
+        if not commission_class and not has_product_rule:
+            raise DomainError("MISSING_COMMISSION_RULE")
+
         matches = []
         for rule in self.rules:
             if not rule.active:
                 continue
             if rule.affiliate_id and rule.affiliate_id != affiliate.id: continue
             if rule.affiliate_class and rule.affiliate_class != affiliate.affiliate_class: continue
-            if rule.product_id and rule.product_id != str(product.get("product_id")): continue
-            if rule.product_class and rule.product_class != product.get("product_class"): continue
+            if rule.product_id and rule.product_id != product_id: continue
+            if rule.product_class and rule.product_class != commission_class: continue
             if rule.campaign_id and rule.campaign_id != campaign_id: continue
+            if rule.payment_number_min is not None and payment_number < rule.payment_number_min: continue
+            if rule.payment_number_max is not None and payment_number > rule.payment_number_max: continue
             matches.append(rule)
-        if not matches:
-            raise DomainError("MISSING_COMMISSION_RULE")
-        best_key = min((r.precedence, -r.priority) for r in matches)
-        best = [r for r in matches if (r.precedence, -r.priority) == best_key]
-        if len(best) != 1:
-            raise DomainError("CONFLICTING_COMMISSION_RULES")
-        return best[0]
+
+        if matches:
+            best_key = min((r.precedence, -r.priority) for r in matches)
+            best = [r for r in matches if (r.precedence, -r.priority) == best_key]
+            if len(best) != 1:
+                raise DomainError("CONFLICTING_COMMISSION_RULES")
+            return best[0]
+
+        # Standard fallback for ratified classes when no custom override rule is registered
+        if commission_class == "WELLNESS_SUB_30_5":
+            rate = Decimal("0.30000000") if payment_number <= 3 else Decimal("0.05000000")
+            return CommissionRule(
+                id=f"auto:wellness_sub:{payment_number}",
+                rule_code="R-WELLNESS-SUB",
+                rate=rate.quantize(RATE_QUANTUM, rounding=ROUND_HALF_UP),
+                precedence=100,
+                product_class="WELLNESS_SUB_30_5",
+            )
+        elif commission_class in STANDARD_COMMISSION_CLASS_RATES:
+            rate = STANDARD_COMMISSION_CLASS_RATES[commission_class]
+            return CommissionRule(
+                id=f"auto:{commission_class.lower()}",
+                rule_code=f"R-{commission_class}",
+                rate=rate.quantize(RATE_QUANTUM, rounding=ROUND_HALF_UP),
+                precedence=100,
+                product_class=commission_class,
+            )
+
+        raise DomainError("MISSING_COMMISSION_RULE")
 
     def process_revenue_event(self, event: dict[str, Any], decision: AttributionDecision, products: dict[str, dict[str, Any]]) -> dict[str, Any]:
         event_id = str(event["event_id"])
@@ -347,15 +403,49 @@ class AffiliateEngine:
         qualifying_total = money(0)
         commission_total = money(0)
         rule_ids: list[str] = []
+        updated_subs: list[tuple[str, int]] = []
         try:
             for line in event.get("line_items", []):
                 product_id = str(line["product_id"])
                 product = products.get(product_id)
                 if product is None:
-                    raise DomainError("UNKNOWN_PRODUCT")
-                if product.get("affiliate_eligibility") == "EXCLUDED":
+                    # Case D: Unknown/unmapped product fails closed (0 commission)
                     continue
-                rule = self.resolve_rule(affiliate, product, decision.method and event.get("campaign_id"))
+                if product.get("affiliate_eligibility") in {"EXCLUDED", "PAUSED", "ATTRIBUTABLE_ONLY", "ELIGIBLE_RATE_REQUIRED", "NEEDS_REVIEW"}:
+                    # Case A: Explicitly excluded/rate-required/attributable-only product -> 0 commission, normal processing continues
+                    continue
+
+                sub_id = line.get("subscription_id") or event.get("subscription_id")
+                payment_number = 1
+                if sub_id:
+                    if sub_id not in self.subscriptions:
+                        self.subscriptions[sub_id] = {
+                            "subscription_id": sub_id,
+                            "affiliate_id": affiliate.id,
+                            "qualifying_payment_count": 0,
+                            "status": "ACTIVE",
+                        }
+                    sub = self.subscriptions[sub_id]
+                    if line.get("subscription_status") == "CANCELED" or sub.get("status") == "CANCELED":
+                        # Canceled subscription produces NO commission ($0)
+                        continue
+                    if line.get("subscription_status") == "REACTIVATED":
+                        sub["status"] = "ACTIVE"
+
+                    if line.get("payment_number") is not None:
+                        payment_number = int(line["payment_number"])
+                    else:
+                        payment_number = sub["qualifying_payment_count"] + 1
+                else:
+                    if line.get("payment_number") is not None:
+                        payment_number = int(line["payment_number"])
+
+                rule = self.resolve_rule(
+                    affiliate,
+                    product,
+                    decision.method and event.get("campaign_id"),
+                    payment_number=payment_number,
+                )
                 gross = money(line.get("merchandise_total", 0))
                 discount = money(line.get("discount", 0))
                 refunded = money(line.get("refunded", 0))
@@ -364,6 +454,8 @@ class AffiliateEngine:
                 qualifying_total += qualifying
                 commission_total += amount
                 rule_ids.append(rule.id)
+                if sub_id and amount > 0:
+                    updated_subs.append((sub_id, payment_number))
         except DomainError as exc:
             self._quarantine(exc.code, event_id, decision.correlation_id)
             result = {"status": "QUARANTINED", "reason": exc.code, "commission_id": None, "idempotent_replay": False}
@@ -373,14 +465,54 @@ class AffiliateEngine:
             result = {"status": "NO_COMMISSION", "commission_id": None, "idempotent_replay": False}
             self.processed_revenue_events[event_id] = result
             return result
+
+        # Advance subscription payment counters on successful commission creation
+        for sub_id, p_num in updated_subs:
+            self.subscriptions[sub_id]["qualifying_payment_count"] = max(
+                self.subscriptions[sub_id]["qualifying_payment_count"], p_num
+            )
+
         created_at = datetime.fromisoformat(event["occurred_at"].replace("Z", "+00:00"))
-        commission = Commission(self._id(), affiliate.id, order_id, event["currency"].upper(), money(qualifying_total), money(commission_total), money(commission_total), "PENDING", created_at + timedelta(days=30), decision.correlation_id, rule_ids)
+        commission = Commission(
+            self._id(),
+            affiliate.id,
+            order_id,
+            event["currency"].upper(),
+            money(qualifying_total),
+            money(commission_total),
+            money(commission_total),
+            "PENDING",
+            created_at + timedelta(days=30),
+            decision.correlation_id,
+            rule_ids,
+        )
         self.commissions[commission.id] = commission
         self.order_commission[(affiliate.id, order_id)] = commission.id
         self._ledger(commission, "COMMISSION_CREATED", commission.amount, "ELIGIBLE_ORDER", event_id)
         result = {"status": "COMMISSION_CREATED", "commission_id": commission.id, "amount": str(commission.amount), "idempotent_replay": False}
         self.processed_revenue_events[event_id] = result
         return result
+
+    def get_subscription(self, subscription_id: str) -> dict[str, Any] | None:
+        return self.subscriptions.get(subscription_id)
+
+    def cancel_subscription(self, subscription_id: str) -> dict[str, Any]:
+        if subscription_id not in self.subscriptions:
+            self.subscriptions[subscription_id] = {
+                "subscription_id": subscription_id,
+                "affiliate_id": None,
+                "qualifying_payment_count": 0,
+                "status": "CANCELED",
+            }
+        else:
+            self.subscriptions[subscription_id]["status"] = "CANCELED"
+        return self.subscriptions[subscription_id]
+
+    def reactivate_subscription(self, subscription_id: str) -> dict[str, Any]:
+        if subscription_id not in self.subscriptions:
+            raise DomainError("SUBSCRIPTION_NOT_FOUND")
+        self.subscriptions[subscription_id]["status"] = "ACTIVE"
+        return self.subscriptions[subscription_id]
 
     def _ledger(self, commission: Commission, event_type: str, delta: Decimal, reason: str, source_event_id: str) -> LedgerEvent:
         key = f"{source_event_id}:{event_type}:{commission.id}"
