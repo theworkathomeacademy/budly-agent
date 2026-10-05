@@ -43,6 +43,7 @@ final class Config {
             'conversation_contexts', 'commerce_events', 'order_links',
             'affiliate_attribution', 'revenue_daily', 'conversation_state',
             'conversation_pattern_history', 'relationship_health', 'member_journey',
+            'affiliate_invitations', 'affiliate_applications',
         );
         if (!in_array($logical_name, $allowed, true)) {
             throw new \InvalidArgumentException('Unknown secure-memory table.');

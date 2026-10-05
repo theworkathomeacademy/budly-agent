@@ -1,6 +1,6 @@
 {
   "schema_version": "budly-affiliate-public-knowledge-v1",
-  "version": "G9D-2026-10-03",
+  "version": "G9E-2026-10-04",
   "approval_status": "owner_approved",
   "program_state": "PRIVATE_PILOT",
   "public_applications_open": false,
@@ -11,40 +11,50 @@
       "title": "Affiliate program private pilot and application status",
       "classification": "Public",
       "status": "Active",
-      "summary": "Wake'n'Bake Lounge is proving a five-person private Affiliate pilot. Public applications are closed. A valid private invitation may allow a person to apply, but application and invitation do not equal approval.",
-      "keywords": ["affiliate", "program", "apply", "application", "open", "private", "pilot", "approval", "invitation"]
+      "canonical_url": "https://cccultivate.com/affiliate/",
+      "link_label": "Learn about our Affiliate Program",
+      "summary": "Wake'n'Bake Lounge and Compassionate Care Cultivators are currently running a bounded, five-person private Affiliate pilot. Public applications are closed. Private pilot invitations are issued directly to invited candidates. An invitation allows a person to apply, but application and invitation do not equal approval. Review and human owner authorization are required.",
+      "keywords": ["affiliate", "program", "apply", "application", "applications", "open", "private", "pilot", "approval", "invitation", "closed", "status"]
     },
     {
       "fact_id": "affiliate:public:eligibility",
       "title": "Affiliate eligibility and approval requirements",
       "classification": "Public",
       "status": "Active",
-      "summary": "Private-pilot candidates are reviewed individually. No minimum follower count creates an entitlement. Identity, channels, fit, compliance commitments, and owner review are required before approval.",
-      "keywords": ["affiliate", "who", "eligible", "eligibility", "followers", "audience", "approval", "requirements"]
+      "canonical_url": "https://cccultivate.com/affiliate/",
+      "link_label": "Learn about our Affiliate Program",
+      "summary": "Affiliate candidates are reviewed individually. There is no follower minimum or audience threshold required to be considered; authentic community trust and alignment matter most. Identity verification, active promotional channels, ethical fit, compliance commitments (FTC disclosures and no medical claims), and owner review are required before approval.",
+      "keywords": ["affiliate", "who", "eligible", "eligibility", "followers", "follower", "minimum", "audience", "approval", "requirements", "criteria"]
     },
     {
       "fact_id": "affiliate:public:products-rates",
-      "title": "Affiliate eligible offers and commission categories",
+      "title": "Affiliate eligible offers and governed commission categories",
       "classification": "Public",
       "status": "Active",
-      "summary": "Only current CCSS-approved Affiliate-eligible offers may be promoted. Governed commission classes include Wellness Physical 30%, Botanical Collection 25%, Infused Basics 25%, Legends Membership 10%, full courses 15%, consultations 30%, and Wellness subscriptions at 30% for qualifying payments 1-3 then 5% for qualifying payments 4 and later. Excluded, paused, rate-required, attributable-only, and unknown offers earn no commission unless separately governed.",
-      "keywords": ["affiliate", "products", "offers", "promote", "earn", "commission", "rates", "categories", "eligible", "exclusions"]
+      "canonical_url": "https://cccultivate.com/affiliate/",
+      "link_label": "Learn about our Affiliate Program",
+      "summary": "Affiliates can promote approved CCSS catalog offers. Governed commission classes are: Wellness Physical products (Therapeutic Body Butter, Tinctures) 30%, Cannabis Botanical Collection Vol. 1 25%, Infused Basics 25%, 1-on-1 Consultations (Is Cannabis Right For Me?) 30%, full educational courses 15%, Legends NFT Memberships 10%, and Wellness subscriptions at 30% for qualifying payments 1-3 then 5% for payments 4+. Excluded, paused, rate-required, and unreleased community products (such as Lounge Pass or Lounge Member drafts) earn no commission.",
+      "keywords": ["affiliate", "products", "offers", "promote", "earn", "commission", "commissions", "rates", "rate", "categories", "eligible", "exclusions", "percentage", "how much"]
     },
     {
       "fact_id": "affiliate:public:subscription-payout",
-      "title": "Affiliate subscription, reward, hold, and payout basics",
+      "title": "Affiliate subscription recurring rules, holds, and payout basics",
       "classification": "Public",
       "status": "Active",
-      "summary": "Recurring commission applies only to governed qualifying subscription payment sequences. Cancellation produces no new commission. Commissions may be held for maturity, refund, dispute, risk, tax, payout-profile, or compliance review. No bonus or reward exists unless explicitly approved in governed program terms. Payout preparation requires payable commissions, the governed threshold, verified requirements, and human owner or financial authorization; Budly cannot authorize or move money.",
-      "keywords": ["affiliate", "recurring", "subscription", "commission", "bonus", "bonuses", "reward", "rewards", "hold", "maturity", "payout", "paid", "threshold"]
+      "canonical_url": "https://cccultivate.com/affiliate/",
+      "link_label": "Learn about our Affiliate Program",
+      "summary": "Recurring commissions apply only to governed qualifying subscription payment sequences (payments 1-3 at 30%, payments 4+ at 5%). Subscription cancellation produces no new commission. Commissions are subject to holding and maturity periods for returns, refunds, chargebacks, tax verification, and compliance review. Payouts require payable commissions, meeting the minimum payout threshold ($50.00), verified tax and payout profiles, and human owner authorization. No bonuses exist unless explicitly governed. Budly cannot process payments or authorize payouts.",
+      "keywords": ["affiliate", "recurring", "subscription", "subscriptions", "commission", "commissions", "bonus", "bonuses", "reward", "rewards", "hold", "maturity", "payout", "payouts", "paid", "threshold", "work", "how do payouts work"]
     },
     {
       "fact_id": "affiliate:public:budly-boundaries",
-      "title": "Budly Affiliate help and prohibitions",
+      "title": "Budly Affiliate capabilities and strict boundaries",
       "classification": "Public",
       "status": "Active",
-      "summary": "Budly may explain governed program facts, eligible offers, disclosure guidance, links, QR references, product education, preferences, and compliant campaign ideas. Budly may not approve or suspend an Affiliate, change rates, invent eligibility, rewrite attribution, erase financial history, authorize payouts, or expose another Affiliate's private information.",
-      "keywords": ["affiliate", "budly", "help", "support", "capabilities", "prohibitions", "cannot", "links", "qr", "campaign", "disclosure"]
+      "canonical_url": "https://cccultivate.com/affiliate/",
+      "link_label": "Learn about our Affiliate Program",
+      "summary": "Budly can help Affiliates with compliant campaign ideas, educational product explanations, FTC disclosure phrasing, referral link guidance, and QR code references. Budly cannot approve or suspend an Affiliate, modify commission rates, invent bonuses, alter attribution, erase financial history, authorize payouts, or reveal private information about other Affiliates or customers.",
+      "keywords": ["affiliate", "budly", "help", "support", "capabilities", "boundaries", "prohibitions", "cannot", "links", "qr", "campaign", "disclosure", "what can you help"]
     }
   ]
 }

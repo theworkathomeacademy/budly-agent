@@ -1,0 +1,69 @@
+{
+  "schema_version": "g9e4-pilot-cohort-v1",
+  "cohort_name": "G9 Five-Person Authoritative Pilot Cohort",
+  "status": "CANDIDATES_PRE_OUTREACH",
+  "real_affiliates_count": 0,
+  "real_outreach_count": 0,
+  "candidates": [
+    {
+      "slot": 1,
+      "name": "Tammy Pettigrew",
+      "handle": "@thecannabiscutie",
+      "email": "tammy@thecannabiscutie.com",
+      "contact_source": "Official The Cannabis Cutie website public organization contact data",
+      "contact_verification": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "contact_state": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "invite_state": "NOT_AUTHORIZED_FOR_SEND",
+      "app_state": "NONE",
+      "status": "CANDIDATE"
+    },
+    {
+      "slot": 2,
+      "name": "Sanzida Haider",
+      "handle": "@sanzidaah",
+      "email": "sanzidaahcollab@gmail.com",
+      "contact_source": "Authenticated Instagram profile public collaboration email",
+      "contact_verification": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "contact_state": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "invite_state": "NOT_AUTHORIZED_FOR_SEND",
+      "app_state": "NONE",
+      "status": "CANDIDATE"
+    },
+    {
+      "slot": 3,
+      "name": "Celeste",
+      "handle": "@celestefitt",
+      "email": "Celestrefitt@tsptalent.co",
+      "contact_source": "Authenticated @celestefitt Instagram profile public business email",
+      "contact_verification": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "contact_state": "VERIFIED_PUBLIC_BUSINESS_CONTACT",
+      "invite_state": "NOT_AUTHORIZED_FOR_SEND",
+      "app_state": "NONE",
+      "status": "CANDIDATE"
+    },
+    {
+      "slot": 4,
+      "name": "Saleema Mansur",
+      "handle": "@saleemarrm1",
+      "email": "UNRESOLVED",
+      "contact_source": "Authenticated Instagram profile and linked official public surfaces",
+      "contact_verification": "UNRESOLVED_NO_GUESSED_ADDRESS",
+      "contact_state": "UNRESOLVED_NO_GUESSED_ADDRESS",
+      "invite_state": "NOT_AUTHORIZED_FOR_SEND",
+      "app_state": "NONE",
+      "status": "CANDIDATE"
+    },
+    {
+      "slot": 5,
+      "name": "Avi Rossum",
+      "handle": "@avi.babyyyy",
+      "email": "UNRESOLVED",
+      "contact_source": "Authenticated Instagram profile public surfaces",
+      "contact_verification": "UNRESOLVED_NO_GUESSED_ADDRESS",
+      "contact_state": "UNRESOLVED_NO_GUESSED_ADDRESS",
+      "invite_state": "NOT_AUTHORIZED_FOR_SEND",
+      "app_state": "NONE",
+      "status": "CANDIDATE"
+    }
+  ]
+}

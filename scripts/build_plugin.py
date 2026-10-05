@@ -12,7 +12,7 @@ from zipfile import ZIP_STORED, ZipFile, ZipInfo
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "deploy" / "wordpress" / "budly-sales-agent"
 ARCHIVE_ROOT = "budly-sales-agent"
-APPLICATION_VERSION = "1.8.8"
+APPLICATION_VERSION = "1.8.10-rc-g9e4"
 SCHEMA_VERSION = "1.5.0"
 RULES_VERSION = "bros-rules-1.5.0.0"
 COMMERCE_CONFIG_VERSION = "commerce-correlation-1.8.2.0"
@@ -57,7 +57,7 @@ def release_bytes(path: Path) -> bytes:
 def build(
     output: Path,
     source_commit: str,
-    release: str = APPLICATION_VERSION,
+    release: str = "budly-v1.8.10-rc-g9e4",
     plugin: Path = PLUGIN,
 ) -> str:
     files = selected_files(plugin)
@@ -103,7 +103,7 @@ def main() -> None:
         default=ROOT / "deploy" / "wordpress" / "budly-sales-agent.zip",
     )
     parser.add_argument("--source-commit", required=True)
-    parser.add_argument("--release", default=APPLICATION_VERSION)
+    parser.add_argument("--release", default="budly-v1.8.10-rc-g9e4")
     args = parser.parse_args()
     print(build(args.output.resolve(), args.source_commit, args.release))
 

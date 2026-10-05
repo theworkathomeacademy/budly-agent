@@ -208,6 +208,28 @@ final class Migrator {
             achieved_at datetime NOT NULL, PRIMARY KEY (id), UNIQUE KEY journey_uuid (journey_uuid),
             KEY customer_milestone (customer_id,milestone_name), KEY stage_time (lifecycle_stage,achieved_at)
         ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('affiliate_invitations') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, invitation_id varchar(40) NOT NULL,
+            token_hash char(64) NOT NULL, recipient_email varchar(190) NOT NULL DEFAULT '',
+            intended_class varchar(32) NOT NULL DEFAULT 'STANDARD', status varchar(20) NOT NULL DEFAULT 'ACTIVE',
+            used_application_id varchar(40) NULL, used_at datetime NULL,
+            expires_at datetime NOT NULL, created_at datetime NOT NULL,
+            PRIMARY KEY (id), UNIQUE KEY invitation_id (invitation_id), UNIQUE KEY token_hash (token_hash),
+            KEY status (status), KEY expires_at (expires_at)
+        ) $charset;";
+        $tables[] = "CREATE TABLE " . Config::table('affiliate_applications') . " (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT, application_key varchar(40) NOT NULL,
+            applicant_email varchar(190) NOT NULL, applicant_name varchar(120) NOT NULL,
+            display_name varchar(120) NOT NULL DEFAULT '', phone varchar(40) NOT NULL DEFAULT '',
+            jurisdiction varchar(120) NOT NULL DEFAULT '', desired_affiliate_class varchar(32) NOT NULL DEFAULT 'STANDARD',
+            audience_category varchar(64) NOT NULL DEFAULT '', estimated_audience_size varchar(64) NOT NULL DEFAULT '',
+            social_channels longtext NOT NULL, promotion_methods longtext NOT NULL,
+            application_answers longtext NOT NULL, status varchar(30) NOT NULL DEFAULT 'SUBMITTED',
+            invitation_reference varchar(40) NOT NULL, idempotency_key varchar(128) NOT NULL,
+            submitted_at datetime NOT NULL, created_at datetime NOT NULL, updated_at datetime NOT NULL,
+            PRIMARY KEY (id), UNIQUE KEY application_key (application_key), UNIQUE KEY idempotency_key (idempotency_key),
+            KEY applicant_email (applicant_email), KEY status (status), KEY submitted_at (submitted_at)
+        ) $charset;";
 
         $installed_version = (string) get_option('budly_secure_memory_schema_version', '0.0.0');
         if (version_compare($installed_version, Config::SCHEMA_VERSION, '<')) {

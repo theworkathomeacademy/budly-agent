@@ -105,6 +105,8 @@ class ApprovedRepositoryKnowledgeAdapter:
                 terms.update({"book", "books", "guide", "guides", "botanical", "collection", "basics"})
             elif t in {"policies", "policy", "returns", "return", "refunds", "refund"}:
                 terms.update({"policy", "policies", "return", "returns", "refund", "refunds"})
+            elif t in {"affiliate", "affiliates", "referral", "commission", "commissions", "payout", "payouts", "promote", "promotions", "applications", "application"}:
+                terms.update({"affiliate", "affiliates", "program", "pilot", "commission", "commissions", "rate", "rates", "earn", "promote", "payout", "payouts", "apply", "application", "followers"})
 
         matches: list[dict[str, Any]] = []
         for item in self._items:
@@ -143,6 +145,14 @@ class ApprovedRepositoryKnowledgeAdapter:
             if any(w in q_lower for w in ["class", "classes", "course", "courses", "growing", "cooking", "culinary", "formal"]):
                 if "course" in it["knowledge_id"].lower() or "class" in title_lower or "culinary" in title_lower or "grow" in title_lower:
                     score += 40
+                    
+            if any(w in q_lower for w in ["affiliate", "commission", "referral", "promote", "payout", "earn", "application", "pilot"]):
+                if "affiliate" in it.get("domain", ""):
+                    score += 50
+                if "affiliate" in title_lower:
+                    score += 30
+                if "canonical_url" in content_lower:
+                    score += 20
                     
             if is_destination and "canonical_url" in content_lower:
                 score += 25

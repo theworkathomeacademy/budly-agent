@@ -10,7 +10,8 @@ from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE_ROOT = "budly-runtime"
-RUNTIME_VERSION = "1.8.0"
+RUNTIME_VERSION = "1.8.10-rc-g9e4"
+RELEASE_CANDIDATE = "budly-runtime-v1.8.10-rc-g9e4"
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)
 FILES = (
     "src/budly_runtime/__init__.py",
@@ -26,6 +27,8 @@ FILES = (
     "src/budly_runtime/relationship_registry.py",
     "src/budly_runtime/session.py",
     "src/budly_runtime/tool_gateway.py",
+    "config/budly_runtime/affiliate-public-knowledge-g9d-v1.json",
+    "config/budly_runtime/commercial-knowledge-v1.0.json",
     "config/budly_runtime/education-corpus-v0.1.json",
     "config/budly_runtime/personality-package-v0.1.json",
     "config/budly_runtime/runtime.production.example.json",
@@ -56,6 +59,7 @@ def build(output: Path, source_commit: str) -> str:
         entries.append({"path": relative, "sha256": hashlib.sha256(data).hexdigest().upper(), "size": len(data)})
     manifest = {
         "runtime_version": RUNTIME_VERSION,
+        "release": RELEASE_CANDIDATE,
         "source_commit": source_commit,
         "archive_root": ARCHIVE_ROOT,
         "durable_memory_enabled": False,

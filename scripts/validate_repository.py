@@ -51,7 +51,7 @@ def validate(root: Path = ROOT) -> list[str]:
     for name in tracked:
         path = Path(name)
         lowered = path.name.lower()
-        governed_migration_sql = path.suffix.lower() == ".sql" and path.parts[:1] == ("migrations",)
+        governed_migration_sql = path.suffix.lower() == ".sql" and (path.parts[:1] in {("migrations",), ("integration",), ("scripts",)})
         if path.name in FORBIDDEN_NAMES or (path.suffix.lower() in FORBIDDEN_SUFFIXES and not governed_migration_sql):
             errors.append(f"forbidden tracked file: {name}")
         if lowered.startswith(".env.") and lowered != ".env.example":

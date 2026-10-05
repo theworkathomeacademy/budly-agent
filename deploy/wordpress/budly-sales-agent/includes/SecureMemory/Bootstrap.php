@@ -29,6 +29,7 @@ final class Bootstrap {
             '../Commerce/RevenueService.php','../Commerce/WooCommerceAdapter.php',
             '../Conversation/ConversationManager.php','../Lifecycle/LifecycleEngine.php',
             '../Affiliate/FeatureFlags.php','../Affiliate/AdminPage.php','../Affiliate/PortalShortcode.php',
+            '../Affiliate/InvitationService.php','../Affiliate/ApplicationService.php','../Affiliate/ApplicationShortcode.php',
             'Api/Routes.php',
         ) as $relative) { require_once $base . $relative; }
     }
@@ -46,6 +47,7 @@ final class Bootstrap {
         \Budly\Commerce\WooCommerceAdapter::register();
         \Budly\Affiliate\AdminPage::register();
         \Budly\Affiliate\PortalShortcode::register();
+        \Budly\Affiliate\ApplicationShortcode::register();
         if (!wp_next_scheduled('budly_secure_memory_cleanup')) { wp_schedule_event(time()+300, 'daily', 'budly_secure_memory_cleanup'); }
     }
 

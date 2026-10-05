@@ -62,7 +62,7 @@ class WebKnowledgeTests(unittest.TestCase):
         cases = [
             ("return policy", "customer_policy", "cccultivate.com/customer-policies/"),
             ("membership benefits", "membership", "cccultivate.com/legends/"),
-            ("affiliate application", "affiliate_program", "wakenbakelounge/affiliates"),
+            ("affiliate application", "affiliate_program", "cccultivate.com/affiliate/"),
             ("learn about CBD", "educational", "cultivation-resources"),
         ]
         for query, domain, expected in cases:

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Budly Sales Agent
  * Description: Zero-cost guided sales assistant for Wake'n'Bake Lounge and CCCultivate.
- * Version: 1.8.8
+ * Version: 1.8.10-rc-g9e4
  * Author: Compassionate Care Cultivators
  * Requires at least: 6.2
  * Requires PHP: 7.4
@@ -11,7 +11,8 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-define('BUDLY_SALES_VERSION', '1.8.8');
+define('BUDLY_SALES_VERSION', '1.8.10-rc-g9e4');
+define('BUDLY_RELEASE_CANDIDATE', 'budly-v1.8.10-rc-g9e4');
 define('BUDLY_SALES_DIR', plugin_dir_path(__FILE__));
 define('BUDLY_SALES_URL', plugin_dir_url(__FILE__));
 require_once BUDLY_SALES_DIR . 'includes/tracking.php';
@@ -19,22 +20,29 @@ require_once BUDLY_SALES_DIR . 'includes/SecureMemory/Bootstrap.php';
 \Budly\SecureMemory\Bootstrap::register();
 require_once BUDLY_SALES_DIR . 'includes/Runtime/ConversationProxy.php';
 \Budly\Runtime\ConversationProxy::register();
+require_once BUDLY_SALES_DIR . 'includes/Affiliate/Bootstrap.php';
+\Budly\Affiliate\Bootstrap::register();
 
 function budly_sales_activate() {
     \Budly\SecureMemory\Bootstrap::activate();
     budly_sales_install_tracking_tables();
     $pages = array(
-        'chat' => array('Ask Budly', '[budly_sales_agent]'),
-        'policies' => array('Customer Policies', '[budly_sales_policies]'),
+        'chat' => array('Ask Budly', '[budly_sales_agent]', 'ask-budly'),
+        'policies' => array('Customer Policies', '[budly_sales_policies]', 'customer-policies'),
+        'affiliate_public' => array('Affiliate Program', '[budly_affiliate_public]', 'affiliate'),
+        'affiliate_registration' => array('Affiliate Registration', '[budly_affiliate_application]', 'affiliate-registration'),
+        'affiliate_account' => array('Affiliate Account', '[budly_affiliate_portal]', 'affiliate-account'),
     );
     foreach ($pages as $key => $page) {
-        $existing = get_page_by_path(sanitize_title($page[0]));
+        $slug = $page[2] ?? sanitize_title($page[0]);
+        $existing = get_page_by_path($slug);
         if ($existing) {
             update_option('budly_sales_' . $key . '_page_id', $existing->ID);
             continue;
         }
         $page_id = wp_insert_post(array(
             'post_title' => $page[0],
+            'post_name' => $slug,
             'post_content' => $page[1],
             'post_status' => 'publish',
             'post_type' => 'page',
@@ -72,6 +80,37 @@ function budly_sales_repair_chat_page() {
     update_option('budly_sales_repaired_version', BUDLY_SALES_VERSION, false);
 }
 add_action('admin_init', 'budly_sales_repair_chat_page');
+
+function budly_sales_repair_affiliate_pages() {
+    $aff_pages = array(
+        'affiliate_public' => array('Affiliate Program', '[budly_affiliate_public]', 'affiliate'),
+        'affiliate_registration' => array('Affiliate Registration', '[budly_affiliate_application]', 'affiliate-registration'),
+        'affiliate_account' => array('Affiliate Account', '[budly_affiliate_portal]', 'affiliate-account'),
+    );
+    foreach ($aff_pages as $key => $spec) {
+        $page_id = (int) get_option('budly_sales_' . $key . '_page_id');
+        $page = $page_id ? get_post($page_id) : get_page_by_path($spec[2]);
+        if (!($page instanceof WP_Post)) {
+            $new_id = wp_insert_post(array(
+                'post_title' => $spec[0],
+                'post_name' => $spec[2],
+                'post_content' => $spec[1],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+            ));
+            if (!is_wp_error($new_id)) {
+                update_option('budly_sales_' . $key . '_page_id', $new_id);
+            }
+        } else {
+            update_option('budly_sales_' . $key . '_page_id', $page->ID);
+            $content = trim((string) $page->post_content);
+            if ($content === '' || strpos($content, $spec[1]) === false) {
+                wp_update_post(array('ID' => $page->ID, 'post_content' => $spec[1]));
+            }
+        }
+    }
+}
+add_action('admin_init', 'budly_sales_repair_affiliate_pages');
 
 function budly_sales_dedicated_page_template($template) {
     if (is_admin()) {

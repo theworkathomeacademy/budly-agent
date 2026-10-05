@@ -25,7 +25,24 @@ CONVERSATION_ID = re.compile(r"^conv_[A-Za-z0-9_-]{6,55}$")
 ALLOWED_ACTIONS = {"continue_conversation", "legacy_guided_flow", "human_handoff", "safe_no_match"}
 KNOWLEDGE_DOMAINS = {
     "customer_policy": re.compile(r"\b(return\s*polic(?:y|ies)|refund\s*polic(?:y|ies)|shipping\s*polic(?:y|ies)|cancellation\s*polic(?:y|ies)|subscription\s*terms|privacy\s*polic(?:y|ies)|terms\s*of\s*service|customer\s*polic(?:y|ies)|returns?|refunds?|shipping\s*rates?)\b", re.I),
-    "affiliate_program": re.compile(r"\b(affiliates?|affiliate\s*program|referral\s*program|commission\s*rates?|become\s+(?:an\s+)?affiliate)\b", re.I),
+    "affiliate_program": re.compile(
+        r"\b("
+        r"affiliates?|"
+        r"affiliate\s*program|"
+        r"referral\s*program|"
+        r"commission\s*rates?|"
+        r"become\s+(?:an\s+)?affiliate|"
+        r"(?:are\s+)?applications?\s+(?:currently\s+)?open|"
+        r"(?:how\s+much\s+(?:can|do)\s+affiliates?\s+earn)|"
+        r"(?:what\s+products?\s+can\s+i\s+promote)|"
+        r"(?:promote\s+as\s+an\s+affiliate)|"
+        r"(?:number\s+of\s+followers|follower\s+minimum|minimum\s+followers?)|"
+        r"(?:recurring\s+commissions?)|"
+        r"(?:how\s+do\s+payouts?\s+work)|"
+        r"(?:what\s+can\s+you\s+help\s+affiliates?\s+with)"
+        r")\b",
+        re.I
+    ),
     "membership": re.compile(r"\b(memberships?|nft\s*memberships?|member\s*tier|member\s*tiers|legends\s*memberships?|join\s+(?:the\s+)?(?:membership|legends|club)|free\s*membership|silver\s*legend|gold\s*legend|legend\s*og|all\s*3|torque|bronze|copper|titanium|platinum|lounge\s*(?:pass|member|elite))\b", re.I),
     "support": re.compile(r"\b(customer\s*support|contact\s*(?:us|support)|order\s*(?:status|help|issue|tracking|lookup)|where\s+is\s+my\s+order|my\s*account|billing\s*help|support\s*team)\b", re.I),
     "product_catalog": re.compile(r"\b(product|products|available|carry|cream|creams|butter|butters|topical|topicals|oil|oils|tincture|tinctures|book|books|course|courses|class|classes|formal|structured|coloring|buy|sell|price|cost|format|edition|catalog|shop|balm|balms|wholesale|white\s*label|payment\s*plans?|financing|installments?|infused\s*basics|cannabis\s*right\s*for\s*me|consultation|service)\b", re.I),
@@ -270,6 +287,8 @@ class ProductionConversationRuntime:
                 "Deterministic authority wins",
                 "Commercial source precedence: 1. Current public Commercial Catalog Snapshot; 2. Approved public enrichment in that snapshot; 3. Approved non-commercial education knowledge",
                 "Use only supplied approved knowledge for business and commercial facts",
+                "Affiliate program truth: Wake'n'Bake Lounge is proving a private five-person Affiliate pilot. Public applications are currently closed. Private pilot invitations are issued directly to invited candidates. An invitation does not equal approval; approval is required after review. There is no follower minimum. Governed commission classes are: Wellness Physical (30%), Botanical Collection (25%), Infused Basics (25%), Legends Membership (10%), full courses (15%), consultations (30%), and Wellness subscriptions (30% for qualifying payments 1-3, then 5% for qualifying payments 4+). Recurring commission applies only to governed qualifying subscription payment sequences. Cancellation produces no new commission. Payout preparation requires payable commissions, meeting the governed threshold ($50.00), verified profiles, and human owner authorization; Budly cannot authorize or move money. For more details, direct interested people to https://cccultivate.com/affiliate/.",
+                "Affiliate boundary rules: Use governed affiliate facts only. Do NOT guess. Do NOT invent rates, bonuses, or entitlements. Do NOT expose private application tokens. When asked about the affiliate program, eligibility, applications, rates, or products to promote, provide the factual governed summary clearly and warmly, and mention that details are available at https://cccultivate.com/affiliate/.",
                 "Internal offers first: recommend approved internal courses (Grow Cannabis @ Home, Culinary Cannabis, Cook & Grow With Me) and books (Infused Basics, Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1) before suggesting external alternatives",
                 "Wake'n'Bake Lounge is an online digital educational and lifestyle platform (https://dmckenzies.wixsite.com/wakenbakelounge); clarify clearly that there is NO physical brick-and-mortar storefront or street address",
                 "Truthful features: NO free membership tier, NO free trial (memberships are paid NFT passes; free educational articles/recipes are available on the site), NO public discussion forum, and NO automated public email newsletter subscription tool",
@@ -300,6 +319,8 @@ class ProductionConversationRuntime:
             system_rules = [
                 "Deterministic authority wins",
                 "Use only supplied approved knowledge for business facts",
+                "Affiliate program truth: Wake'n'Bake Lounge is proving a private five-person Affiliate pilot. Public applications are currently closed. Private pilot invitations are issued directly to invited candidates. An invitation does not equal approval; approval is required after review. There is no follower minimum. Governed commission classes are: Wellness Physical (30%), Botanical Collection (25%), Infused Basics (25%), Legends Membership (10%), full courses (15%), consultations (30%), and Wellness subscriptions (30% for qualifying payments 1-3, then 5% for qualifying payments 4+). Recurring commission applies only to governed qualifying subscription payment sequences. Cancellation produces no new commission. Payout preparation requires payable commissions, meeting the governed threshold ($50.00), verified profiles, and human owner authorization; Budly cannot authorize or move money. For more details, direct interested people to https://cccultivate.com/affiliate/.",
+                "Affiliate boundary rules: Use governed affiliate facts only. Do NOT guess. Do NOT invent rates, bonuses, or entitlements. Do NOT expose private application tokens. When asked about the affiliate program, eligibility, applications, rates, or products to promote, provide the factual governed summary clearly and warmly, and mention that details are available at https://cccultivate.com/affiliate/.",
                 "Internal offers first: recommend approved internal courses (Grow Cannabis @ Home, Culinary Cannabis, Cook & Grow With Me) and books before suggesting external alternatives",
                 "Wake'n'Bake Lounge is an online digital educational and lifestyle platform (https://dmckenzies.wixsite.com/wakenbakelounge); clarify clearly that there is NO physical brick-and-mortar storefront or street address",
                 "Truthful features: there is NO Bronze tier, NO free membership tier, and NO free trial (memberships are paid NFT passes; free educational articles/recipes are available on the site), NO public discussion forum, and NO automated public email newsletter subscription tool",
@@ -531,7 +552,15 @@ class ProductionConversationRuntime:
         is_lounge_query = any(w in msg_lower for w in ["wake'n'bake", "wakenbake", "lounge"])
 
         sorted_knowledge = list(knowledge)
-        if is_lounge_query:
+        is_affiliate_query = any(w in msg_lower for w in ["affiliate", "commission", "referral", "promote", "payout"])
+        if is_affiliate_query:
+            def _aff_link_priority(item: dict[str, Any]) -> int:
+                kid = item.get("knowledge_id", "").lower()
+                if "affiliate" in kid:
+                    return 0
+                return 1
+            sorted_knowledge.sort(key=_aff_link_priority)
+        elif is_lounge_query:
             def _link_priority(item: dict[str, Any]) -> int:
                 kid = item.get("knowledge_id", "").lower()
                 if "entity:wakenbake-lounge" in kid or "wnb:community:hub" in kid:
@@ -610,6 +639,8 @@ class ProductionConversationRuntime:
         has_course_context = any("class" in t or "course" in t or "cooking" in t or "grow" in t for t in recent_customer_turns)
 
         if domain != "product_catalog":
+            if domain == "affiliate_program":
+                return f"affiliate program pilot {message}"
             if "get to" in msg_lower or "where is" in msg_lower or "tell me how" in msg_lower or ("wake'n'bake" in msg_lower and "lounge" in msg_lower):
                 return f"wakenbake lounge entity online {message}"
             if "find" in msg_lower or "where" in msg_lower or "access" in msg_lower or "how do i" in msg_lower:
