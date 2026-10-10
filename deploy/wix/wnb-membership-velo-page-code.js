@@ -1,6 +1,6 @@
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
-import wixWindowFrontend from 'wix-window-frontend';
+import { window as siteWindow } from '@wix/site-window';
 
 // Configuration
 const CMS_COLLECTION_ID = 'wnb-membership-presentation';
@@ -12,7 +12,7 @@ let cachedMemberships = null;
 let cachedLayoutMode = 'desktop';
 
 $w.onReady(async function () {
-    cachedLayoutMode = resolveLayoutMode(wixWindowFrontend.formFactor);
+    cachedLayoutMode = await resolveLayoutMode();
 
     // 1. Set up postMessage listener for the HTML embed
     setupHtmlEmbedBridge();
@@ -80,18 +80,26 @@ function setupHtmlEmbedBridge() {
 }
 
 /**
- * Map Wix's supported frontend form-factor values to the deterministic
- * membership layout contract. Unknown values safely retain desktop behavior.
+ * Map the supported Wix browser-window width to the deterministic membership
+ * layout contract. Missing, invalid, or unavailable values safely use desktop.
  */
-function resolveLayoutMode(formFactor) {
-    switch (formFactor) {
-        case 'Tablet':
-            return 'tablet';
-        case 'Mobile':
-            return 'mobile';
-        case 'Desktop':
-        default:
+async function resolveLayoutMode() {
+    try {
+        const windowSizeInfo = await siteWindow.getBoundingRect();
+        const width = windowSizeInfo && windowSizeInfo.window
+            ? windowSizeInfo.window.width
+            : null;
+
+        if (typeof width !== 'number' || !Number.isFinite(width) || width <= 0) {
             return 'desktop';
+        }
+
+        if (width <= 480) return 'mobile';
+        if (width <= 900) return 'tablet';
+        return 'desktop';
+    } catch (error) {
+        console.warn('[WnB Membership] Unable to read browser window width; defaulting to desktop.', error);
+        return 'desktop';
     }
 }
 

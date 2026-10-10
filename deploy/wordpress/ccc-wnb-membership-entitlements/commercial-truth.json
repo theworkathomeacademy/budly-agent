@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "membership_family": "Wake'n'Bake Lounge community memberships",
-  "release_state": "APPROVED / UNRELEASED",
-  "publicly_available": false,
-  "public_response_rule": "Do not claim Member or Elite can be purchased until publication is explicitly authorized.",
+  "release_state": "AVAILABLE",
+  "publicly_available": true,
+  "public_response_rule": "All three tiers are currently available through the approved Wake'n'Bake / CCCultivate membership journey.",
   "authority": {
     "entitlement_and_discount": "CCC Wake'n'Bake Membership Entitlements",
     "budly_role": "Explain approved rules only; never grant entitlement or independently calculate eligibility."

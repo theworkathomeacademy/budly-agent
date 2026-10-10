@@ -77,7 +77,8 @@ verify( 100.0 === (float) $plain->get_price(), 'Coupon blocks membership discoun
 $request = new Request('/budly-runtime/v1/conversation','POST',array('message'=>"Can I buy the Wake'n'Bake Lounge Elite membership?"));
 $response = $hooks['rest_pre_dispatch'][0]( null, null, $request );
 verify( $response instanceof WP_REST_Response && 200 === $response->status, 'Budly receives governed membership answer' );
-verify( false !== strpos( $response->data['data']['response']['text'], 'APPROVED / UNRELEASED' ) && false !== strpos( $response->data['data']['response']['text'], 'cannot be purchased yet' ), 'Budly answer blocks public availability claim' );
+verify( false !== strpos( $response->data['data']['response']['text'], 'All three tiers are currently available through the approved Wake\'n\'Bake / CCCultivate membership journey.' ), 'Budly confirms all three tiers are available' );
+verify( false === strpos( $response->data['data']['response']['text'], 'APPROVED / UNRELEASED' ) && false === strpos( $response->data['data']['response']['text'], 'cannot be purchased yet' ), 'Budly no longer reports unreleased or cannot be purchased' );
 $legends = new Request('/budly-runtime/v1/conversation','POST',array('message'=>'Tell me about Torque and LEGENDS NFTs.'));
 verify( null === $hooks['rest_pre_dispatch'][0]( null, null, $legends ), 'LEGENDS-only request remains untouched' );
 $wnb_torque = new Request('/budly-runtime/v1/conversation','POST',array('message'=>"What are the Wake'n'Bake Torque NFT tiers?"));

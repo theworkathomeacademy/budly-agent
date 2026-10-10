@@ -55,11 +55,14 @@ assert.deepEqual(classList.snapshot(), ['wnb-mobile'], 'invalid mode must be ign
 vm.runInContext("applyLayoutMode('desktop')", context);
 assert.deepEqual(classList.snapshot(), ['wnb-desktop'], 'missing-message default must remain desktop');
 
-assert.match(velo, /import wixWindowFrontend from 'wix-window-frontend';/);
-assert.match(velo, /wixWindowFrontend\.formFactor/);
-assert.match(velo, /case 'Desktop':[\s\S]*return 'desktop';/);
-assert.match(velo, /case 'Tablet':[\s\S]*return 'tablet';/);
-assert.match(velo, /case 'Mobile':[\s\S]*return 'mobile';/);
+assert.match(velo, /import \{ window as siteWindow \} from '@wix\/site-window';/);
+assert.match(velo, /siteWindow\.getBoundingRect\(\)/);
+assert.match(velo, /width <= 480/);
+assert.match(velo, /width <= 900/);
+assert.match(velo, /defaulting to desktop/);
+assert.match(velo, /if \(width <= 480\) return 'mobile';/);
+assert.match(velo, /if \(width <= 900\) return 'tablet';/);
+assert.match(velo, /return 'desktop';/);
 assert.match(velo, /type: LAYOUT_MESSAGE_TYPE,[\s\S]*mode: mode/);
 
 const combined = `${html}\n${velo}`;

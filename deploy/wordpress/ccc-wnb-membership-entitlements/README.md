@@ -1,6 +1,14 @@
-# CCC Wake'n'Bake Membership Entitlements 0.3.1
+# CCC Wake'n'Bake Membership Entitlements 0.4.0
 
 Install the plugin ZIP in WordPress and activate it after Flexible Subscriptions and WooCommerce. It does not publish membership products, create subscriptions, charge customers, or modify CBD routing.
+
+## Member Account UX (Phase 3E)
+
+In the WooCommerce My Account area:
+- The dashboard displays a dedicated Lounge Membership card dynamically reflecting the customer's entitlement tier (None, Pass, Member, Elite), approved benefits, eligible store discounts, and direct CTAs ("Claim Free Lounge Pass" or "Enter the Lounge"), with native subscription management links for paid tiers and an "Ask Budly" entry point.
+- The account navigation menu includes a "Lounge Community" item linking to `/wakenbake-lounge-community/` while preserving all native WooCommerce account endpoints.
+- On the post-acquisition order received screen (`woocommerce_thankyou`), orders for membership products (1047, 1048, 1049) display a tailored welcome card with tier badge and an "Enter the Lounge" CTA. Unrelated store orders receive no Lounge welcome block.
+- All account UI is mobile-responsive with fluid layouts verified across 1440px, 820px, and 390px viewports.
 
 ## Authoritative integration
 
@@ -18,4 +26,4 @@ WordPress capabilities `ccc_wnb_pass_access` (with the compatible alias `ccc_wnb
 
 The cart receives 10% for Member or 25% for Elite. The hook applies only when the cart has no coupon and an item is at its unchanged regular price. It excludes the Membership and bulk product categories, Product IDs 1047–1049, and the verified class payment-plan IDs 455, 457, and 460. Full-payment course IDs 150, 151, and 152 remain eligible. It does not alter coupon definitions or CCC Payment Routing Guard behavior.
 
-The `commercial-truth.json` file is approved, unreleased offer data. For matching Lounge membership questions, the plugin answers the existing Budly conversation REST route from this deterministic file before the external signed runtime request. This avoids changing a request body after Budly signs it. Unrelated and LEGENDS-only questions continue through Budly unchanged. Budly explains the rules but does not determine entitlement or discounts, and the response explicitly blocks public availability claims while the paid products remain unpublished.
+The `commercial-truth.json` file is approved offer data. For matching Lounge membership questions, the plugin answers the existing Budly conversation REST route from this deterministic file before the external signed runtime request. This avoids changing a request body after Budly signs it. Unrelated and LEGENDS-only questions continue through Budly unchanged. Budly explains the rules but does not determine entitlement or discounts, and confirms all three tiers are available through the approved Wake'n'Bake / CCCultivate membership journey.

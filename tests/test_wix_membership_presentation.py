@@ -66,7 +66,10 @@ def test_velo_page_code_contract():
     # Must import required Wix modules
     assert "import wixData from 'wix-data';" in js
     assert "import wixLocation from 'wix-location';" in js
-    assert "import wixWindowFrontend from 'wix-window-frontend';" in js
+    assert (
+        "import wixWindowFrontend from 'wix-window-frontend';" in js
+        or "from '@wix/site-window';" in js
+    )
 
     # Collection ID
     assert "wnb-membership-presentation" in js
@@ -91,12 +94,11 @@ def test_velo_layout_mode_contract_uses_supported_form_factor():
     with open(VELO_JS_PATH, "r", encoding="utf-8") as f:
         js = f.read()
 
-    assert "wixWindowFrontend.formFactor" in js
+    assert (
+        "wixWindowFrontend.formFactor" in js
+        or "siteWindow.getBoundingRect" in js
+    )
     assert "WNB_LAYOUT_MODE" in js
-    assert "case 'Desktop':" in js
-    assert "case 'Tablet':" in js
-    assert "case 'Mobile':" in js
-    assert "default:" in js
     assert "return 'desktop';" in js
     assert js.index("sendLayoutModeToEmbed(cachedLayoutMode)") < js.index("sendDataToEmbed(cachedMemberships)")
 

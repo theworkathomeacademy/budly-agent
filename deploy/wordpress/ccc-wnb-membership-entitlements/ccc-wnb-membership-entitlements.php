@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CCC Wake'n'Bake Membership Entitlements
  * Description: Derives Lounge membership access from authoritative WooCommerce acquisition and Flexible Subscriptions state.
- * Version: 0.3.1
+ * Version: 0.4.0
  * Requires Plugins: woocommerce, flexible-subscriptions
  * License: GPL-2.0-or-later
  */
@@ -27,6 +27,11 @@ final class Membership_Entitlements {
         add_filter( 'rest_pre_dispatch', array( __CLASS__, 'answer_budly_membership_question' ), 20, 3 );
         add_shortcode( 'ccc_wnb_protected', array( __CLASS__, 'protected_content' ) );
         add_shortcode( 'ccc_wnb_community', array( __CLASS__, 'render_community_hub' ) );
+        add_action( 'woocommerce_account_dashboard', array( __CLASS__, 'render_account_dashboard_card' ), 10 );
+        add_filter( 'woocommerce_account_menu_items', array( __CLASS__, 'account_menu_items' ), 20, 1 );
+        add_filter( 'woocommerce_get_endpoint_url', array( __CLASS__, 'account_endpoint_url' ), 20, 4 );
+        add_action( 'woocommerce_thankyou', array( __CLASS__, 'render_order_received_welcome' ), 5, 1 );
+        add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_styles' ) );
     }
 
     public static function on_status_updated( $subscription, $new_status, $previous_status ): void {
@@ -304,11 +309,252 @@ final class Membership_Entitlements {
         if ( empty( $truth ) ) {
             return $result;
         }
-        $text = "Wake'n'Bake Lounge Pass is free and includes community access. Lounge Member is $9.99 per month with community and Member access, a Member badge, early drop access, priority event access, and 10% off eligible purchases. Lounge Elite is $24.99 per month with Member benefits plus VIP community access, a VIP badge, first drop access, priority event invitations, monthly curated Budly content, and 25% off eligible purchases. Member and Elite are APPROVED / UNRELEASED and cannot be purchased yet. Discounts exclude memberships, bulk products, payment-plan classes, sale items, and transactions using coupons. LEGENDS NFT memberships are a separate family and remain unchanged.";
+        $text = "Wake'n'Bake Lounge Pass is free and includes community access. Lounge Member is $9.99 per month with community and Member access, a Member badge, early drop access, priority event access, and 10% off eligible purchases. Lounge Elite is $24.99 per month with Member benefits plus VIP community access, a VIP badge, first drop access, priority event invitations, monthly curated Budly content, and 25% off eligible purchases. All three tiers are currently available through the approved Wake'n'Bake / CCCultivate membership journey. Discounts exclude memberships, bulk products, payment-plan classes, sale items, and transactions using coupons. LEGENDS NFT memberships are a separate family and remain unchanged.";
         return new \WP_REST_Response( array(
             'success' => true,
             'data' => array( 'response' => array( 'text' => $text, 'links' => array(), 'resulting_action' => 'continue' ) ),
         ), 200 );
+    }
+
+    public static function render_account_dashboard_card(): void {
+        $user_id = (int) get_current_user_id();
+        if ( $user_id > 0 ) {
+            echo self::get_account_card_html( $user_id );
+        }
+    }
+
+    public static function get_account_card_html( int $user_id ): string {
+        if ( $user_id <= 0 ) {
+            return '';
+        }
+        $state = self::state( $user_id );
+        $level = (string) ( $state['level'] ?? 'none' );
+        $community_url = self::get_community_url();
+        $budly_url = self::get_ask_budly_url();
+        $sub_url = self::get_subscriptions_url();
+        $pass_url = self::get_pass_product_url();
+
+        $out = '<div class="ccc-wnb-account-card ccc-wnb-tier-' . self::esc_attr( $level ) . '">';
+        $out .= '<div class="ccc-wnb-card-header">';
+
+        if ( 'none' === $level ) {
+            $out .= '<h3 class="ccc-wnb-card-title">Wake&#8217;n&#8217;Bake Lounge Membership</h3>';
+            $out .= '</div>';
+            $out .= '<div class="ccc-wnb-card-body">';
+            $out .= '<p class="ccc-wnb-status-notice">No active Lounge membership</p>';
+            $out .= '<p class="ccc-wnb-card-description">Join the Wake&#8217;n&#8217;Bake Lounge to unlock community discussions, events, exclusive drops, and store discounts.</p>';
+            $out .= '</div>';
+            $out .= '<div class="ccc-wnb-card-actions">';
+            $out .= '<a href="' . self::esc_url( $pass_url ) . '" class="ccc-wnb-btn ccc-wnb-btn-primary">Claim Free Lounge Pass</a>';
+            $out .= '<a href="' . self::esc_url( $budly_url ) . '" class="ccc-wnb-budly-link" target="_blank" rel="noopener">Ask Budly</a>';
+            $out .= '</div>';
+        } else {
+            $badge_key = self::esc_attr( (string) ( $state['badge_key'] ?? 'none' ) );
+            $badge_lbl = self::esc_html( (string) ( $state['badge_label'] ?? '' ) );
+            $out .= '<h3 class="ccc-wnb-card-title">' . $badge_lbl . '</h3>';
+            $out .= '<span class="ccc-wnb-badge ccc-wnb-badge-' . $badge_key . '">' . $badge_lbl . '</span>';
+            $out .= '</div>';
+
+            $out .= '<div class="ccc-wnb-card-body">';
+            $out .= '<div class="ccc-wnb-discount-info"><strong>Discount:</strong> ' . ( 'pass' === $level ? '0%' : ( 'member' === $level ? '10% eligible discount' : '25% eligible discount' ) ) . '</div>';
+
+            $out .= '<div class="ccc-wnb-benefits-section">';
+            $out .= '<h4>Your Benefits</h4>';
+            $out .= '<ul class="ccc-wnb-benefits-list">';
+            if ( 'pass' === $level ) {
+                $out .= '<li>Community access</li>';
+            } elseif ( 'member' === $level ) {
+                $out .= '<li>Community access</li>';
+                $out .= '<li>10% eligible discount</li>';
+                $out .= '<li>early drop access</li>';
+                $out .= '<li>member sections</li>';
+                $out .= '<li>priority event access</li>';
+            } elseif ( 'elite' === $level ) {
+                $out .= '<li>Community access</li>';
+                $out .= '<li>25% eligible discount</li>';
+                $out .= '<li>first-drop access</li>';
+                $out .= '<li>VIP community access</li>';
+                $out .= '<li>priority event invitations</li>';
+                $out .= '<li>monthly curated Budly content</li>';
+            }
+            $out .= '</ul>';
+            $out .= '</div>';
+            $out .= '</div>';
+
+            $out .= '<div class="ccc-wnb-card-actions">';
+            $out .= '<a href="' . self::esc_url( $community_url ) . '" class="ccc-wnb-btn ccc-wnb-btn-primary">Enter the Lounge &rarr;</a>';
+            if ( in_array( $level, array( 'member', 'elite' ), true ) ) {
+                $out .= '<a href="' . self::esc_url( $sub_url ) . '" class="ccc-wnb-btn ccc-wnb-btn-secondary ccc-wnb-sub-link">Manage Subscription</a>';
+            }
+            $out .= '<a href="' . self::esc_url( $budly_url ) . '" class="ccc-wnb-budly-link" target="_blank" rel="noopener">Ask Budly</a>';
+            $out .= '</div>';
+        }
+
+        $out .= '</div>';
+        return $out;
+    }
+
+    public static function account_menu_items( array $items ): array {
+        $new_items = array();
+        foreach ( $items as $key => $label ) {
+            $new_items[ $key ] = $label;
+            if ( 'dashboard' === $key ) {
+                $new_items['wakenbake-lounge-community'] = 'Lounge Community';
+            }
+        }
+        if ( ! isset( $new_items['wakenbake-lounge-community'] ) ) {
+            $new_items['wakenbake-lounge-community'] = 'Lounge Community';
+        }
+        return $new_items;
+    }
+
+    public static function account_endpoint_url( string $url, string $endpoint, string $value, string $permalink ): string {
+        if ( 'wakenbake-lounge-community' === $endpoint ) {
+            return self::get_community_url();
+        }
+        return $url;
+    }
+
+    public static function render_order_received_welcome( $order_id ): void {
+        echo self::get_order_received_welcome_html( $order_id );
+    }
+
+    public static function get_order_received_welcome_html( $order_id ): string {
+        $order = is_object( $order_id ) ? $order_id : ( function_exists( 'wc_get_order' ) ? wc_get_order( (int) $order_id ) : null );
+        if ( ! is_object( $order ) || ! method_exists( $order, 'get_items' ) ) {
+            return '';
+        }
+        $tier = null;
+        $badge_label = '';
+        $badge_key = '';
+        foreach ( $order->get_items( 'line_item' ) as $item ) {
+            $pid = method_exists( $item, 'get_product_id' ) ? (int) $item->get_product_id() : 0;
+            if ( 1049 === $pid ) {
+                $tier = 'elite';
+                $badge_label = "Wake'n'Bake Lounge Elite";
+                $badge_key = 'wnb_elite';
+                break;
+            } elseif ( 1048 === $pid && 'elite' !== $tier ) {
+                $tier = 'member';
+                $badge_label = "Wake'n'Bake Lounge Member";
+                $badge_key = 'wnb_member';
+            } elseif ( 1047 === $pid && null === $tier ) {
+                $tier = 'pass';
+                $badge_label = "Wake'n'Bake Lounge Pass";
+                $badge_key = 'wnb_pass';
+            }
+        }
+        if ( null === $tier ) {
+            return '';
+        }
+        return self::render_welcome_box( $tier, $badge_label, $badge_key );
+    }
+
+    private static function render_welcome_box( string $tier, string $badge_label, string $badge_key ): string {
+        $community_url = self::get_community_url();
+        $budly_url = self::get_ask_budly_url();
+        $badge_esc = self::esc_html( $badge_label );
+        $badge_key_esc = self::esc_attr( $badge_key );
+
+        $msg = '';
+        if ( 'elite' === $tier ) {
+            $msg = 'Your Wake&#8217;n&#8217;Bake Lounge Elite VIP subscription is active. Enjoy VIP community sections, 25% eligible store discounts, first access to drops, priority event invitations, and monthly curated Budly content.';
+        } elseif ( 'member' === $tier ) {
+            $msg = 'Your Wake&#8217;n&#8217;Bake Lounge Member subscription is active. Enjoy exclusive member sections, 10% eligible store discounts, early access to new drops, and priority event access.';
+        } else {
+            $msg = 'Your free Wake&#8217;n&#8217;Bake Lounge Community Pass is active. Enjoy community access, discussions, recipes, and educational announcements.';
+        }
+
+        $out = '<div class="ccc-wnb-welcome-card ccc-wnb-welcome-' . $badge_key_esc . '">';
+        $out .= '<div class="ccc-wnb-card-header">';
+        $out .= '<h3>Welcome to the Wake&#8217;n&#8217;Bake Lounge!</h3>';
+        $out .= '<span class="ccc-wnb-badge ccc-wnb-badge-' . $badge_key_esc . '">' . $badge_esc . '</span>';
+        $out .= '</div>';
+        $out .= '<p>' . $msg . '</p>';
+        $out .= '<div class="ccc-wnb-card-actions">';
+        $out .= '<a href="' . self::esc_url( $community_url ) . '" class="ccc-wnb-btn ccc-wnb-btn-primary">Enter the Lounge &rarr;</a>';
+        $out .= '<a href="' . self::esc_url( $budly_url ) . '" class="ccc-wnb-budly-link" target="_blank" rel="noopener">Ask Budly</a>';
+        $out .= '</div>';
+        $out .= '</div>';
+        return $out;
+    }
+
+    public static function get_community_url(): string {
+        return function_exists( 'home_url' ) ? home_url( '/wakenbake-lounge-community/' ) : 'https://cccultivate.com/wakenbake-lounge-community/';
+    }
+
+    public static function get_pass_product_url(): string {
+        return function_exists( 'home_url' ) ? home_url( '/product/lounge-pass/' ) : 'https://cccultivate.com/product/lounge-pass/';
+    }
+
+    public static function get_subscriptions_url(): string {
+        if ( function_exists( 'wc_get_endpoint_url' ) && function_exists( 'wc_get_page_permalink' ) ) {
+            return wc_get_endpoint_url( 'subscriptions', '', wc_get_page_permalink( 'myaccount' ) );
+        }
+        return function_exists( 'home_url' ) ? home_url( '/my-account/subscriptions/' ) : 'https://cccultivate.com/my-account/subscriptions/';
+    }
+
+    public static function get_ask_budly_url(): string {
+        return function_exists( 'home_url' ) ? home_url( '/ask-budly/' ) : 'https://cccultivate.com/ask-budly/';
+    }
+
+    public static function enqueue_styles(): void {
+        if ( function_exists( 'is_account_page' ) && ( is_account_page() || ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) || ( function_exists( 'is_page' ) && is_page( 'wakenbake-lounge-community' ) ) ) ) {
+            wp_register_style( 'ccc-wnb-membership-styles', false );
+            wp_enqueue_style( 'ccc-wnb-membership-styles' );
+            wp_add_inline_style( 'ccc-wnb-membership-styles', self::get_membership_css() );
+        }
+    }
+
+    public static function get_membership_css(): string {
+        return '
+.ccc-wnb-account-card { border: 1px solid #dcdad2; border-radius: 8px; background: #ffffff; padding: 24px; margin: 20px 0 30px; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.ccc-wnb-card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #f0eee6; }
+.ccc-wnb-card-title { margin: 0; font-size: 1.35rem; font-weight: 700; color: #1a1a1a; }
+.ccc-wnb-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.ccc-wnb-badge-wnb_pass { background: #eef1f4; color: #495057; border: 1px solid #ced4da; }
+.ccc-wnb-badge-wnb_member { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+.ccc-wnb-badge-wnb_elite { background: #fff8e1; color: #b78103; border: 1px solid #ffe082; }
+.ccc-wnb-status-notice { font-size: 1.05rem; font-weight: 600; color: #555555; margin: 0 0 8px; }
+.ccc-wnb-card-description { color: #666666; margin: 0 0 16px; line-height: 1.5; }
+.ccc-wnb-discount-info { margin: 0 0 16px; font-size: 0.95rem; color: #2b2b2b; }
+.ccc-wnb-discount-info strong { color: #1a1a1a; }
+.ccc-wnb-benefits-section { margin: 0 0 20px; }
+.ccc-wnb-benefits-section h4 { margin: 0 0 10px; font-size: 1rem; font-weight: 600; color: #333333; }
+.ccc-wnb-benefits-list { list-style: none; padding: 0; margin: 0; }
+.ccc-wnb-benefits-list li { position: relative; padding-left: 22px; margin-bottom: 8px; font-size: 0.95rem; color: #444444; line-height: 1.4; }
+.ccc-wnb-benefits-list li::before { content: "✓"; position: absolute; left: 0; top: 0; color: #2e7d32; font-weight: 700; }
+.ccc-wnb-card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 14px; border-top: 1px solid #f0eee6; }
+.ccc-wnb-btn { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; text-decoration: none; text-align: center; cursor: pointer; transition: background-color 0.2s, color 0.2s; box-sizing: border-box; }
+.ccc-wnb-btn-primary { background: #2d5a27; color: #ffffff !important; border: 1px solid #2d5a27; }
+.ccc-wnb-btn-primary:hover { background: #23471f; }
+.ccc-wnb-btn-secondary { background: #f8f9fa; color: #333333 !important; border: 1px solid #ced4da; }
+.ccc-wnb-btn-secondary:hover { background: #e9ecef; }
+.ccc-wnb-budly-link { margin-left: auto; font-size: 0.9rem; color: #2d5a27; text-decoration: underline; font-weight: 600; }
+.ccc-wnb-budly-link:hover { color: #1b3817; }
+.ccc-wnb-welcome-card { border: 2px solid #2d5a27; border-radius: 8px; background: #f7faf7; padding: 24px; margin: 20px 0 30px; box-sizing: border-box; }
+.ccc-wnb-welcome-card h3 { margin-top: 0; margin-bottom: 12px; color: #2d5a27; font-size: 1.35rem; }
+.ccc-wnb-welcome-card p { font-size: 1rem; line-height: 1.5; color: #333333; margin: 0 0 18px; }
+@media (max-width: 820px) { .ccc-wnb-account-card, .ccc-wnb-welcome-card { padding: 20px; } }
+@media (max-width: 480px) {
+    .ccc-wnb-account-card, .ccc-wnb-welcome-card { padding: 16px; }
+    .ccc-wnb-card-header { flex-direction: column; align-items: flex-start; }
+    .ccc-wnb-card-actions { flex-direction: column; align-items: stretch; }
+    .ccc-wnb-btn { width: 100%; margin-bottom: 6px; }
+    .ccc-wnb-budly-link { margin-left: 0; text-align: center; padding-top: 6px; }
+}';
+    }
+
+    private static function esc_attr( string $text ): string {
+        return function_exists( 'esc_attr' ) ? esc_attr( $text ) : htmlspecialchars( $text, ENT_QUOTES );
+    }
+
+    private static function esc_html( string $text ): string {
+        return function_exists( 'esc_html' ) ? esc_html( $text ) : htmlspecialchars( $text, ENT_QUOTES );
+    }
+
+    private static function esc_url( string $url ): string {
+        return function_exists( 'esc_url' ) ? esc_url( $url ) : htmlspecialchars( $url, ENT_QUOTES );
     }
 }
 
@@ -347,3 +593,6 @@ function get_membership_badge( int $user_id ): array {
     return array( 'key' => $state['badge_key'], 'label' => $state['badge_label'] );
 }
 function can_access_level( int $user_id, string $level ): bool { return Membership_Entitlements::can_access_level( $user_id, $level ); }
+function get_account_dashboard_card( int $user_id ): string { return Membership_Entitlements::get_account_card_html( $user_id ); }
+function get_post_order_welcome( $order_id ): string { return Membership_Entitlements::get_order_received_welcome_html( $order_id ); }
+
