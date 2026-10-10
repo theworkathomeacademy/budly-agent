@@ -10,6 +10,7 @@ namespace CCC\WNB;
 
 defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/includes/class-entitlement-rules.php';
+require_once __DIR__ . '/includes/class-lounge-ui.php';
 
 final class Membership_Entitlements {
     private const PRODUCTS = array( 1048 => array( 'sku' => 'WNB-MBR-MEMBER', 'level' => 'member' ), 1049 => array( 'sku' => 'WNB-MBR-ELITE', 'level' => 'elite' ) );
@@ -27,6 +28,7 @@ final class Membership_Entitlements {
         add_filter( 'rest_pre_dispatch', array( __CLASS__, 'answer_budly_membership_question' ), 20, 3 );
         add_shortcode( 'ccc_wnb_protected', array( __CLASS__, 'protected_content' ) );
         add_shortcode( 'ccc_wnb_community', array( __CLASS__, 'render_community_hub' ) );
+        add_shortcode( 'ccc_wnb_lounge', array( __CLASS__, 'render_lounge' ) );
         add_action( 'woocommerce_account_dashboard', array( __CLASS__, 'render_account_dashboard_card' ), 10 );
         add_filter( 'woocommerce_account_menu_items', array( __CLASS__, 'account_menu_items' ), 20, 1 );
         add_filter( 'woocommerce_get_endpoint_url', array( __CLASS__, 'account_endpoint_url' ), 20, 4 );
@@ -252,6 +254,7 @@ final class Membership_Entitlements {
             $out .= '<p>Welcome to the Wake&#8217;n&#8217;Bake Lounge. Access to community discussions, member areas, and VIP content requires a verified membership or free Lounge Pass.</p>';
             $out .= '<p>Please log in to your account or claim your free Wake&#8217;n&#8217;Bake Lounge Pass to enter.</p>';
             $out .= '</div>';
+            $out .= Lounge_UI::render( $user_id, $state );
             $out .= '</div>';
             return $out;
         }
@@ -261,6 +264,7 @@ final class Membership_Entitlements {
             $out .= '<div class="ccc-wnb-section ccc-wnb-section-pass">';
             $out .= '<h3>Community Lounge &amp; Announcements</h3>';
             $out .= '<p>Welcome to the Wake&#8217;n&#8217;Bake Lounge Community! Explore plant culture discussions, recipes, and educational announcements.</p>';
+            $out .= Lounge_UI::render( $user_id, $state );
             $out .= '</div>';
         }
 
@@ -282,6 +286,12 @@ final class Membership_Entitlements {
 
         $out .= '</div>';
         return $out;
+    }
+
+    public static function render_lounge(): string {
+        $user_id = (int) get_current_user_id();
+        $state = self::state( $user_id );
+        return Lounge_UI::render( $user_id, $state );
     }
 
     public static function commercial_truth(): array {
@@ -542,7 +552,7 @@ final class Membership_Entitlements {
     .ccc-wnb-card-actions { flex-direction: column; align-items: stretch; }
     .ccc-wnb-btn { width: 100%; margin-bottom: 6px; }
     .ccc-wnb-budly-link { margin-left: 0; text-align: center; padding-top: 6px; }
-}';
+}' . Lounge_UI::get_css();
     }
 
     private static function esc_attr( string $text ): string {

@@ -1,0 +1,93 @@
+∩╗┐MWB-005 ΓÇö MX-2
+WAKEΓÇÖNΓÇÖBAKE LOUNGE TIER VALUE & UI EXPERIENCE DESIGN
+Version 1.0 | RATIFIED by d-mac | October 9, 2026
+Governed destination: BROS ΓåÆ website
+Implementation: NOT AUTHORIZED
+MX-3: NOT STARTED
+
+
+1. PURPOSE AND APPROVAL
+This document records the owner-ratified MX-2 tier-value direction and visual/UI experience design, following ratified MX-1. The Project Owner endorsed the dark emerald, warm-gold, botanical-inspired conceptual Lounge UI and noted its alignment with the Botanical Collection QR/app experience. The conceptual example establishes direction, not a production-ready screenshot, released asset, final brand-token sheet, or authorization to implement. Exact design details remain subject to screen-by-screen owner review prior to build.
+
+
+2. EXPERIENCE PHILOSOPHY
+The member experience must define both WHAT a member receives and HOW they encounter, understand, navigate, and use it. The Lounge must feel like a useful, inviting destination for cannabis education, culture, creativity, discovery, and relationship rather than an account dashboard with extra links. Education and service before commerce. Premium quality must come from curation and usability, not complexity. One coherent responsive Lounge supports all tiers and uses verified entitlements.
+
+
+3. APPROVED VISUAL DIRECTION
+Use the established WakeΓÇÖnΓÇÖBake brand identity in a premium botanical-inspired interface. Concept direction: dark emerald surfaces, restrained warm gold accents, high-quality editorial botanical imagery, readable typography, generous spacing, clear content cards, and mobile-first controls. Visual language should harmonize with the Botanical Collection QR/app experience. Any final images, logos, color tokens, illustrations, and customer-facing text must use approved assets and pass visual owner review; do not invent approved source artwork or replace existing branding by assumption.
+
+
+4. UI STRUCTURE AND MOBILE CONCEPT
+Header: WakeΓÇÖnΓÇÖBake / The Lounge identity, signed-in account control, visible current tier.
+Welcome: concise warm orientation that points to real resources.
+Featured discovery: large image card or editorial feature, authentic title and summary, one clear working action.
+Explore area: tappable Education, Botanical, What's New, Benefits cards or equivalent approved content destinations.
+Budly: prominent conversational-guide entry linked to the existing approved experience.
+Primary mobile navigation: Home | Explore | Budly | Account; accessible labels, keyboard/focus support, comfortable touch targets, correct selected state. Desktop may expand into a standard top navigation and richer card grid while preserving identical information architecture.
+The earlier conceptual mockup is directional rather than a functional interface. Decorative sample content shall not be presented as approved released content.
+
+
+5. TIER VALUE DIRECTIONS
+PASS | Free | existing eligible-product discount 0%.
+Meaningful introductory value: orientation, selected foundation learning, selected Botanical exploration, selected recipes, approved Pass areas, existing Budly and community access. A Pass holder must receive useful value even without upgrading.
+
+
+MEMBER | $9.99/month | existing eligible-product discount 10%.
+Everything in Pass plus proposed deeper approved educational resources, practical-use learning, and selected Member-only material. Existing self-service account/subscription controls remain accessible.
+
+
+ELITE | $24.99/month | existing eligible-product discount 25%.
+Everything in Member plus proposed premium advanced/curated resources and selected Elite-only experiences. Existing self-service controls remain accessible.
+
+
+These are approved EXPERIENCE DIRECTIONS, not automatically introduced contractual entitlements, newly published offers, or final allocations of specific resources. Specific exclusive material and benefit language depend on MX-3 content review and any required governance approvals. Existing discount exclusions and subscription conditions remain unchanged.
+
+
+6. COMPONENT BEHAVIOR SPECIFICATION
+Welcome header: tier drawn from existing verified entitlement authority; no invented or cached-forever status.
+Featured content: honest imagery/title/summary and one valid destination.
+Content card: topic/title, optional approved image, useful excerpt, access state, intuitive destination.
+Locked resource: factual required-tier explanation and optional relevant upgrade route; no protected text/image/metadata leakage.
+Benefits module: existing discount and accurate limitations/exclusions; account link.
+What's New: real published dated updates, not placeholder content.
+Budly entry: navigate to existing approved conversational experience; no unauthenticated member-state claims.
+Account entry: working route to orders, subscriptions, addresses/account preferences as existing.
+Empty, loading, failure and unavailable states: plain explanation, safe fallback and human-help route.
+Responsive: no horizontal overflow, readable type, accessible focus, WCAG-minded contrast and touch sizing.
+
+
+7. CUSTOMER AND ENTITLEMENT STATES
+Guest: useful public orientation, sign-in/join routes, no protected content.
+Active Pass/Member/Elite: correct tier display and only access-appropriate content, consistent with the server-side membership engine.
+Insufficient tier: clear non-coercive eligibility information, optional upgrade route, no protected data.
+Pending, on-hold, cancelled, expired, failed or other nonqualifying states: website reflects the existing authoritative plugin rules and offers self-service help, never falsely asserting entitlement.
+Budly outage or unavailable content: basic Lounge navigation and account/support remain functional.
+Never implement access control solely in front-end JavaScript, Wix display logic or conversational copy.
+
+
+8. INFORMATION ARCHITECTURE
+Continue ratified MX-1 seven-zone arrangement:
+Lounge Home; What's New; Education; Member Benefits; Events/Upcoming; Ask Budly; Tier Experiences.
+Signed-in full navigation may show Home, What's New, Education, Benefits, Events, Ask Budly, My Account. Mobile uses four high-priority destinations with secondary areas accessible within Explore. Avoid multiple independent portals or inconsistent menus.
+
+
+9. UI QUALITY / RELEASE EVIDENCE
+Before MX-4 implementation, present actual representative mobile and desktop screens and major interaction states for explicit owner visual review. Include tier distinctions; guest, member, locked, empty, error and loading states; content-rich example screens grounded in approved material. Verify visual consistency with WakeΓÇÖnΓÇÖBake and Botanical QR/app experience, responsiveness, accessibility, keyboard behavior and intuitive site-to-account navigation. Visual acceptance is required in addition to existing automated integration and entitlement tests. A functional test pass alone does not confer production acceptance.
+
+
+10. IMPLEMENTATION / GOVERNANCE BOUNDARIES
+No implementation, publishing, product/price changes, new commercial promises, entitlement-policy changes, payments, subscription mutations or Native BROS CRM synchronization is authorized by MX-2 ratification. WordPress stays initial authenticated Lounge authority; Wix stays discovery/presentation/routing; WooCommerce and Flexible Subscriptions retain financial and subscription truth; membership plugin retains entitlements; Budly remains conversational guidance, not an access/payment authority. Reuse infrastructure and approved content. Do not reopen closed membership work without evidence or new direction.
+
+
+11. PHASE ROADMAP
+MX-2: RATIFIED.
+MX-3: NEXT PLANNED ΓÇö inventory and map actual approved reusable content to each tier and each proposed UI screen, including status, ownership, access, update cadence, content placement, and missing material. Planning/review only.
+MX-4: UI build, only after proper authorization.
+MX-5: Budly contextual experience after approval.
+MX-6: content activation and sustainable return loop.
+MX-7: complete functional, visual and production verification.
+Stop for owner review between architecture/content design and execution.
+
+
+END ΓÇö RATIFIED MX-2 UI & TIER-VALUE DESIGN

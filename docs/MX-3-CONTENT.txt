@@ -1,0 +1,77 @@
+∩╗┐MWB-005 ΓÇö MX-3 WAKEΓÇÖNΓÇÖBAKE LOUNGE CONTENT ARCHITECTURE
+Version: 1.0 | Status: RATIFIED | Owner: d-mac | October 10, 2026
+Ratification governs the planning architecture; it does NOT authorize implementation, publication, entitlement changes, or creative-asset reuse without approval.
+
+
+I. MISSION
+Organize and place existing approved ecosystem content inside the one-Lounge, three-tier experience defined in MX-1 and MX-2. Identify what exists, rights/approval state, tier access, presentation, source ownership, update cadence and operational burden. Reuse before creating.
+
+
+II. CONTENT FAMILIES
+Botanical Discovery; Cannabis Education; Culinary & Recipes; Stories & Media; Calendar & Culture; Member Exclusives; What's New. Budly is a guide across families, not content publication or entitlement authority.
+
+
+III. BOTANICAL DISCOVERY
+Priority first flagship source: Botanical Coloring Collection Volume I, its botanical encyclopedia and approved content architecture, strain spotlight concepts and QR experience. Proposed exhibit fields: approved art, cultivar name, accurate summary, verified botany, supported geography/history, related terpenes/genetics, relevant approved coloring asset, related content, Budly link. Only link live tested QR routes. Pass selected introductory exhibits; Member more substantive approved resources; Elite curated advanced premium resources. Ownership/purchase/QR entitlements remain separately governed.
+
+
+IV. CANNABIS EDUCATION
+Organize anatomy of cannabis flower, introduction to terpenes, genetics and cultivars, history and culture, cultivation fundamentals. Volume I campaign slate grounds the first two topics as approved concepts, not final published assets. Source each actual learning item and perform editorial/compliance validation. Interface: visual learning index with accessible topic cards, readable article, related resources and optional Budly guidance. Do not gate an article solely because it sounds technical.
+
+
+V. CULINARY & RECIPES
+Candidate source: Infused Basics and existing approved culinary material. No blanket right to reproduce an entire book. Recipe template: title, approved art, context, ingredients, instructions, safety, relevant culinary education, optional approved commerce and Budly. Pass selected practical lessons; Member/Elite additional approved substantial material. Cannabis claims and instructions require specific safety/compliance review.
+
+
+VI. STORIES & MEDIA
+Candidate: existing WakeΓÇÖnΓÇÖBake Budly stories and media, including Emerald Phoenix project work; verify current published audio/video/article endpoints before inclusion. Card: image, title, description, chapter, watch/listen/read choices where actually available, next/previous and related content. Prefer links to valid existing media rather than building hosting.
+
+
+VII. CANNACALENDAR & CULTURE
+Preserve CannaCalendar as independent creative project. Candidate monthly themed botanical material, recipes and educational excerpts only after specific approval and publication readiness. No claim that planned calendar features are completed.
+
+
+VIII. TIER CONTENT MODEL
+Pass should have meaningful free orientation, education, discovery, select culinary and botanical experiences. Member adds approved deeper/practical/exclusive resources on top of Pass. Elite adds curated premium/advanced approved experiences on top of Member. Exact named materials and public contractual member promises require source verification and owner approval. Server-side existing plugin enforces access. Current prices and discounts do not change.
+
+
+IX. UI PLACEMENT
+Lounge Home: real featured Botanical or editorial story, Welcome, Explore cards, What's New preview, Member highlight, Ask Budly and account access. Education: searchable/browsable topics when feasible in existing WP; launch does not depend on a new search system. Botanical: exhibit/collection cards. Recipes: accurate practical features. Stories: verified published experiences. Benefits: existing verified entitlements. Events: only genuine approved items; helpful fallback when empty. Content cards must show actual valid destinations and correct access.
+
+
+X. METADATA AND SOURCE TRACEABILITY
+Each reusable item gets a stable source reference, title, responsible owner, source URL/file, approval and publication status, access tier, category, synopsis, approved imagery, related destinations, review date, compliance notes and revision. Preserve canonical identifiers e.g. VOL1-001 to VOL1-010; do not repurpose or overwrite IDs. Use existing WordPress facilities before adding schemas.
+
+
+XI. LIFECYCLE
+SOURCE IDENTIFIED ΓåÆ CONTENT REVIEW ΓåÆ ACCESS APPROVAL ΓåÆ UI PLACEMENT ΓåÆ AUTHORIZED PUBLICATION ΓåÆ VERIFY ΓåÆ MAINTAIN. Approved campaign architecture is not equivalent to final approved media. Final published asset must have authorization, correct claims, no link failures, and no access leakage.
+
+
+XII. RESPONSIBILITIES
+d-mac: final member promise, significant editorial/commercial, production and publication approval.
+MWB-005: experience architecture, UI placement, WP integration coordination, security/access and website verification.
+Source agents: control creative/editorial materials according to separate project governance.
+Budly: approved factual navigation and education, not entitlements or financial state.
+
+
+XIII. UPDATE MODEL
+Prioritize evergreen content. Update featured, What's New, Botanical, culinary, member exclusives, and calendar content when approved substantive assets exist. No unapproved recurring publishing promise, social feed, expensive new SaaS or content treadmill.
+
+
+XIV. MINIMUM LAUNCH CONTENT
+One real welcome, 3ΓÇô5 approved evergreen pieces, one approved Botanical feature, one culinary/practical resource, one actual update, one substantive Member-only item, one substantive Elite-only item, Budly/account links, correct access protection, mobile/desktop UI. All must have verified source, owner, publication readiness and destination.
+
+
+XV. BOUNDARIES
+Ratification does not authorize posting, media extraction, WordPress upload, Wix changes, QR rewrites, new benefits, changes to prices/discounts, code, CRM membership sync, affiliate campaign or deployment. Native commercial authorities remain. Owner approves reviewed UI prior to build.
+
+
+XVI. NEXT PHASE: MX-4
+Prepare exact content-backed screen design specifications: desktop and mobile, guest/Pass/Member/Elite/locked/empty/error/loading, interaction and navigation, content map and source status; review with d-mac before code. Implement only with separately explicit execution authorization.
+
+
+SOURCE CONTEXT
+Ratified Unified CCC + WakeΓÇÖnΓÇÖBake Commercial Experience Blueprint v1.0, Parts III and VI; ratified MX-1 and MX-2; VOL1 Campaign Master Brief, Content Pillar Framework and Initial Content Slate; Infused Basics source files; Budly NAS Content Pipeline report. Individual final/published asset status must be verified, not inferred from planning briefs.
+
+
+END OF RATIFIED MX-3 CONTENT ARCHITECTURE

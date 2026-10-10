@@ -1,0 +1,91 @@
+∩╗┐MWB-005 ΓÇö MX-1
+WAKEΓÇÖNΓÇÖBAKE LOUNGE MEMBER EXPERIENCE ARCHITECTURE
+Version 1.0 | Status: RATIFIED by d-mac, October 9, 2026
+Implementation: NOT AUTHORIZED | Governance authority: Project Owner d-mac
+
+
+I. EXECUTIVE RECOMMENDATION
+Build the smallest launch-worthy WakeΓÇÖnΓÇÖBake Lounge member experience on existing production-accepted membership infrastructure. Do not create a new membership system, community platform, account system, or commerce transaction engine. Turn membership from access entitlement into a useful, enjoyable, repeatable experience. Governing principle: ONE LOUNGE, THREE LEVELS OF ACCESS. Pass, Member, and Elite enter one coherent environment with content and experiences reflecting verified entitlements. Education and service precede optional contextual commerce.
+
+
+II. ARCHITECTURAL POSITION
+WakeΓÇÖnΓÇÖBake Wix is public discovery, editorial presentation, education, entertainment, storytelling, and routing. CCC WordPress is customer login, verified entitlement, account management, subscription state, checkout, and protected member experience. Initial signed-in experience is on the current CCC WordPress Lounge Community route. Wix continues to route visitors to approved destinations. Avoid cross-platform authenticated-session synchronization and new platforms. Preserve the intended WakeΓÇÖnΓÇÖBake branded-domain identity as a separate future concern. WooCommerce retains commerce authority; Flexible Subscriptions retains recurring lifecycle authority; CCC membership plugin retains derived tier/discount/access authority.
+
+
+III. CUSTOMER EXPERIENCE JOURNEY
+DISCOVER ΓåÆ JOIN ΓåÆ LOG IN ΓåÆ ENTER LOUNGE ΓåÆ EXPLORE ΓåÆ LEARN ΓåÆ ASK BUDLY ΓåÆ RETURN.
+Discovery may come through Wix, social, search, QR, media, a CCC product, or affiliate links. Customer chooses existing Pass $0, Member $9.99/month, or Elite $24.99/month. Existing welcome UX provides a clearly labeled Enter the Lounge destination. Arrival immediately answers: Where am I? What can I access? What's new? Where do I start? What does my membership provide? How do I ask Budly? Members explore relevant material without a forced purchase. Budly guides through approved information and URLs. Return value comes from featured content, evergreen resources, updates and relevant member experiences.
+
+
+IV. LOUNGE INFORMATION ARCHITECTURE
+Seven proposed zones:
+1. Lounge Home: Welcome, verified tier/badge, featured material, What's New preview, starting points, Ask Budly, benefits, account return.
+2. What's New: Real recently published education, Botanical features, recipes, collections, media, approved announcements. No filler or dead destinations.
+3. Education: Cannabis fundamentals, botany/genetics, terpenes/cannabinoids, cultivation, history/culture, culinary education, responsible wellness content with approved claims.
+4. Member Benefits: Current tier, verified access, discount and limitations. Pass 0%, Member 10%, Elite 25%, subject to existing discount exclusions; links to account/subscription controls.
+5. Events & Upcoming: Lightweight announcements-style content for verified activities, without building event-ticketing. When no event exists, use useful alternative content.
+6. Ask Budly: Existing approved entry. Later member context only through authenticated governed integration; never fabricate tier or access.
+7. Tier Experiences: Access-appropriate resources protected via the existing server-side entitlement engine, not Wix, client-side scripts or Budly.
+
+
+V. TIER VALUE DIRECTION (SPECIFIC PROMISES SUBJECT TO MX-2)
+Pass: Meaningful free introduction and orientation, foundational educational selections, Botanical discovery, selected recipes, Budly entry and existing community access; worthwhile without upgrade.
+Member: Everything in Pass, deeper approved education and practical features, selected exclusive material, existing 10% eligible-product discount, self-service subscription control.
+Elite: Everything in Member, approved premium/advanced/curated education and exclusive experiences, existing 25% eligible-product discount, self-service control.
+These are directions for design, NOT newly granted contractual benefits.
+
+
+VI. NAVIGATION AND RESPONSIVENESS
+Signed-in navigation proposal: Home | What's New | Education | Benefits | Events | Ask Budly | My Account.
+On mobile prioritize Home | Explore | Ask Budly | Account. Tier surfaces should appear via Education and Benefits, avoiding redundant menus. All gated content is enforced server-side, including previews and APIs. Visible access messaging must be honest and not leak protected content. Support mobile-first, accessible navigation, keyboard/focus states and readable touch targets.
+
+
+VII. CONTENT DELIVERY MODEL
+Reuse approved content and existing WordPress facilities rather than create a new CMS. Content types: educational articles, recipes, Botanical features, announcements, exclusive resources, verified event notices. Proposed metadata: title, summary, content family, minimum authorized tier, publication status, approval/source reference, last review date, related material, applicable Budly destination/context, and optional approved commercial URL. Evaluate existing WP capabilities before any custom schema.
+
+
+VIII. REUSE CONTENT SOURCES
+Candidate assets: Botanical Coloring Collection for botanical education and exploration; WakeΓÇÖnΓÇÖBake education for evergreen fundamentals and cultivation; CannaCalendar excerpts/recipes after editorial approval; culinary material; approved Budly conversational guidance; WakeΓÇÖnΓÇÖBake media/stories via existing public destinations. Content must be publication-ready, licensed, approved, and appropriate before inclusion. Source-project owners retain creative/editorial authority. New creative products are not a launch dependency.
+
+
+IX. BUDLY EXPERIENCE BOUNDARY
+Budly guides approved learning, resource discovery, benefits explanation and account/support navigation. Suggested questions: What can I explore? Where is Botanical education? What's available? How do I manage a subscription? Where are benefits? How do I contact support? Budly is not entitlement, price, policy, medical advice, or payment authority. Website remains usable if Budly fails.
+
+
+X. RETURN-VISIT MODEL
+Use one featured content area, small What's New section, evergreen topic resources, contextual related-content links, and periodic updates from approved material. No required push notification system, gamification, social network, behavioral profiling, personalization engine, or engagement campaign. Any future communication respects consent and BROS governance.
+
+
+XI. IMPLEMENTATION BOUNDARIES
+Retain existing WordPress membership plugin and tier hierarchy, Woo/Flexible Subscriptions authorities, My Account experience, discount exclusions, account login, protected community route, Wix-to-CCC purchase routing, and Budly factual boundaries. Do not incidentally implement Native BROS CRM membership synchronization. Separate membership engine, presentation experience, and Budly intelligence via clean interfaces where practical without overengineering.
+
+
+XII. MINIMUM LAUNCH-WORTHY EXPERIENCE
+One Lounge Home, educational content index, 3ΓÇô5 evergreen learning items, one Botanical/collection feature, one recipe/practical feature, one real update, one approved Member-exclusive resource, one approved Elite-exclusive resource, working Budly routing and account/subscription navigation. All items must be actual, approved, accessible content rather than placeholders.
+
+
+XIII. ACCEPTANCE
+Access: guest protection; Pass-only Pass resources; Member Pass+Member; Elite all approved tiers; proper downgrade/expiry; no leakage via API, preview, direct URL.
+Usability: obvious tier, immediately useful material, clear navigation/return paths, Budly, human support and subscription controls.
+Technical: commerce authorities unchanged, no duplicate engine, desktop/tablet/mobile responsive, no regressions.
+Content: genuine approved material, meaningful exclusives, valid destinations, no invented events, contextual commerce, clear editorial/commercial distinction.
+Operations: ordinary updates in existing tools, clear owner/publisher, sustainable cadence, deployment/rollback evidence, live acceptance.
+
+
+XIV. RISKS / CONTROLS
+Empty premium tiers: require genuine approved exclusives before launch. Duplication: Wix discovery and WordPress authenticated access. Content treadmill: reusable evergreen assets. Leakage: server-side checks. Budly hallucinated tier: approved truth only. Aggressive selling: optional contextual commerce. Closed-system regression: freeze membership business logic absent documented need.
+
+
+XV. PHASE CONTINUATION
+MX-1 architecture owner review; MX-2 precise tier value and UI; MX-3 reusable content/source/approval map; MX-4 minimal UX build; MX-5 approved Budly integration; MX-6 content and engagement loop; MX-7 production verification/acceptance. Each later implementation or policy change requires separate owner authorization.
+
+
+XVI. ARCHITECTURE DECISIONS RATIFIED
+1. CCC WordPress hosts initial authenticated Lounge member experience; Wix remains discovery/routing.
+2. One Lounge with progressive Pass / Member / Elite access, not three portals.
+3. Seven information zones: Home, What's New, Education, Benefits, Events, Ask Budly, Tier Experiences.
+4. Lean content-rich initial release built with existing approved assets before new infrastructure.
+Ratification establishes MX-1 direction, not a build, publication, new promise, new policy, product/pricing change, or broader authority.
+
+
+END OF RATIFIED MX-1 ARCHITECTURE

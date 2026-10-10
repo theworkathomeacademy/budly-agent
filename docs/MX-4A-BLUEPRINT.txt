@@ -1,0 +1,72 @@
+∩╗┐MWB-005 ΓÇö MX-4A LOUNGE UI & TECHNICAL DESIGN BLUEPRINT
+Version 1.0 | RATIFIED by d-mac | October 10, 2026
+Status: Architectural / visual design approval only. NO production deployment, publication, pricing, entitlement or source-code mutation is authorized solely by this document.
+Governing predecessors: MX-1 Experience Architecture v1.0, MX-2 Tier Value & UI Design v1.0, MX-3 Content Architecture v1.0.
+
+
+I. PURPOSE
+Specify how members see and use the ratified Lounge experience before any implementation. Design one cohesive accessible responsive botanical-inspired UI for guest, Pass, Member and Elite experiences. Preserve the UI direction already affirmed by owner as visually aligned with the Botanical Coloring Collection QR/app experience.
+
+
+II. DESIGN LANGUAGE
+WakeΓÇÖnΓÇÖBake Lounge premium botanical editorial presentation: dark emerald backgrounds, restrained warm gold accents, readable light text, generous whitespace, authentic high-quality approved photography/art, visually coherent components, understandable state messages. Conceptual generated examples are illustrative and NOT approved production art. Actual final visual assets must be independently approved.
+
+
+III. PROPOSED LOUNGE HOME SCREEN
+Top header: WakeΓÇÖnΓÇÖBake/The Lounge, signed-in account entry, verified tier indicator.
+Welcome: concise personalized-neutral orientation and clear reason to explore.
+Featured Learning: large approved media card with real title, summary and single working CTA; suggested subject ΓÇ£Anatomy of a Cannabis FlowerΓÇ¥ from Volume I editorial slate only if final asset cleared.
+Explore grid: Botanical; Education; Culinary; What's New. Each opens a real approved collection/index.
+Ask Budly: easy-to-find existing conversational destination, not a fabricated embedded autonomous membership agent.
+Bottom mobile priority navigation: Home, Explore, Budly, Account.
+No promoted content can have empty destinations. Screens should be elegant without disguising commerce as education.
+
+
+IV. SCREEN INVENTORY
+01 Lounge Home: welcome, tier, feature, current material, practical navigation.
+02 Explore: browse topics/resources with clear family grouping and filtering only if existing infrastructure supports it.
+03 Content Detail: readable approved content, related valid links, learning path, access state.
+04 Botanical Discovery: collection-specific gallery or feature layout honoring existing Botanical QR/app continuity.
+05 Member Benefits: actual tier, discount, restrictions, and existing subscription/account controls.
+06 What's New: date-stamped real published updates; no filler.
+07 Account Return: obvious path to My Account and subscriptions, without a parallel account system.
+Ask Budly prominently available from all relevant views; Events can begin as light content zone rather than a bespoke platform.
+
+
+V. RESPONSIVE BEHAVIOR
+Mobile: simple labeled high-priority navigation (Home, Explore, Budly, Account); readable cards and single-column feature flow; no horizontal overflow. Desktop: full navigation and editorial multi-column layout. Tablet: adaptive layout. Initial verification widths 390, 820 and 1440 pixels. Do not assume acceptance from screenshots alone: inspect real rendered content, keyboard/focus, contrast, assistive-label behavior, click/tap targets, text zoom and account-to-Lounge travel.
+
+
+VI. CUSTOMER AND CONTENT STATES
+Guest: honest public orientation plus join/login, no protected leaks.
+Active Pass: only applicable approved basic resources and actual Pass tier.
+Active Member: Pass+Member content, accurate 10% eligible-product discount.
+Active Elite: Pass+Member+Elite authorized content, accurate 25% eligible-product discount.
+Restricted item: clear non-coercive upgrade or return message, never disclose gated content.
+Nonqualifying subscription: status based on existing plugin lifecycle rules, not client assumptions.
+Content unavailable: meaningful fallback link, no broken experience.
+Budly unavailable: entire website/account still usable and human-support destination available.
+Include loading/empty states and error messaging in built design.
+
+
+VII. CONTENT PLACEMENT AND READINESS
+Use only actual approved assets from MX-3 candidates. Botanical Volume I foundational lesson and QR experience source material are candidates, not proof of final publish status. Before deployment, map each card and destination to exact approved editorial item, image rights, owner, tier, URL and final release state. Require 1 welcome, 3ΓÇô5 evergreen lessons, 1 Botanical feature, 1 practical culinary item, 1 legitimate update, 1 real Member-exclusive resource and 1 Elite-exclusive resource. Do not invent exclusives or copy content from a paid book without clearance.
+
+
+VIII. TECHNICAL APPROACH
+Extend existing CCC WordPress membership experience and server-side entitlement checks; WordPress authenticated entry for member environment; WooCommerce remains purchase/paid/refund authority, Flexible Subscriptions lifecycle authority, CCC membership plugin tier authority. Wix remains brand discovery and routing. Reuse WordPress facilities and clean UI components, not new CMS, new social network, or independent member login. Budly may guide toward approved content, not invent member status, benefits or rates.
+
+
+IX. DELIVERY AND VERIFICATION
+MX-4A visual/technical design review is RATIFIED. MX-4B is a separately authorized implementation stage; MX-4C tests and owner visual acceptance. Before implementation, inspect current repository/branch/remotes, production plugin version, source provenance, staging environment, current WordPress content and assets; make narrow, reversible source changes only under specific authorization. Run unit/integration/accessibility/responsive tests, permission matrix, direct URL and REST leakage checks, links, logged-out behavior; preserve rollback package and baseline; Git COMMIT ΓåÆ PUSH ΓåÆ REMOTE VERIFY. Production cutover requires separate explicit approval and live smoke verification.
+
+
+X. BOUNDARIES
+Ratification is not authorization to write site files, adjust prices/tier entitlement policy, create posts/orders, publish content, modify Wix, deploy, add CRM membership sync or run a paid charge. Existing previously closed membership functionality stays closed absent actual regression.
+
+
+XI. IMPLEMENTATION DECISION
+Owner has ratified MX-4A. Next responsible task is MX-4B build-readiness verification / implementation handoff recommendation. Stop before actual implementation or external agent dispatch until separate explicit execution authorization.
+
+
+END ΓÇö RATIFIED MX-4A BLUEPRINT
