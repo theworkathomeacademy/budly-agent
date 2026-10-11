@@ -424,7 +424,8 @@ final class Lounge_UI {
         $out .= '<p class="wnb-screen-lede">Curated cannabis education, practical botanical science, and culinary guides focusing on plant biology, culinary craft, and mindful appreciation.</p>';
         $out .= '</div>';
 
-        // Filter Pills
+        // Filter Pills with mobile scroll indicator
+        $out .= '<div class="wnb-filter-bar-wrapper">';
         $out .= '<div class="wnb-filter-bar" role="toolbar" aria-label="Content Filters">';
         $out .= '<button type="button" class="wnb-filter-pill is-active" data-filter="all">All Content</button>';
         $out .= '<button type="button" class="wnb-filter-pill" data-filter="education">Education</button>';
@@ -432,6 +433,9 @@ final class Lounge_UI {
         $out .= '<button type="button" class="wnb-filter-pill" data-filter="culinary">Culinary</button>';
         $out .= '<button type="button" class="wnb-filter-pill" data-filter="exclusive">Exclusives</button>';
         $out .= '</div>';
+        $out .= '<div class="wnb-filter-fade-cue" aria-hidden="true"></div>';
+        $out .= '</div>';
+        $out .= '<div class="wnb-filter-helper-cue" aria-hidden="true">Swipe for more &rarr;</div>';
 
         if ( empty( $catalog ) ) {
             // Honest pending-content empty state in release builds
@@ -1487,7 +1491,19 @@ final class Lounge_UI {
 .wnb-access-elite { background: rgba(223, 189, 106, 0.2); color: var(--wnb-gold); border: 1px solid rgba(223, 189, 106, 0.4); }
 
 /* Filter Bar */
-.wnb-filter-bar { display: flex; gap: 8px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
+.wnb-filter-bar-wrapper {
+    position: relative;
+    width: 100%;
+}
+.wnb-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
 .wnb-filter-pill {
     background: var(--wnb-panel);
     border: 1px solid var(--wnb-line);
@@ -1498,12 +1514,37 @@ final class Lounge_UI {
     cursor: pointer;
     font-weight: 600;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 .wnb-filter-pill:hover { color: var(--wnb-ink); border-color: var(--wnb-muted); }
 .wnb-filter-pill.is-active {
     background: var(--wnb-surface);
     color: var(--wnb-gold);
     border-color: var(--wnb-gold);
+}
+.wnb-filter-fade-cue {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 6px;
+    width: 36px;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, var(--wnb-bg-dark));
+    border-radius: 0 4px 4px 0;
+}
+.wnb-filter-helper-cue {
+    display: none;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--wnb-gold);
+    text-align: right;
+    margin-bottom: 20px;
+    padding-right: 4px;
+}
+@media (max-width: 600px) {
+    .wnb-filter-helper-cue { display: block; }
 }
 
 /* Botanical Exhibits */

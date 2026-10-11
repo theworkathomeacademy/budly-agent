@@ -111,6 +111,9 @@ $_GET = array( 'view' => 'explore' );
 $html_explore_release = CCC\WNB\Lounge_UI::render();
 
 assert_lounge( false !== strpos( $html_explore_release, 'Explore Educational Resources' ), "Explore: Renders library heading" );
+assert_lounge( false !== strpos( $html_explore_release, 'wnb-filter-bar-wrapper' ), "Explore: Filter bar wrapped in relative positioning wrapper" );
+assert_lounge( false !== strpos( $html_explore_release, 'wnb-filter-fade-cue' ), "Explore: Filter bar contains gradient fade cue element" );
+assert_lounge( false !== strpos( $html_explore_release, 'Swipe for more' ), "Explore: Filter bar contains mobile swipe helper cue" );
 assert_lounge( false !== strpos( $html_explore_release, 'Educational Guides In Preparation' ), "Explore (Release): Renders honest empty-state heading" );
 assert_lounge( false !== strpos( $html_explore_release, 'in editorial production' ), "Explore (Release): Informs user content is in editorial production" );
 
