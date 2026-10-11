@@ -15,11 +15,17 @@
         }
         .container {
             max-width: 1440px;
+            width: 100%;
+            box-sizing: border-box;
             margin: 0 auto;
             padding: 20px;
         }
         @media (max-width: 600px) {
-            .container { padding: 8px; }
+            .container { padding: 4px; }
+            .wnb-fullpage-preview .wnb-mobile-bottom-bar {
+                position: static !important;
+                margin-top: 24px;
+            }
         }
     
 /* ==========================================================================
@@ -413,7 +419,8 @@
     color: var(--wnb-muted);
     font-size: 0.72rem;
     font-weight: 600;
-    min-width: 60px;
+    min-width: 0;
+    flex: 1;
     padding: 4px 0;
     min-height: 48px;
     justify-content: center;
@@ -422,7 +429,13 @@
 .wnb-mobile-tab.is-active { color: var(--wnb-gold); }
 .wnb-tab-icon { font-size: 1.25rem; line-height: 1; margin-bottom: 3px; }
 
-/* Responsive Breakpoints (1440px, 820px, 390px) */
+/* Full-page screenshot capture mode support */
+.wnb-fullpage-capture .wnb-mobile-bottom-bar {
+    position: static;
+    margin-top: 24px;
+}
+
+/* Responsive Breakpoints (1440px, 820px, 430px, 390px, 375px, 320px) */
 @media (max-width: 1024px) {
     .wnb-grid-4 { grid-template-columns: repeat(2, 1fr); }
     .wnb-grid-3 { grid-template-columns: repeat(2, 1fr); }
@@ -435,6 +448,7 @@
 }
 @media (max-width: 600px) {
     .wnb-lounge-app { padding-bottom: 85px; }
+    .wnb-lounge-main { padding: 20px 16px; }
     .wnb-desktop-nav { display: none; }
     .wnb-mobile-bottom-bar { display: flex; }
     .wnb-grid-4, .wnb-grid-3, .wnb-grid-2 { grid-template-columns: 1fr; }
@@ -442,13 +456,27 @@
     .wnb-hero-lede { font-size: 1rem; }
     .wnb-article { padding: 18px; }
     .wnb-article-title { font-size: 1.5rem; }
-    .wnb-welcome-cta-group, .wnb-restricted-actions { flex-direction: column; }
-    .wnb-btn { width: 100%; }
+    .wnb-welcome-cta-group, .wnb-restricted-actions, .wnb-status-actions { flex-direction: column; }
+    .wnb-welcome-cta-group .wnb-btn, .wnb-restricted-actions .wnb-btn, .wnb-status-actions .wnb-btn { width: 100%; }
+    .wnb-card-footer { flex-direction: column; align-items: flex-start; }
+    .wnb-card-footer .wnb-btn { width: 100%; }
+}
+@media (max-width: 400px) {
+    .wnb-header { padding: 12px 10px; }
+    .wnb-brand { gap: 8px; }
+    .wnb-brand-emblem { width: 34px; height: 34px; font-size: 1.2rem; }
+    .wnb-brand-title { font-size: 1.05rem; }
+    .wnb-brand-subtitle { font-size: 0.65rem; }
+    .wnb-lounge-main { padding: 16px 10px; }
+    .wnb-card { padding: 16px 12px; }
+    .wnb-welcome-hero { padding: 32px 12px; }
+    .wnb-hero-title { font-size: 1.5rem; }
+    .wnb-hero-lede { font-size: 0.95rem; }
 }
 
     </style>
 </head>
-<body>
+<body class="wnb-fullpage-preview">
     <div class="container">
         <div class="wnb-lounge-app" id="wnb-lounge-root" data-current-view="detail" data-user-tier="pass"><header class="wnb-header" role="banner"><div class="wnb-header-inner"><a href="https://cccultivate.com/wakenbake-lounge-community/" class="wnb-brand" aria-label="Wake'n'Bake Lounge Home"><span class="wnb-brand-emblem" aria-hidden="true">&#10047;</span><div class="wnb-brand-text"><span class="wnb-brand-title">Wake&#8217;n&#8217;Bake</span><span class="wnb-brand-subtitle">The Lounge</span></div></a><div class="wnb-header-actions"><span class="ccc-wnb-badge ccc-wnb-badge-wnb_pass" title="Verified Membership Tier">Wake&#039;n&#039;Bake Lounge Pass</span><a href="https://cccultivate.com/ask-budly/" class="wnb-header-link wnb-header-budly" target="_blank" rel="noopener">Ask Budly</a><a href="https://cccultivate.com/my-account/" class="wnb-header-link" aria-label="My Account">My Account</a></div></div></header><nav class="wnb-desktop-nav" aria-label="Lounge Sections"><ul class="wnb-nav-list" role="tablist"><li role="presentation"><a href="https://cccultivate.com/wakenbake-lounge-community/" class="wnb-nav-link" role="tab" aria-selected="false" data-view-target="home">Lounge Home</a></li><li role="presentation"><a href="https://cccultivate.com/wakenbake-lounge-community/?view=explore" class="wnb-nav-link" role="tab" aria-selected="false" data-view-target="explore">Explore</a></li><li role="presentation"><a href="https://cccultivate.com/wakenbake-lounge-community/?view=botanical" class="wnb-nav-link" role="tab" aria-selected="false" data-view-target="botanical">Botanical Discovery</a></li><li role="presentation"><a href="https://cccultivate.com/wakenbake-lounge-community/?view=benefits" class="wnb-nav-link" role="tab" aria-selected="false" data-view-target="benefits">Member Benefits</a></li><li role="presentation"><a href="https://cccultivate.com/wakenbake-lounge-community/?view=whats-new" class="wnb-nav-link" role="tab" aria-selected="false" data-view-target="whats-new">What&#8217;s New</a></li><li role="presentation"><a href="https://cccultivate.com/wakenbake-lounge-community/?view=account" class="wnb-nav-link" role="tab" aria-selected="false" data-view-target="account">Account Return</a></li></ul></nav><main class="wnb-lounge-main" id="wnb-lounge-content" role="main"><div class="wnb-screen wnb-screen-empty"><div class="wnb-card wnb-empty-card"><h1>Resource In Editorial Review</h1><p>Educational guides and curriculum lessons are currently undergoing final editorial verification and will appear here upon publication.</p><a href="https://cccultivate.com/wakenbake-lounge-community/" class="wnb-btn wnb-btn-primary">&larr; Return to Lounge Home</a></div></div></main><nav class="wnb-mobile-bottom-bar" aria-label="Mobile Priority Navigation"><a href="https://cccultivate.com/wakenbake-lounge-community/" class="wnb-mobile-tab" data-view-target="home"><span class="wnb-tab-icon" aria-hidden="true">&#127968;</span><span class="wnb-tab-label">Home</span></a><a href="https://cccultivate.com/wakenbake-lounge-community/?view=explore" class="wnb-mobile-tab is-active" data-view-target="explore"><span class="wnb-tab-icon" aria-hidden="true">&#128269;</span><span class="wnb-tab-label">Explore</span></a><a href="https://cccultivate.com/ask-budly/" class="wnb-mobile-tab" target="_blank" rel="noopener"><span class="wnb-tab-icon" aria-hidden="true">&#128172;</span><span class="wnb-tab-label">Budly</span></a><a href="https://cccultivate.com/wakenbake-lounge-community/?view=account" class="wnb-mobile-tab" data-view-target="account"><span class="wnb-tab-icon" aria-hidden="true">&#128100;</span><span class="wnb-tab-label">Account</span></a></nav><script>
 (function() {

@@ -327,6 +327,20 @@ assert_lounge( false !== strpos( $html_bd_fix, 'Blueberry' ), "Botanical Exhibit
 CCC\WNB\Lounge_UI::set_fixture_mode( false );
 assert_lounge( false === CCC\WNB\Lounge_UI::is_fixture_mode_enabled(), "Teardown: Fixture mode safely reset to disabled" );
 
+// -------------------------------------------------------------
+// SECTION 10: MULTI-VIEWPORT HORIZONTAL OVERFLOW & RESPONSIVENESS
+// -------------------------------------------------------------
+echo "\n--- 10. MULTI-VIEWPORT HORIZONTAL OVERFLOW & RESPONSIVENESS ---\n";
+
+$py_cmd = '& "C:\\Users\\19196\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" tests/test_viewport_overflow.py 2>&1';
+$py_out = array();
+$py_ret = 0;
+exec( 'powershell -Command ' . escapeshellarg( $py_cmd ), $py_out, $py_ret );
+$py_text = implode( "\n", $py_out );
+
+assert_lounge( $py_ret === 0, "Responsive Layout: Multi-viewport overflow test passed across all viewports (exit code 0)" );
+assert_lounge( false !== strpos( $py_text, 'ZERO HORIZONTAL OVERFLOW DETECTED' ), "Responsive Layout: Verified 320px, 375px, 390px, 430px, 820px, 1440px fit without horizontal page overflow" );
+
 echo "\n=======================================================\n";
 echo "MX-4B LOUNGE UI VERIFICATION COMPLETE: ALL {$pass_count} CHECKS PASSED\n";
 echo "=======================================================\n\n";

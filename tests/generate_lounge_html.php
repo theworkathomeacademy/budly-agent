@@ -29,16 +29,22 @@ function build_page( string $title, string $inner_html, string $css ): string {
         }
         .container {
             max-width: 1440px;
+            width: 100%;
+            box-sizing: border-box;
             margin: 0 auto;
             padding: 20px;
         }
         @media (max-width: 600px) {
-            .container { padding: 8px; }
+            .container { padding: 4px; }
+            .wnb-fullpage-preview .wnb-mobile-bottom-bar {
+                position: static !important;
+                margin-top: 24px;
+            }
         }
     ' . $css . '
     </style>
 </head>
-<body>
+<body class="wnb-fullpage-preview">
     <div class="container">
         ' . $inner_html . '
     </div>

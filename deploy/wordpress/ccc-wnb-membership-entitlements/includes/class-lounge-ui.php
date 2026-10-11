@@ -1615,7 +1615,8 @@ final class Lounge_UI {
     color: var(--wnb-muted);
     font-size: 0.72rem;
     font-weight: 600;
-    min-width: 60px;
+    min-width: 0;
+    flex: 1;
     padding: 4px 0;
     min-height: 48px;
     justify-content: center;
@@ -1624,7 +1625,13 @@ final class Lounge_UI {
 .wnb-mobile-tab.is-active { color: var(--wnb-gold); }
 .wnb-tab-icon { font-size: 1.25rem; line-height: 1; margin-bottom: 3px; }
 
-/* Responsive Breakpoints (1440px, 820px, 390px) */
+/* Full-page screenshot capture mode support */
+.wnb-fullpage-capture .wnb-mobile-bottom-bar {
+    position: static;
+    margin-top: 24px;
+}
+
+/* Responsive Breakpoints (1440px, 820px, 430px, 390px, 375px, 320px) */
 @media (max-width: 1024px) {
     .wnb-grid-4 { grid-template-columns: repeat(2, 1fr); }
     .wnb-grid-3 { grid-template-columns: repeat(2, 1fr); }
@@ -1637,6 +1644,7 @@ final class Lounge_UI {
 }
 @media (max-width: 600px) {
     .wnb-lounge-app { padding-bottom: 85px; }
+    .wnb-lounge-main { padding: 20px 16px; }
     .wnb-desktop-nav { display: none; }
     .wnb-mobile-bottom-bar { display: flex; }
     .wnb-grid-4, .wnb-grid-3, .wnb-grid-2 { grid-template-columns: 1fr; }
@@ -1644,8 +1652,22 @@ final class Lounge_UI {
     .wnb-hero-lede { font-size: 1rem; }
     .wnb-article { padding: 18px; }
     .wnb-article-title { font-size: 1.5rem; }
-    .wnb-welcome-cta-group, .wnb-restricted-actions { flex-direction: column; }
-    .wnb-btn { width: 100%; }
+    .wnb-welcome-cta-group, .wnb-restricted-actions, .wnb-status-actions { flex-direction: column; }
+    .wnb-welcome-cta-group .wnb-btn, .wnb-restricted-actions .wnb-btn, .wnb-status-actions .wnb-btn { width: 100%; }
+    .wnb-card-footer { flex-direction: column; align-items: flex-start; }
+    .wnb-card-footer .wnb-btn { width: 100%; }
+}
+@media (max-width: 400px) {
+    .wnb-header { padding: 12px 10px; }
+    .wnb-brand { gap: 8px; }
+    .wnb-brand-emblem { width: 34px; height: 34px; font-size: 1.2rem; }
+    .wnb-brand-title { font-size: 1.05rem; }
+    .wnb-brand-subtitle { font-size: 0.65rem; }
+    .wnb-lounge-main { padding: 16px 10px; }
+    .wnb-card { padding: 16px 12px; }
+    .wnb-welcome-hero { padding: 32px 12px; }
+    .wnb-hero-title { font-size: 1.5rem; }
+    .wnb-hero-lede { font-size: 0.95rem; }
 }
 ';
     }
