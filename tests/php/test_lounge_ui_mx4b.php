@@ -114,6 +114,7 @@ assert_lounge( false !== strpos( $html_detail_unlocked, 'Anatomy of a Cannabis F
 assert_lounge( false !== strpos( $html_detail_unlocked, 'Glandular Trichomes' ), "Detail (Unlocked): Displays full lesson body" );
 assert_lounge( false !== strpos( $html_detail_unlocked, 'Key Takeaways' ), "Detail (Unlocked): Displays Key Takeaways section" );
 assert_lounge( false !== strpos( $html_detail_unlocked, 'Discuss with Budly' ), "Detail (Unlocked): Displays Discuss with Budly CTA" );
+assert_lounge( false !== strpos( $html_detail_unlocked, 'Educational Material:' ), "Detail (Unlocked): Displays educational compliance disclaimer" );
 assert_lounge( false === strpos( $html_detail_unlocked, 'Exclusive Member Resource' ), "Detail (Unlocked): Does NOT display locked gate" );
 
 // Case B: Pass user views Member item -> RESTRICTED (Zero-leak verification)
@@ -184,6 +185,7 @@ assert_lounge( false !== strpos( $html_strain_blue_dream, 'Blueberry' ), "Strain
 assert_lounge( false !== strpos( $html_strain_blue_dream, 'Genetic Lineage' ), "Strain Exhibit: Displays Genetic Lineage section" );
 assert_lounge( false !== strpos( $html_strain_blue_dream, 'Chemistry &amp; Laboratory Lens' ), "Strain Exhibit: Displays Chemistry section" );
 assert_lounge( false !== strpos( $html_strain_blue_dream, 'Ask Budly About This Strain' ), "Strain Exhibit: Displays Ask Budly CTA" );
+assert_lounge( false !== strpos( $html_strain_blue_dream, 'Botanical Science Notice:' ), "Strain Exhibit: Displays botanical compliance disclaimer" );
 
 // Single Strain Exhibit View: Granddaddy Purple
 $_GET = array( 'view' => 'botanical', 'strain' => 'granddaddy-purple' );
@@ -204,6 +206,7 @@ assert_lounge( false !== strpos( $html_benefits, 'Lounge Member' ) && false !== 
 assert_lounge( false !== strpos( $html_benefits, 'Lounge Elite' ) && false !== strpos( $html_benefits, '$24.99' ), "Benefits: Displays Elite $24.99/mo" );
 assert_lounge( false !== strpos( $html_benefits, '10% eligible store discount' ), "Benefits: Details 10% discount for Member" );
 assert_lounge( false !== strpos( $html_benefits, '25% eligible store discount' ), "Benefits: Details 25% discount for Elite" );
+assert_lounge( false !== strpos( $html_benefits, 'Discount Exclusions' ), "Benefits: Renders approved discount exclusions notice" );
 
 // -------------------------------------------------------------
 // SECTION 7: SCREEN 06 - WHAT'S NEW LOG
@@ -214,9 +217,9 @@ $_GET = array( 'view' => 'whats-new' );
 $html_whats_new = CCC\WNB\Lounge_UI::render();
 
 assert_lounge( false !== strpos( $html_whats_new, 'What&#8217;s New in The Lounge' ), "What's New: Displays title" );
-assert_lounge( false !== strpos( $html_whats_new, 'Lounge Entitlements v0.4.0 &amp; Unified Member UX Released' ), "What's New: Displays v0.4.0 entry" );
+assert_lounge( false !== strpos( $html_whats_new, 'Wake&#8217;n&#8217;Bake Lounge Entitlements &amp; Account Experience v0.4.0' ), "What's New: Displays v0.4.0 entry" );
 assert_lounge( false !== strpos( $html_whats_new, 'October 10, 2026' ), "What's New: Displays October 10, 2026 date" );
-assert_lounge( false !== strpos( $html_whats_new, 'Botanical Discovery Collection Volume I Curriculum Integrated' ), "What's New: Displays Volume I entry" );
+assert_lounge( false !== strpos( $html_whats_new, 'Botanical Discovery Volume I Founding Cultivar Preview' ), "What's New: Displays Volume I entry" );
 
 // -------------------------------------------------------------
 // SECTION 8: SCREEN 07 - ACCOUNT RETURN HUB

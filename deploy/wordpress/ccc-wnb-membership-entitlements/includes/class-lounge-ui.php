@@ -488,6 +488,11 @@ final class Lounge_UI {
             $out .= '</aside>';
         }
 
+        // Compliance & Educational Notice
+        $out .= '<div class="wnb-compliance-notice">';
+        $out .= '<p><small><em>Educational Material: This resource is provided strictly for botanical plant science, culinary technique, and cultural education. It does not constitute medical advice or health claims. Cannabis regulations vary by jurisdiction.</em></small></p>';
+        $out .= '</div>';
+
         // Article Footer & Navigation
         $out .= '<footer class="wnb-article-footer">';
         $out .= '<a href="' . self::esc_url( $explore_url ) . '" class="wnb-btn wnb-btn-outline">&larr; Back to Explore</a>';
@@ -604,6 +609,11 @@ final class Lounge_UI {
 
         $out .= '</div>'; // .wnb-exhibit-grid
 
+        // Botanical Disclaimer & Compliance
+        $out .= '<div class="wnb-compliance-notice">';
+        $out .= '<p><small><em>Botanical Science Notice: Cultivar profiles, terpene notes, and genetic lineages are presented for botanical education and cultural plant history only. Chemical profiles and sensory qualities vary by phenotype, farm terroir, and laboratory testing.</em></small></p>';
+        $out .= '</div>';
+
         $out .= '<footer class="wnb-exhibit-footer">';
         $out .= '<a href="' . self::esc_url( $botanical_url ) . '" class="wnb-btn wnb-btn-outline">&larr; Back to Gallery</a>';
         $out .= '<a href="' . self::esc_url( self::get_budly_url() ) . '" class="wnb-btn wnb-btn-gold" target="_blank" rel="noopener">Ask Budly About This Strain</a>';
@@ -694,6 +704,9 @@ final class Lounge_UI {
         $out .= '</div>';
 
         $out .= '</div>'; // .wnb-card-grid
+        $out .= '<div class="wnb-card wnb-exclusions-card">';
+        $out .= '<p class="wnb-discount-exclusions-note"><small><strong>* Discount Exclusions:</strong> Eligible store discounts apply to regular-priced items only. Excludes other memberships, bulk products, class payment-plan products, sale or clearance items, and transactions using coupons.</small></p>';
+        $out .= '</div>';
         $out .= '</div>'; // .wnb-screen-benefits
 
         return $out;
@@ -706,18 +719,18 @@ final class Lounge_UI {
         $updates = array(
             array(
                 'date'    => 'October 10, 2026',
-                'title'   => 'Lounge Entitlements v0.4.0 &amp; Unified Member UX Released',
-                'summary' => 'Comprehensive member account dashboard cards, post-order welcome routing, and full mobile-responsive emerald-and-gold interface deployed to production.',
+                'title'   => 'Wake&#8217;n&#8217;Bake Lounge Entitlements &amp; Account Experience v0.4.0',
+                'summary' => 'Unified member account dashboard cards, post-order welcome routing, and mobile-responsive botanical presentation verified across Pass, Member, and Elite tiers.',
             ),
             array(
                 'date'    => 'October 8, 2026',
-                'title'   => 'Botanical Discovery Collection Volume I Curriculum Integrated',
-                'summary' => 'Twenty-five cultivar profiles, terpene sensory vocabularies, and plant anatomy lessons synchronized with the official Botanical Coloring Collection.',
+                'title'   => 'Botanical Discovery Volume I Founding Cultivar Preview',
+                'summary' => 'Initial cultivar profiles (Blue Dream, Granddaddy Purple, Jack Herer, Sour Diesel) and foundational plant anatomy concepts aligned with Botanical Collection Volume I.',
             ),
             array(
                 'date'    => 'September 20, 2026',
-                'title'   => 'Wake&#8217;n&#8217;Bake Three-Tier Commercial Architecture Published',
-                'summary' => 'Pass, Member, and Elite tiers synchronized across Wix and WooCommerce with flexible subscription automation.',
+                'title'   => 'Three-Tier Commercial Synchronization Established',
+                'summary' => 'Pass, Member, and Elite tier architecture harmonized across store checkout, subscription management, and deterministic server-side entitlement rules.',
             ),
         );
 
@@ -1389,6 +1402,16 @@ final class Lounge_UI {
 .wnb-takeaways-card ul { margin: 0; padding-left: 20px; }
 .wnb-takeaways-card li { margin-bottom: 8px; line-height: 1.5; color: var(--wnb-ink); }
 .wnb-article-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--wnb-line); padding-top: 24px; flex-wrap: wrap; gap: 14px; }
+.wnb-compliance-notice {
+    margin: 20px 0 16px;
+    padding: 12px 16px;
+    background: rgba(245, 240, 223, 0.03);
+    border-left: 2px solid var(--wnb-muted);
+    border-radius: 4px;
+    color: var(--wnb-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
 
 /* Restricted State */
 .wnb-restricted-card {
@@ -1412,6 +1435,19 @@ final class Lounge_UI {
 .wnb-tier-price { font-size: 1.5rem; font-weight: 700; color: var(--wnb-gold); margin: 8px 0 16px; }
 .wnb-benefits-checklist { list-style: none; padding: 0; margin: 0 0 24px; flex-grow: 1; }
 .wnb-benefits-checklist li { margin-bottom: 10px; font-size: 0.92rem; color: var(--wnb-muted); line-height: 1.4; }
+.wnb-exclusions-card {
+    background: transparent;
+    border: 1px solid var(--wnb-line);
+    padding: 14px 18px;
+    margin-top: 18px;
+    border-radius: 8px;
+}
+.wnb-discount-exclusions-note {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--wnb-muted);
+    line-height: 1.5;
+}
 
 /* Timeline for What\'s New */
 .wnb-timeline-card { border-left: 3px solid var(--wnb-gold); margin-bottom: 16px; }
