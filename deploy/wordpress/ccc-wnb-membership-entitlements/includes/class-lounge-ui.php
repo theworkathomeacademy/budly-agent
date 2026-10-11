@@ -16,6 +16,35 @@ defined( 'ABSPATH' ) || exit;
 final class Lounge_UI {
 
     /**
+     * Development fixture mode flag. Disabled by default in release builds.
+     *
+     * @var bool
+     */
+    private static bool $fixture_mode = false;
+
+    /**
+     * Determines whether development fixtures are enabled.
+     * Defaults to false for release builds. Can be enabled via constant CCC_WNB_ENABLE_DEV_FIXTURES
+     * or via set_fixture_mode(true) in development/test harnesses.
+     */
+    public static function is_fixture_mode_enabled(): bool {
+        if ( defined( 'CCC_WNB_ENABLE_DEV_FIXTURES' ) && CCC_WNB_ENABLE_DEV_FIXTURES ) {
+            return true;
+        }
+        if ( function_exists( 'apply_filters' ) ) {
+            return (bool) apply_filters( 'ccc_wnb_lounge_enable_dev_fixtures', self::$fixture_mode );
+        }
+        return self::$fixture_mode;
+    }
+
+    /**
+     * Programmatically toggles development fixture mode.
+     */
+    public static function set_fixture_mode( bool $enabled ): void {
+        self::$fixture_mode = $enabled;
+    }
+
+    /**
      * Escape attribute fallback.
      */
     public static function esc_attr( string $text ): string {
@@ -297,18 +326,35 @@ final class Lounge_UI {
         $out .= '</section>';
 
         // Screen 01 Featured Learning Card
-        $featured_url = self::get_lounge_url( 'detail', 'VOL1-EDU-01' );
+        $catalog = self::get_content_items();
+        $has_featured = self::is_fixture_mode_enabled() && isset( $catalog['VOL1-EDU-01'] );
+
         $out .= '<section class="wnb-featured-section" aria-labelledby="wnb-featured-heading">';
         $out .= '<h2 id="wnb-featured-heading" class="wnb-section-title">Featured Learning</h2>';
-        $out .= '<article class="wnb-card wnb-featured-card">';
-        $out .= '<div class="wnb-card-badge">Foundations Curriculum &bull; 8 min read</div>';
-        $out .= '<h3 class="wnb-card-title"><a href="' . self::esc_url( $featured_url ) . '">Anatomy of a Cannabis Flower: Resins, Trichomes &amp; Chemovars</a></h3>';
-        $out .= '<p class="wnb-card-summary">Explore the architecture of the cannabis plant. Discover how glandular trichomes synthesize cannabinoids, terpenes, and flavonoids, and why certificates of analysis matter more than market names.</p>';
-        $out .= '<div class="wnb-card-footer">';
-        $out .= '<span class="wnb-access-tag wnb-access-pass">Free Pass &amp; Above</span>';
-        $out .= '<a href="' . self::esc_url( $featured_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary">Read Lesson &rarr;</a>';
-        $out .= '</div>';
-        $out .= '</article>';
+
+        if ( $has_featured ) {
+            $featured_url = self::get_lounge_url( 'detail', 'VOL1-EDU-01' );
+            $out .= '<article class="wnb-card wnb-featured-card">';
+            $out .= '<div class="wnb-card-badge">Foundations Curriculum &bull; 8 min read</div>';
+            $out .= '<h3 class="wnb-card-title"><a href="' . self::esc_url( $featured_url ) . '">Anatomy of a Cannabis Flower: Resins, Trichomes &amp; Chemovars</a></h3>';
+            $out .= '<p class="wnb-card-summary">Explore the architecture of the cannabis plant. Discover how glandular trichomes synthesize cannabinoids, terpenes, and flavonoids, and why certificates of analysis matter more than market names.</p>';
+            $out .= '<div class="wnb-card-footer">';
+            $out .= '<span class="wnb-access-tag wnb-access-pass">Free Pass &amp; Above</span>';
+            $out .= '<a href="' . self::esc_url( $featured_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary">Read Lesson &rarr;</a>';
+            $out .= '</div>';
+            $out .= '</article>';
+        } else {
+            // Honest pending-content state in release builds
+            $out .= '<article class="wnb-card wnb-featured-card">';
+            $out .= '<div class="wnb-card-badge">Curriculum Status &bull; In Editorial Review</div>';
+            $out .= '<h3 class="wnb-card-title">Foundations Curriculum In Preparation</h3>';
+            $out .= '<p class="wnb-card-summary">Official Lounge educational lessons and botanical guides are currently undergoing editorial review. Check back soon for approved releases, or consult Ask Budly for interactive plant guidance.</p>';
+            $out .= '<div class="wnb-card-footer">';
+            $out .= '<span class="wnb-access-tag wnb-access-pass">Release Pending</span>';
+            $out .= '<a href="' . self::esc_url( self::get_budly_url() ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary" target="_blank" rel="noopener">Ask Budly &rarr;</a>';
+            $out .= '</div>';
+            $out .= '</article>';
+        }
         $out .= '</section>';
 
         // Explore Quick Grid
@@ -328,7 +374,7 @@ final class Lounge_UI {
         $out .= '<div class="wnb-card wnb-topic-card">';
         $out .= '<span class="wnb-topic-icon" aria-hidden="true">&#128218;</span>';
         $out .= '<h3>Cannabis Education</h3>';
-        $out .= '<p>Deep science curriculum covering terpenes, chemovars, extraction dynamics, and plant physiology.</p>';
+        $out .= '<p>Foundational curriculum covering terpenes, chemovars, extraction dynamics, and plant physiology.</p>';
         $out .= '<a href="' . self::esc_url( self::get_lounge_url( 'explore' ) ) . '" class="wnb-card-action">Browse Lessons &rarr;</a>';
         $out .= '</div>';
 
@@ -375,7 +421,7 @@ final class Lounge_UI {
         $out = '<div class="wnb-screen wnb-screen-explore">';
         $out .= '<div class="wnb-screen-header">';
         $out .= '<h1 class="wnb-screen-title">Explore Educational Resources</h1>';
-        $out .= '<p class="wnb-screen-lede">Curated cannabis education, practical botanical science, and culinary guides. All resources derive from verified curriculum and peer-reviewed plant science.</p>';
+        $out .= '<p class="wnb-screen-lede">Curated cannabis education, practical botanical science, and culinary guides focusing on plant biology, culinary craft, and mindful appreciation.</p>';
         $out .= '</div>';
 
         // Filter Pills
@@ -387,43 +433,58 @@ final class Lounge_UI {
         $out .= '<button type="button" class="wnb-filter-pill" data-filter="exclusive">Exclusives</button>';
         $out .= '</div>';
 
-        // Content Cards Grid
-        $out .= '<div class="wnb-card-grid wnb-grid-3 wnb-content-items-grid">';
-        foreach ( $catalog as $item ) {
-            $required_level = $item['tier'];
-            $can_access = ( 'none' !== $level ) && Membership_Entitlements::can_access_level( $user_id, $required_level );
-            $detail_url = self::get_lounge_url( 'detail', $item['id'] );
-
-            $badge_class = 'wnb-access-pass';
-            $badge_text = 'Pass';
-            if ( 'member' === $required_level ) {
-                $badge_class = 'wnb-access-member';
-                $badge_text = 'Member';
-            } elseif ( 'elite' === $required_level ) {
-                $badge_class = 'wnb-access-elite';
-                $badge_text = 'Elite VIP';
-            }
-
-            $out .= '<article class="wnb-card wnb-content-card" data-category="' . self::esc_attr( $item['category'] ) . '" data-tier="' . self::esc_attr( $required_level ) . '">';
-            $out .= '<div class="wnb-card-meta">';
-            $out .= '<span class="wnb-category-tag">' . self::esc_html( ucfirst( $item['category'] ) ) . '</span>';
-            $out .= '<span class="wnb-access-tag ' . self::esc_attr( $badge_class ) . '">' . self::esc_html( $badge_text ) . '</span>';
+        if ( empty( $catalog ) ) {
+            // Honest pending-content empty state in release builds
+            $out .= '<div class="wnb-card wnb-empty-card" style="text-align: center; padding: 48px 24px;">';
+            $out .= '<span class="wnb-topic-icon" aria-hidden="true">&#128218;</span>';
+            $out .= '<h2>Educational Guides In Preparation</h2>';
+            $out .= '<p style="max-width: 540px; margin: 12px auto 24px; color: var(--wnb-muted); font-size: 0.95rem; line-height: 1.55;">';
+            $out .= 'Curated educational guides and botanical lessons are currently in editorial production and undergoing review. Explore our member benefits or ask Budly for plant science guidance in the interim.';
+            $out .= '</p>';
+            $out .= '<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">';
+            $out .= '<a href="' . self::esc_url( self::get_budly_url() ) . '" class="wnb-btn wnb-btn-gold" target="_blank" rel="noopener">Ask Budly &rarr;</a>';
+            $out .= '<a href="' . self::esc_url( self::get_lounge_url( 'benefits' ) ) . '" class="wnb-btn wnb-btn-outline">View Member Benefits</a>';
             $out .= '</div>';
-
-            $out .= '<h2 class="wnb-card-title"><a href="' . self::esc_url( $detail_url ) . '">' . self::esc_html( $item['title'] ) . '</a></h2>';
-            $out .= '<p class="wnb-card-excerpt">' . self::esc_html( $item['summary'] ) . '</p>';
-
-            $out .= '<div class="wnb-card-footer">';
-            $out .= '<span class="wnb-read-time">' . self::esc_html( $item['read_time'] ) . '</span>';
-            if ( $can_access ) {
-                $out .= '<a href="' . self::esc_url( $detail_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary">Read Guide &rarr;</a>';
-            } else {
-                $out .= '<a href="' . self::esc_url( $detail_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-outline wnb-locked-cta">&#128274; ' . self::esc_html( $badge_text ) . '</a>';
-            }
             $out .= '</div>';
-            $out .= '</article>';
+        } else {
+            // Content Cards Grid
+            $out .= '<div class="wnb-card-grid wnb-grid-3 wnb-content-items-grid">';
+            foreach ( $catalog as $item ) {
+                $required_level = $item['tier'];
+                $can_access = ( 'none' !== $level ) && Membership_Entitlements::can_access_level( $user_id, $required_level );
+                $detail_url = self::get_lounge_url( 'detail', $item['id'] );
+
+                $badge_class = 'wnb-access-pass';
+                $badge_text = 'Pass';
+                if ( 'member' === $required_level ) {
+                    $badge_class = 'wnb-access-member';
+                    $badge_text = 'Member';
+                } elseif ( 'elite' === $required_level ) {
+                    $badge_class = 'wnb-access-elite';
+                    $badge_text = 'Elite VIP';
+                }
+
+                $out .= '<article class="wnb-card wnb-content-card" data-category="' . self::esc_attr( $item['category'] ) . '" data-tier="' . self::esc_attr( $required_level ) . '">';
+                $out .= '<div class="wnb-card-meta">';
+                $out .= '<span class="wnb-category-tag">' . self::esc_html( ucfirst( $item['category'] ) ) . '</span>';
+                $out .= '<span class="wnb-access-tag ' . self::esc_attr( $badge_class ) . '">' . self::esc_html( $badge_text ) . '</span>';
+                $out .= '</div>';
+
+                $out .= '<h2 class="wnb-card-title"><a href="' . self::esc_url( $detail_url ) . '">' . self::esc_html( $item['title'] ) . '</a></h2>';
+                $out .= '<p class="wnb-card-excerpt">' . self::esc_html( $item['summary'] ) . '</p>';
+
+                $out .= '<div class="wnb-card-footer">';
+                $out .= '<span class="wnb-read-time">' . self::esc_html( $item['read_time'] ) . '</span>';
+                if ( $can_access ) {
+                    $out .= '<a href="' . self::esc_url( $detail_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary">Read Guide &rarr;</a>';
+                } else {
+                    $out .= '<a href="' . self::esc_url( $detail_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-outline wnb-locked-cta">&#128274; ' . self::esc_html( $badge_text ) . '</a>';
+                }
+                $out .= '</div>';
+                $out .= '</article>';
+            }
+            $out .= '</div>'; // .wnb-card-grid
         }
-        $out .= '</div>'; // .wnb-card-grid
 
         $out .= '</div>'; // .wnb-screen-explore
         return $out;
@@ -437,6 +498,9 @@ final class Lounge_UI {
         $catalog = self::get_content_items();
 
         if ( ! isset( $catalog[ $item_id ] ) ) {
+            if ( ! self::is_fixture_mode_enabled() ) {
+                return self::render_empty_state( 'Resource In Editorial Review', 'Educational guides and curriculum lessons are currently undergoing final editorial verification and will appear here upon publication.' );
+            }
             return self::render_empty_state( 'Resource Not Found', 'The requested educational guide or lesson does not exist or has been archived.' );
         }
 
@@ -522,40 +586,59 @@ final class Lounge_UI {
                     return self::render_botanical_detail( $s );
                 }
             }
+            if ( ! self::is_fixture_mode_enabled() ) {
+                return self::render_empty_state( 'Botanical Exhibit In Preparation', 'The requested botanical exhibit is currently in preparation and undergoing editorial verification.' );
+            }
+            return self::render_empty_state( 'Exhibit Not Found', 'The requested botanical strain exhibit does not exist in Volume I.' );
         }
 
         $out = '<div class="wnb-screen wnb-screen-botanical">';
         $out .= '<div class="wnb-screen-header">';
         $out .= '<div class="wnb-welcome-kicker">Botanical Collection &bull; Volume I</div>';
         $out .= '<h1 class="wnb-screen-title">Botanical Discovery Gallery</h1>';
-        $out .= '<p class="wnb-screen-lede">Authentic botanical strain profiles grounded in verified plant genetics, traditional lineage, and laboratory chemistry analysis. Aligned with the Botanical Coloring Collection Volume I.</p>';
+        $out .= '<p class="wnb-screen-lede">Botanical cultivar profiles, lineage traditions, and sensory vocabulary aligned with the Botanical Coloring Collection Volume I.</p>';
         $out .= '</div>';
 
-        $out .= '<div class="wnb-card-grid wnb-grid-2">';
-        foreach ( $strains as $id => $s ) {
-            $exhibit_url = self::get_lounge_url( 'botanical', $id );
-            $out .= '<article class="wnb-card wnb-botanical-card">';
-            $out .= '<div class="wnb-botanical-header">';
-            $out .= '<span class="wnb-strain-number">Exhibit #' . self::esc_html( (string) $s['number'] ) . '</span>';
-            $out .= '<span class="wnb-access-tag wnb-access-pass">Public &amp; Pass</span>';
+        if ( empty( $strains ) ) {
+            // Honest pending-content empty state in release builds
+            $out .= '<div class="wnb-card wnb-empty-card" style="text-align: center; padding: 48px 24px;">';
+            $out .= '<span class="wnb-topic-icon" aria-hidden="true">&#127807;</span>';
+            $out .= '<h2>Botanical Gallery In Preparation</h2>';
+            $out .= '<p style="max-width: 540px; margin: 12px auto 24px; color: var(--wnb-muted); font-size: 0.95rem; line-height: 1.55;">';
+            $out .= 'Cultivar exhibits and botanical profiles for Volume I are currently in preparation and will be published following editorial verification. You can consult Ask Budly for botanical guidance anytime.';
+            $out .= '</p>';
+            $out .= '<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">';
+            $out .= '<a href="' . self::esc_url( self::get_budly_url() ) . '" class="wnb-btn wnb-btn-gold" target="_blank" rel="noopener">Ask Budly &rarr;</a>';
+            $out .= '<a href="' . self::esc_url( self::get_lounge_url( 'home' ) ) . '" class="wnb-btn wnb-btn-outline">&larr; Return to Lounge Home</a>';
             $out .= '</div>';
+            $out .= '</div>';
+        } else {
+            $out .= '<div class="wnb-card-grid wnb-grid-2">';
+            foreach ( $strains as $id => $s ) {
+                $exhibit_url = self::get_lounge_url( 'botanical', $id );
+                $out .= '<article class="wnb-card wnb-botanical-card">';
+                $out .= '<div class="wnb-botanical-header">';
+                $out .= '<span class="wnb-strain-number">Exhibit #' . self::esc_html( (string) $s['number'] ) . '</span>';
+                $out .= '<span class="wnb-access-tag wnb-access-pass">Public &amp; Pass</span>';
+                $out .= '</div>';
 
-            $out .= '<h2 class="wnb-strain-title"><a href="' . self::esc_url( $exhibit_url ) . '">' . self::esc_html( $s['name'] ) . '</a></h2>';
-            $out .= '<p class="wnb-lineage-text"><strong>Lineage:</strong> ' . $s['lineage'] . '</p>';
-            $out .= '<p class="wnb-card-excerpt">' . self::esc_html( $s['overview'] ) . '</p>';
+                $out .= '<h2 class="wnb-strain-title"><a href="' . self::esc_url( $exhibit_url ) . '">' . self::esc_html( $s['name'] ) . '</a></h2>';
+                $out .= '<p class="wnb-lineage-text"><strong>Lineage:</strong> ' . $s['lineage'] . '</p>';
+                $out .= '<p class="wnb-card-excerpt">' . self::esc_html( $s['overview'] ) . '</p>';
 
-            $out .= '<div class="wnb-aroma-chips">';
-            foreach ( $s['aroma'] as $aroma ) {
-                $out .= '<span class="wnb-chip">' . self::esc_html( $aroma ) . '</span>';
+                $out .= '<div class="wnb-aroma-chips">';
+                foreach ( $s['aroma'] as $aroma ) {
+                    $out .= '<span class="wnb-chip">' . self::esc_html( $aroma ) . '</span>';
+                }
+                $out .= '</div>';
+
+                $out .= '<div class="wnb-card-footer">';
+                $out .= '<a href="' . self::esc_url( $exhibit_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary">View Botanical Exhibit &rarr;</a>';
+                $out .= '</div>';
+                $out .= '</article>';
             }
-            $out .= '</div>';
-
-            $out .= '<div class="wnb-card-footer">';
-            $out .= '<a href="' . self::esc_url( $exhibit_url ) . '" class="wnb-btn wnb-btn-sm wnb-btn-primary">View Botanical Exhibit &rarr;</a>';
-            $out .= '</div>';
-            $out .= '</article>';
+            $out .= '</div>'; // .wnb-card-grid
         }
-        $out .= '</div>'; // .wnb-card-grid
 
         $out .= '</div>'; // .wnb-screen-botanical
         return $out;
@@ -601,9 +684,9 @@ final class Lounge_UI {
         $out .= '<p class="wnb-note">Terpene notes provide qualitative sensory orientation. Chemical ratios vary by batch and farm.</p>';
         $out .= '</div>';
 
-        // Laboratory Lens
+        // Chemical & Aroma Profile
         $out .= '<div class="wnb-detail-block wnb-grid-full">';
-        $out .= '<h3>Chemistry &amp; Laboratory Lens</h3>';
+        $out .= '<h3>Chemical &amp; Aroma Profile</h3>';
         $out .= '<p>' . self::esc_html( $strain['chemistry'] ) . '</p>';
         $out .= '</div>';
 
@@ -716,39 +799,38 @@ final class Lounge_UI {
      * Screen 06: What's New Chronological Feed
      */
     private static function render_whats_new( int $user_id, array $state ): string {
-        $updates = array(
-            array(
-                'date'    => 'October 10, 2026',
-                'title'   => 'Wake&#8217;n&#8217;Bake Lounge Entitlements &amp; Account Experience v0.4.0',
-                'summary' => 'Unified member account dashboard cards, post-order welcome routing, and mobile-responsive botanical presentation verified across Pass, Member, and Elite tiers.',
-            ),
-            array(
-                'date'    => 'October 8, 2026',
-                'title'   => 'Botanical Discovery Volume I Founding Cultivar Preview',
-                'summary' => 'Initial cultivar profiles (Blue Dream, Granddaddy Purple, Jack Herer, Sour Diesel) and foundational plant anatomy concepts aligned with Botanical Collection Volume I.',
-            ),
-            array(
-                'date'    => 'September 20, 2026',
-                'title'   => 'Three-Tier Commercial Synchronization Established',
-                'summary' => 'Pass, Member, and Elite tier architecture harmonized across store checkout, subscription management, and deterministic server-side entitlement rules.',
-            ),
-        );
+        $updates = self::get_whats_new_items();
 
         $out = '<div class="wnb-screen wnb-screen-whats-new">';
         $out .= '<div class="wnb-screen-header">';
         $out .= '<h1 class="wnb-screen-title">What&#8217;s New in The Lounge</h1>';
-        $out .= '<p class="wnb-screen-lede">Chronological updates, curriculum releases, and ecosystem announcements.</p>';
+        $out .= '<p class="wnb-screen-lede">Official release updates, curriculum notes, and lounge announcements.</p>';
         $out .= '</div>';
 
-        $out .= '<div class="wnb-timeline">';
-        foreach ( $updates as $u ) {
-            $out .= '<article class="wnb-card wnb-timeline-card">';
-            $out .= '<time class="wnb-timeline-date">' . self::esc_html( $u['date'] ) . '</time>';
-            $out .= '<h2>' . $u['title'] . '</h2>';
-            $out .= '<p>' . self::esc_html( $u['summary'] ) . '</p>';
-            $out .= '</article>';
+        if ( empty( $updates ) ) {
+            // Useful empty state in release builds
+            $out .= '<div class="wnb-card wnb-empty-card" style="text-align: center; padding: 48px 24px;">';
+            $out .= '<span class="wnb-topic-icon" aria-hidden="true">&#128240;</span>';
+            $out .= '<h2>No Current Announcements</h2>';
+            $out .= '<p style="max-width: 540px; margin: 12px auto 24px; color: var(--wnb-muted); font-size: 0.95rem; line-height: 1.55;">';
+            $out .= 'Official announcements and curriculum release logs will be posted here as new materials are published. Check back soon for upcoming updates!';
+            $out .= '</p>';
+            $out .= '<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">';
+            $out .= '<a href="' . self::esc_url( self::get_lounge_url( 'home' ) ) . '" class="wnb-btn wnb-btn-primary">&larr; Return to Lounge Home</a>';
+            $out .= '<a href="' . self::esc_url( self::get_lounge_url( 'benefits' ) ) . '" class="wnb-btn wnb-btn-outline">View Member Benefits</a>';
+            $out .= '</div>';
+            $out .= '</div>';
+        } else {
+            $out .= '<div class="wnb-timeline">';
+            foreach ( $updates as $u ) {
+                $out .= '<article class="wnb-card wnb-timeline-card">';
+                $out .= '<time class="wnb-timeline-date">' . self::esc_html( $u['date'] ) . '</time>';
+                $out .= '<h2>' . $u['title'] . '</h2>';
+                $out .= '<p>' . self::esc_html( $u['summary'] ) . '</p>';
+                $out .= '</article>';
+            }
+            $out .= '</div>';
         }
-        $out .= '</div>';
 
         $out .= '</div>'; // .wnb-screen-whats-new
         return $out;
@@ -848,9 +930,21 @@ final class Lounge_UI {
     }
 
     /**
-     * Approved Content Catalog (MX-3 Section XIV).
+     * Educational Content Catalog.
+     * In release builds (default), returns an empty array to ensure unapproved educational articles
+     * or lessons do not leak before editorial ratification.
      */
     public static function get_content_items(): array {
+        if ( ! self::is_fixture_mode_enabled() ) {
+            return array();
+        }
+        return self::get_dev_fixture_content_items();
+    }
+
+    /**
+     * Development-only educational fixtures.
+     */
+    public static function get_dev_fixture_content_items(): array {
         return array(
             'VOL1-EDU-01' => array(
                 'id'            => 'VOL1-EDU-01',
@@ -954,9 +1048,21 @@ final class Lounge_UI {
     }
 
     /**
-     * Verified Botanical Strains Catalog (Volume I).
+     * Botanical Strains Catalog (Volume I).
+     * In release builds (default), returns an empty array to ensure unapproved cultivar descriptions
+     * do not leak before editorial ratification.
      */
     public static function get_botanical_strains(): array {
+        if ( ! self::is_fixture_mode_enabled() ) {
+            return array();
+        }
+        return self::get_dev_fixture_botanical_strains();
+    }
+
+    /**
+     * Development-only botanical fixtures.
+     */
+    public static function get_dev_fixture_botanical_strains(): array {
         return array(
             'VOL1-S01' => array(
                 'number'       => 1,
@@ -993,6 +1099,40 @@ final class Lounge_UI {
                 'overview'     => 'Pungent, fuel-like, and sharp citrus aromatics with high trichome stalk density.',
                 'aroma'        => array( 'Diesel', 'Pungent', 'Citrus', 'Earthy' ),
                 'chemistry'    => 'Limonene, myrcene, and beta-caryophyllene blend resulting in an intense gasoline-like aroma.',
+            ),
+        );
+    }
+
+    /**
+     * What's New Chronological Announcements.
+     * In release builds (default), returns an empty array to avoid unapproved claims or promises.
+     */
+    public static function get_whats_new_items(): array {
+        if ( ! self::is_fixture_mode_enabled() ) {
+            return array();
+        }
+        return self::get_dev_fixture_whats_new_items();
+    }
+
+    /**
+     * Development-only What's New fixtures.
+     */
+    public static function get_dev_fixture_whats_new_items(): array {
+        return array(
+            array(
+                'date'    => 'October 10, 2026',
+                'title'   => 'Wake&#8217;n&#8217;Bake Lounge Entitlements &amp; Account Experience v0.4.0',
+                'summary' => 'Unified member account dashboard cards, post-order welcome routing, and mobile-responsive botanical presentation verified across Pass, Member, and Elite tiers.',
+            ),
+            array(
+                'date'    => 'October 8, 2026',
+                'title'   => 'Botanical Discovery Volume I Founding Cultivar Preview',
+                'summary' => 'Initial cultivar profiles (Blue Dream, Granddaddy Purple, Jack Herer, Sour Diesel) and foundational plant anatomy concepts aligned with Botanical Collection Volume I.',
+            ),
+            array(
+                'date'    => 'September 20, 2026',
+                'title'   => 'Three-Tier Commercial Synchronization Established',
+                'summary' => 'Pass, Member, and Elite tier architecture harmonized across store checkout, subscription management, and deterministic server-side entitlement rules.',
             ),
         );
     }
