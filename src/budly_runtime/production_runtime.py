@@ -340,15 +340,68 @@ class ProductionConversationRuntime:
             ]
 
         if request.page_context and request.page_context.get("surface") == "wakenbake_lounge":
+            commercial_truth = self._load_governed_commercial_truth()
+            if not commercial_truth:
+                return self._safe_result(
+                    request, session, deterministic,
+                    "I don’t have an approved source for that yet, so I won’t guess.",
+                    "safe_no_match",
+                )
+
             view = request.page_context.get("view", "home")
-            system_rules = [
-                r for r in system_rules
-                if not r.startswith("Excluded unreleased community products: Lounge Pass")
-            ]
+
+            # 1. Eliminate contradictory instructions between historic NFT/LEGENDS and Lounge Community memberships
+            filtered_rules = []
+            for r in system_rules:
+                if r.startswith("Excluded unreleased community products: Lounge Pass"):
+                    continue
+                if "NO free membership tier" in r:
+                    filtered_rules.append(
+                        "Historic NFT Membership Family: There is NO free NFT tier and NO free NFT trial "
+                        "(NFT memberships are paid passes: Bronze, Copper, Titanium, Platinum; Torque variable $5,000–$40,000). "
+                        "LEGENDS NFT memberships remain a separate commercial family and are unchanged. "
+                        "There is NO public discussion forum, and NO automated public email newsletter subscription tool."
+                    )
+                    continue
+                filtered_rules.append(r)
+            system_rules = filtered_rules
+
+            # 2. Build dynamic plan descriptions from governed commercial_truth
+            plan_descs = []
+            for plan in commercial_truth.get("plans", []):
+                lvl = plan.get("level", "")
+                price = plan.get("price_usd", 0)
+                billing = plan.get("billing", "")
+                b_str = ", ".join(plan.get("benefits", []))
+                if lvl == "pass":
+                    plan_descs.append(f"Free Lounge Pass (${price}, includes {b_str}, claimable at https://cccultivate.com/product/lounge-pass/)")
+                elif lvl == "member":
+                    plan_descs.append(f"Lounge Member (${price}/mo, includes {b_str})")
+                elif lvl == "elite":
+                    plan_descs.append(f"Lounge Elite (${price}/mo, includes {b_str})")
+                else:
+                    billing_suffix = f"/${billing}" if billing else ""
+                    plan_descs.append(f"Lounge {lvl.title()} (${price}{billing_suffix}, includes {b_str})")
+
+            plans_summary = "; ".join(plan_descs)
+            exclusions_summary = ", ".join(commercial_truth.get("discount_exclusions", []))
+            budly_role = commercial_truth.get("authority", {}).get(
+                "budly_role",
+                "Explain approved rules only; never grant entitlement or independently calculate eligibility."
+            )
+            separate_families = " ".join(
+                commercial_truth.get("separate_membership_families", ["LEGENDS NFT memberships remain separate and unchanged."])
+            )
+
+            lounge_membership_rule = (
+                f"Wake'n'Bake Lounge Community Memberships: Grounded in commercial-truth.json, the approved community membership tiers are: {plans_summary}. "
+                f"Discounts exclude: {exclusions_summary}. Role boundary: {budly_role}. {separate_families}"
+            )
+
             lounge_rules = [
                 f"Verified Wake'n'Bake Lounge Context: The customer is currently interacting on the Wake'n'Bake Lounge surface (view: {view}) at https://cccultivate.com/wakenbake-lounge-community/",
-                "Wake'n'Bake Lounge Community Memberships: Grounded in commercial-truth.json, the approved community membership tiers are: Free Lounge Pass ($0, includes community access, claimable at https://cccultivate.com/product/lounge-pass/), Lounge Member ($9.99/mo, includes community access, Member badge, early drop access, priority event access, and 10% eligible discount), and Lounge Elite ($24.99/mo, includes Member benefits plus VIP community access, VIP badge, first drop access, priority event invitations, monthly curated Budly content, and 25% eligible discount). Discounts exclude memberships, bulk products, payment-plan classes, sale items, and coupon transactions. LEGENDS NFT memberships remain a separate family and unchanged",
-                "Public Discovery vs Protected Membership: Distinguish free public discovery (editorial guides, recipes, and botanical content available freely on the site) from protected membership tiers (Free Lounge Pass, Member $9.99/mo, and Elite $24.99/mo). Unauthenticated customers can explore public resources freely",
+                lounge_membership_rule,
+                "Publication Status & Exploration: Educational guides, botanical recipes, and plant-science exhibits are currently in editorial production / exhibit preparation and planned for future release. What is currently accessible today is the Lounge Community hub orientation (https://cccultivate.com/wakenbake-lounge-community/) and membership passes (Free Lounge Pass $0, Lounge Member $9.99/mo, Lounge Elite $24.99/mo). Never claim unpublished educational or botanical content is already live or publicly readable.",
                 "Unauthenticated Visitor Integrity: If the customer is unauthenticated or has not proven active membership, do NOT claim or assume they hold a specific membership tier or entitlement; treat them as a guest/visitor and explain how they can claim or join",
                 "Unified Brand & Online Venue: Wake'n'Bake Lounge is an online digital educational and lifestyle platform (https://dmckenzies.wixsite.com/wakenbakelounge); clarify that there is no physical brick-and-mortar storefront",
                 "Approved Destination Links: Ground responses with the verified destinations: Lounge Community (https://cccultivate.com/wakenbake-lounge-community/), Free Lounge Pass (https://cccultivate.com/product/lounge-pass/), and Wake'n'Bake Lounge Platform (https://dmckenzies.wixsite.com/wakenbakelounge)",
@@ -553,6 +606,37 @@ class ProductionConversationRuntime:
             }
             session.unmet_demands.append(demand_record)
             self.events.emit_commercial("unmet_demand", **demand_record)
+
+    def _load_governed_commercial_truth(self) -> dict[str, Any] | None:
+        knowledge_root = self.settings.knowledge_path if self.settings.knowledge_path.is_absolute() else self.root / self.settings.knowledge_path
+        candidates = [
+            self.root / "deploy" / "wordpress" / "ccc-wnb-membership-entitlements" / "commercial-truth.json",
+            knowledge_root.parent / "deploy" / "wordpress" / "ccc-wnb-membership-entitlements" / "commercial-truth.json",
+            self.root / "commercial-truth.json",
+            Path("deploy/wordpress/ccc-wnb-membership-entitlements/commercial-truth.json"),
+        ]
+        target = next((p for p in candidates if p.is_file()), None)
+        if target is None:
+            return None
+        try:
+            data = json.loads(target.read_text(encoding="utf-8"))
+            if not isinstance(data, dict):
+                return None
+            if data.get("schema_version") not in (2, "2", "2.0"):
+                return None
+            if data.get("release_state") != "AVAILABLE":
+                return None
+            if not data.get("publicly_available"):
+                return None
+            plans = data.get("plans")
+            if not isinstance(plans, list) or len(plans) == 0:
+                return None
+            for p in plans:
+                if not isinstance(p, dict) or "level" not in p or "price_usd" not in p:
+                    return None
+            return data
+        except Exception:
+            return None
 
     @staticmethod
     def _approved_links(knowledge: list[dict[str, Any]], message: str = "", page_context: dict[str, Any] | None = None) -> list[dict[str, str]]:

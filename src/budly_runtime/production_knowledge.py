@@ -735,7 +735,7 @@ class ApprovedRepositoryKnowledgeAdapter:
                         "source_reference": f"repository://{truth_path.as_posix()}#discovery",
                         "content": json.dumps({
                             "resource_type": "PUBLIC_DISCOVERY",
-                            "summary": "Wake'n'Bake Lounge public discovery features free educational articles, recipes, and botanical guides available to explore without requiring a paid membership.",
+                            "summary": "Wake'n'Bake Lounge public discovery: Educational guides, botanical recipes, and plant science exhibits are currently in editorial preparation and planned for future release. Currently accessible today are the community hub orientation and membership passes.",
                             "canonical_url": "https://cccultivate.com/wakenbake-lounge-community/",
                             "link_label": "Explore Lounge Community",
                         }, separators=(",", ":")),
