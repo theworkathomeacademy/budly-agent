@@ -322,7 +322,11 @@ final class Membership_Entitlements {
         $text = "Wake'n'Bake Lounge Pass is free and includes community access. Lounge Member is $9.99 per month with community and Member access, a Member badge, early drop access, priority event access, and 10% off eligible purchases. Lounge Elite is $24.99 per month with Member benefits plus VIP community access, a VIP badge, first drop access, priority event invitations, monthly curated Budly content, and 25% off eligible purchases. All three tiers are currently available through the approved Wake'n'Bake / CCCultivate membership journey. Discounts exclude memberships, bulk products, payment-plan classes, sale items, and transactions using coupons. LEGENDS NFT memberships are a separate family and remain unchanged.";
         return new \WP_REST_Response( array(
             'success' => true,
-            'data' => array( 'response' => array( 'text' => $text, 'links' => array(), 'resulting_action' => 'continue' ) ),
+            'data' => array( 'response' => array( 'text' => $text, 'links' => array(
+                array( 'label' => 'Explore Lounge Community', 'url' => 'https://cccultivate.com/wakenbake-lounge-community/' ),
+                array( 'label' => 'Claim Free Lounge Pass', 'url' => 'https://cccultivate.com/product/lounge-pass/' ),
+                array( 'label' => "Wake'n'Bake Lounge Platform", 'url' => 'https://dmckenzies.wixsite.com/wakenbakelounge' ),
+            ), 'resulting_action' => 'continue' ) ),
         ), 200 );
     }
 

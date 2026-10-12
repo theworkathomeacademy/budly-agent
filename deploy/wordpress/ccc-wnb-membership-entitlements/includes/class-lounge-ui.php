@@ -1156,8 +1156,13 @@ final class Lounge_UI {
         return empty( $params ) ? $base : self::add_query_arg( $params, $base );
     }
 
-    public static function get_budly_url(): string {
-        return function_exists( 'home_url' ) ? home_url( '/ask-budly/' ) : 'https://cccultivate.com/ask-budly/';
+    public static function get_budly_url( string $view = 'home' ): string {
+        $base = function_exists( 'home_url' ) ? home_url( '/ask-budly/' ) : 'https://cccultivate.com/ask-budly/';
+        $params = array(
+            'page_context' => 'wakenbake_lounge_home',
+            'view'         => self::sanitize_key( $view ),
+        );
+        return self::add_query_arg( $params, $base );
     }
 
     public static function get_account_url(): string {

@@ -187,8 +187,8 @@ function handleCtaAction(rawUrl) {
 }
 
 /**
- * Handle Budly assistance action (Pending approved Wix-to-Budly mechanism configuration)
+ * Handle Budly assistance action: routes to approved Ask Budly destination with membership presentation context
  */
 function handleAskBudlyAction() {
-    console.log('[WnB Membership] Ask Budly CTA action received (Budly mechanism pending configuration).');
+    wixLocation.to('https://cccultivate.com/ask-budly/?page_context=wakenbake_lounge_membership&view=membership_presentation&source=wix_presentation');
 }
