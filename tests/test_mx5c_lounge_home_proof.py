@@ -305,6 +305,8 @@ class TestMX5CLoungeHomeProof(unittest.TestCase):
         self.assertIn("Free Lounge Pass ($0", lounge_rule)
         self.assertIn("Lounge Member ($9.99/mo", lounge_rule)
         self.assertIn("Lounge Elite ($24.99/mo", lounge_rule)
+        self.assertIn("eligible purchases, subject to the governed exclusions", lounge_rule)
+        self.assertNotIn("eligible Lounge Collection purchases", lounge_rule)
         self.assertIn("Discounts exclude:", lounge_rule)
         self.assertIn("LEGENDS NFT memberships remain separate and unchanged", lounge_rule)
 

@@ -65,7 +65,11 @@ final class ConversationProxy {
         if (abs(time() - $sent) > 300) {
             return self::error('AUTHENTICATION_FAILED', 'Signature timestamp is outside the allowed window.', 401);
         }
-        $expected = hash_hmac('sha256', $timestamp . '.' . $body, $secret);
+        $configuration_secret = self::configuration_auth_secret();
+        if ($configuration_secret === '') {
+            return self::error('CONFIGURATION_UNAVAILABLE', 'Runtime configuration authentication is unavailable.', 503);
+        }
+        $expected = hash_hmac('sha256', $timestamp . '.' . $body, $configuration_secret);
         if (!hash_equals($expected, $signature)) {
             return self::error('AUTHENTICATION_FAILED', 'HMAC signature verification failed.', 401);
         }
@@ -206,6 +210,16 @@ final class ConversationProxy {
             'url' => isset($option['url']) ? (string) $option['url'] : '',
             'secret' => isset($option['secret']) ? (string) $option['secret'] : '',
         );
+    }
+
+    private static function configuration_auth_secret() {
+        if (defined('BUDLY_CONVERSATIONAL_RUNTIME_CONFIG_SECRET')) {
+            $bootstrap = (string) BUDLY_CONVERSATIONAL_RUNTIME_CONFIG_SECRET;
+            if (strlen($bootstrap) >= 32) return $bootstrap;
+        }
+        $stored = self::stored_configuration();
+        $current = isset($stored['secret']) ? (string) $stored['secret'] : '';
+        return strlen($current) >= 32 ? $current : '';
     }
 
     private static function deterministic_context($conversation, $message) {

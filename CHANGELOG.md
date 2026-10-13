@@ -1,5 +1,13 @@
 # Changelog
 
+## MX-5C development completion
+
+- Corrected Lounge Member and Lounge Elite discount wording to the governed "eligible purchases" rule while preserving the explicit exclusion list.
+- Added executable local WordPress proxy/runtime round-trip coverage for Lounge Home page context, exact-body HMAC signing, correlation binding, replay rejection, and response-link allowlisting.
+- Bound runtime configuration changes to a separately provisioned configuration secret (or the already stored runtime secret), preventing a candidate replacement secret from authenticating itself.
+- Aligned the actual-adapter proof with the configured Budly staging candidate, `gpt-5.6-luna`.
+- No production deployment or configuration change is included.
+
 ## 1.8.4
 
 - Added container-safe `CURLOPT_RESOLVE` edge resolution fallback for `runtime.cccultivate.com` to prevent hosting container DNS resolution timeouts.

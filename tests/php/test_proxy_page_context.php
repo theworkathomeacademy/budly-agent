@@ -101,6 +101,12 @@ namespace {
             $req = json_decode($args['body'] ?? '{}', true);
             $conv_id = $req['conversation_id'] ?? 'conv_test_12345';
             $corr_id = $req['correlation_id'] ?? '00000000-0000-4000-8000-000000000001';
+            if (($GLOBALS['runtime_response_mode'] ?? '') === 'correlation_mismatch') {
+                $corr_id = '11111111-1111-4111-8111-111111111111';
+            }
+            $link_host = (($GLOBALS['runtime_response_mode'] ?? '') === 'untrusted_link')
+                ? 'https://attacker.example/phishing'
+                : 'https://cccultivate.com/wakenbake-lounge-community/';
             return array(
                 'response' => array('code' => 200),
                 'body' => json_encode(array(
@@ -114,7 +120,7 @@ namespace {
                         'selected_product_id' => null,
                         'requires_human' => false,
                         'links' => array(
-                            array('label' => 'Explore Lounge Community', 'url' => 'https://cccultivate.com/wakenbake-lounge-community/'),
+                            array('label' => 'Explore Lounge Community', 'url' => $link_host),
                             array('label' => 'Claim Free Lounge Pass', 'url' => 'https://cccultivate.com/product/lounge-pass/'),
                             array('label' => "Wake'n'Bake Lounge Platform", 'url' => 'https://dmckenzies.wixsite.com/wakenbakelounge'),
                         ),
@@ -183,6 +189,17 @@ namespace {
     assert_true(($forwarded_body['page_context']['surface'] ?? '') === 'wakenbake_lounge', "Forwarded surface is wakenbake_lounge", $passed, $failed);
     assert_true(($forwarded_body['page_context']['view'] ?? '') === 'home', "Forwarded view is home", $passed, $failed);
     assert_true(($forwarded_body['page_context']['source_host'] ?? '') === 'cccultivate.com', "Forwarded source_host is cccultivate.com", $passed, $failed);
+    $forwarded_headers = $GLOBALS['last_remote_post']['args']['headers'] ?? array();
+    $forwarded_timestamp = (string)($forwarded_headers['X-Budly-Timestamp'] ?? '');
+    $forwarded_signature = (string)($forwarded_headers['X-Budly-Signature'] ?? '');
+    $expected_signature = hash_hmac(
+        'sha256',
+        $forwarded_timestamp . '.' . ($GLOBALS['last_remote_post']['args']['body'] ?? ''),
+        '12345678901234567890123456789012'
+    );
+    assert_true($forwarded_timestamp !== '', "Runtime request includes signature timestamp", $passed, $failed);
+    assert_true(hash_equals($expected_signature, $forwarded_signature), "Runtime request HMAC covers the exact forwarded JSON body", $passed, $failed);
+    assert_true(($forwarded_headers['X-Correlation-ID'] ?? '') === ($forwarded_body['correlation_id'] ?? ''), "Runtime header and body correlation IDs match", $passed, $failed);
 
     // --- TEST 2: Rejection of extra fields (anti-privilege-escalation) ---
     $malicious_request = new WP_REST_Request(
@@ -259,6 +276,21 @@ namespace {
     );
     $response5 = ConversationProxy::conversation($bad_nonce_request);
     assert_true($response5->get_status() === 403, "Invalid nonce rejected with 403", $passed, $failed);
+
+    // --- TEST 6: Runtime response correlation must bind to the request ---
+    $GLOBALS['runtime_response_mode'] = 'correlation_mismatch';
+    $response6 = ConversationProxy::conversation($valid_request);
+    assert_true($response6->get_status() === 503, "Mismatched runtime correlation rejected with 503", $passed, $failed);
+    $data6 = $response6->get_data();
+    assert_true(($data6['error']['code'] ?? '') === 'RUNTIME_RESPONSE_INVALID', "Correlation mismatch is classified as invalid runtime response", $passed, $failed);
+
+    // --- TEST 7: Runtime cannot inject links outside the approved host allowlist ---
+    $GLOBALS['runtime_response_mode'] = 'untrusted_link';
+    $response7 = ConversationProxy::conversation($valid_request);
+    assert_true($response7->get_status() === 503, "Untrusted runtime link rejected with 503", $passed, $failed);
+    $data7 = $response7->get_data();
+    assert_true(($data7['error']['code'] ?? '') === 'RUNTIME_RESPONSE_INVALID', "Untrusted link is classified as invalid runtime response", $passed, $failed);
+    unset($GLOBALS['runtime_response_mode']);
 
     echo "\n=======================================================\n";
     echo "SUMMARY: Passed {$passed}, Failed {$failed}\n";

@@ -15,6 +15,7 @@ from src.budly_runtime.production_runtime import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+BUDLY_MODEL_NAME = "gpt-5.6-luna"
 
 
 class TestMX5CActualModelAdapter(unittest.TestCase):
@@ -36,7 +37,7 @@ class TestMX5CActualModelAdapter(unittest.TestCase):
             port=8791,
             shared_secret="s" * 32,
             model_provider="openai",
-            model_name="gpt-4o-mini",
+            model_name=BUDLY_MODEL_NAME,
             model_api_key=self.live_api_key or "sk-placeholder-not-configured",
             knowledge_path=ROOT / "config",
             commercial_snapshot_enabled=False,
@@ -54,7 +55,7 @@ class TestMX5CActualModelAdapter(unittest.TestCase):
                 raise ConnectionError("intercepted for payload verification")
 
         adapter = OpenAIResponsesAdapter(
-            "gpt-4o-mini",
+            BUDLY_MODEL_NAME,
             "sk-test-key-for-payload-audit",
             opener=MockOpener(),
         )
@@ -85,7 +86,7 @@ class TestMX5CActualModelAdapter(unittest.TestCase):
         self.assertEqual(sent_request.headers.get("Authorization"), "Bearer sk-test-key-for-payload-audit")
 
         body = json.loads(sent_request.data.decode("utf-8"))
-        self.assertEqual(body["model"], "gpt-4o-mini")
+        self.assertEqual(body["model"], BUDLY_MODEL_NAME)
         self.assertEqual(body["text"]["format"]["schema"], OUTPUT_SCHEMA)
 
         provider_input = body["input"]
@@ -104,6 +105,8 @@ class TestMX5CActualModelAdapter(unittest.TestCase):
         self.assertIn("Free Lounge Pass ($0", lounge_rule)
         self.assertIn("Lounge Member ($9.99/mo", lounge_rule)
         self.assertIn("Lounge Elite ($24.99/mo", lounge_rule)
+        self.assertIn("eligible purchases, subject to the governed exclusions", lounge_rule)
+        self.assertNotIn("eligible Lounge Collection purchases", lounge_rule)
         self.assertIn("Discounts exclude:", lounge_rule)
 
         # 3. MX-4 publication status and exploration rule delivered
@@ -135,7 +138,7 @@ class TestMX5CActualModelAdapter(unittest.TestCase):
             return
 
         # If live API key is present in environment, perform real live call
-        adapter = OpenAIResponsesAdapter("gpt-4o-mini", self.live_api_key)
+        adapter = OpenAIResponsesAdapter(BUDLY_MODEL_NAME, self.live_api_key)
         runtime = ProductionConversationRuntime(self.settings, ROOT, model_adapter=adapter)
 
         turn_request = {

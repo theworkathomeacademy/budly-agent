@@ -21,6 +21,13 @@ HTTP boundary and OpenAI Responses adapter. Configure server-side values only:
 Start with `python -m src.budly_runtime.http_service`. The health path is
 `GET /v1/health`; conversation requests require the HMAC server boundary.
 
+For an initial non-production WordPress runtime configuration, provision a separate
+`BUDLY_CONVERSATIONAL_RUNTIME_CONFIG_SECRET` constant of at least 32 characters through
+the approved staging secret mechanism. Sign the exact `/wp-json/budly-runtime/v1/configure`
+request body with that bootstrap secret. After configuration exists, the currently stored
+runtime secret may authenticate a rotation. The candidate replacement secret in the request
+body never authenticates itself. Never place either secret in source control or command output.
+
 WordPress must define the same secret as
 `BUDLY_CONVERSATIONAL_RUNTIME_SECRET` and set
 `BUDLY_CONVERSATIONAL_RUNTIME_URL` to the runtime origin (without `/v1`). The

@@ -28,11 +28,17 @@ class RuntimeConfigurationProviderTests(unittest.TestCase):
 
     def test_configure_route_requires_authenticated_hmac_and_validates_inputs(self):
         self.assertIn("register_rest_route(self::NAMESPACE, '/configure'", self.proxy)
-        self.assertIn("hash_hmac('sha256', $timestamp . '.' . $body, $secret)", self.proxy)
+        self.assertIn("self::configuration_auth_secret()", self.proxy)
+        self.assertIn("BUDLY_CONVERSATIONAL_RUNTIME_CONFIG_SECRET", self.proxy)
+        self.assertIn("hash_hmac('sha256', $timestamp . '.' . $body, $configuration_secret)", self.proxy)
         self.assertIn("hash_equals($expected, $signature)", self.proxy)
         self.assertIn("update_option('budly_sales_runtime_config', $config, false)", self.proxy)
         self.assertIn("strlen($secret) < 32", self.proxy)
         self.assertIn("wp_http_validate_url($url)", self.proxy)
+
+    def test_candidate_secret_cannot_self_authenticate_configuration(self):
+        self.assertNotIn("hash_hmac('sha256', $timestamp . '.' . $body, $secret)", self.proxy)
+        self.assertIn("'CONFIGURATION_UNAVAILABLE'", self.proxy)
 
     def test_secret_is_never_leaked_in_configure_response_or_client_payload(self):
         self.assertIn("'runtime_enabled' => $enabled", self.proxy)

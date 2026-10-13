@@ -14,7 +14,7 @@
   "separate_membership_families": ["LEGENDS NFT memberships remain separate and unchanged."],
   "plans": [
     {"level": "pass", "product_id": 1047, "sku": "WNB-MBR-PASS", "price_usd": 0, "billing": "none", "activation": "successful WooCommerce acquisition", "benefits": ["Community access"]},
-    {"level": "member", "product_id": 1048, "sku": "WNB-MBR-MEMBER", "price_usd": 9.99, "billing": "monthly", "benefits": ["Community access", "10% off eligible Lounge Collection purchases", "Early access to new drops", "Exclusive forum/community sections", "Member badge", "Priority event access"]},
-    {"level": "elite", "product_id": 1049, "sku": "WNB-MBR-ELITE", "price_usd": 24.99, "billing": "monthly", "benefits": ["Community access", "25% off eligible Lounge Collection purchases", "First access to exclusive drops", "VIP forum/community access", "VIP badge", "Priority event invitations", "Monthly curated content from Budly T. Cannaguide"]}
+    {"level": "member", "product_id": 1048, "sku": "WNB-MBR-MEMBER", "price_usd": 9.99, "billing": "monthly", "benefits": ["Community access", "10% off eligible purchases, subject to the governed exclusions", "Early access to new drops", "Exclusive forum/community sections", "Member badge", "Priority event access"]},
+    {"level": "elite", "product_id": 1049, "sku": "WNB-MBR-ELITE", "price_usd": 24.99, "billing": "monthly", "benefits": ["Community access", "25% off eligible purchases, subject to the governed exclusions", "First access to exclusive drops", "VIP forum/community access", "VIP badge", "Priority event invitations", "Monthly curated content from Budly T. Cannaguide"]}
   ]
 }
