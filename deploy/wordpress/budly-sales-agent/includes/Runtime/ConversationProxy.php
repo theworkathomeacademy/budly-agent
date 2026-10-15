@@ -66,7 +66,11 @@ final class ConversationProxy {
         if (abs(time() - $sent) > 300) {
             return self::error('AUTHENTICATION_FAILED', 'Signature timestamp is outside the allowed window.', 401);
         }
-        $expected = hash_hmac('sha256', $timestamp . '.' . $body, $secret);
+        $configuration_secret = self::configuration_auth_secret();
+        if ($configuration_secret === '') {
+            return self::error('CONFIGURATION_UNAVAILABLE', 'Runtime configuration authentication is unavailable.', 503);
+        }
+        $expected = hash_hmac('sha256', $timestamp . '.' . $body, $configuration_secret);
         if (!hash_equals($expected, $signature)) {
             return self::error('AUTHENTICATION_FAILED', 'HMAC signature verification failed.', 401);
         }
@@ -96,11 +100,19 @@ final class ConversationProxy {
         if ($content_length < 2 || $content_length > self::MAX_REQUEST_BYTES) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         if (!self::rate_allowed()) return self::error('RATE_LIMITED', 'Please wait before sending more messages.', 429);
         $params = $request->get_json_params();
-        if (!is_array($params) || array_diff(array_keys($params), array('conversation_id','message','reset','attribution'))) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
+        if (!is_array($params) || array_diff(array_keys($params), array('conversation_id','message','reset','attribution','page_context'))) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         $conversation = sanitize_text_field((string)($params['conversation_id'] ?? ''));
         $message = sanitize_textarea_field((string)($params['message'] ?? ''));
         $reset = !empty($params['reset']);
-        if (!preg_match('/^conv_[A-Za-z0-9_-]{6,55}$/', $conversation) || mb_strlen($message) < 1 || mb_strlen($message) > self::MAX_MESSAGE_CHARS) {
+        $raw_page_context = $params['page_context'] ?? null;
+        $page_context = null;
+        if ($raw_page_context !== null) {
+            $page_context = self::sanitize_page_context($raw_page_context);
+            if ($page_context === null) {
+                return self::error('INVALID_REQUEST', 'The request contains an invalid page context.', 400);
+            }
+        }
+        if (!preg_match('/^conv_[A-Za-z0-9_-]{6,55}$/', $conversation) || self::length($message) < 1 || self::length($message) > self::MAX_MESSAGE_CHARS) {
             return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         }
         $configuration = self::configuration();
@@ -117,6 +129,9 @@ final class ConversationProxy {
             'use_durable_memory' => false,
             'deterministic_context' => $runtime_context,
         );
+        if ($page_context !== null) {
+            $runtime_request['page_context'] = $page_context;
+        }
         $body = wp_json_encode($runtime_request, JSON_UNESCAPED_SLASHES);
         $timestamp = (string) time();
         $signature = hash_hmac('sha256', $timestamp . '.' . $body, $configuration['secret']);
@@ -208,6 +223,16 @@ final class ConversationProxy {
         );
     }
 
+    private static function configuration_auth_secret() {
+        if (defined('BUDLY_CONVERSATIONAL_RUNTIME_CONFIG_SECRET')) {
+            $bootstrap = (string) BUDLY_CONVERSATIONAL_RUNTIME_CONFIG_SECRET;
+            if (strlen($bootstrap) >= 32) return $bootstrap;
+        }
+        $stored = self::stored_configuration();
+        $current = isset($stored['secret']) ? (string) $stored['secret'] : '';
+        return strlen($current) >= 32 ? $current : '';
+    }
+
     private static function deterministic_context($conversation, $message, array $attribution = array()) {
         $lower = strtolower($message);
         $risk = preg_match('/\b(diagnose|treat|treatment|cure|cancer|dosage|dose|medication|hospital|under 18|under 21|legal advice)\b/', $lower);
@@ -277,6 +302,28 @@ final class ConversationProxy {
 
     private static function error($code, $message, $status, $correlation = '') {
         return new \WP_REST_Response(array('success'=>false,'error'=>array('code'=>$code,'message'=>$message),'meta'=>array('correlation_id'=>$correlation)), $status);
+    }
+
+    private static function sanitize_page_context($raw) {
+        if (!is_array($raw)) return null;
+        $allowed_fields = array('schema_version', 'surface', 'view', 'source_host');
+        if (array_diff(array_keys($raw), $allowed_fields)) return null;
+        if (($raw['schema_version'] ?? '') !== '1.0') return null;
+        $surface = sanitize_key((string)($raw['surface'] ?? ''));
+        $view = sanitize_key((string)($raw['view'] ?? ''));
+        $source_host = strtolower(sanitize_text_field((string)($raw['source_host'] ?? '')));
+        $allowed_surfaces = array('wakenbake_lounge');
+        $allowed_views = array('home', 'explore', 'detail', 'botanical', 'benefits', 'whats-new', 'account', 'membership_presentation');
+        $allowed_hosts = array('cccultivate.com', 'dmckenzies.wixsite.com', 'wakenbakelounge.com', 'www.wakenbakelounge.com');
+        if (!in_array($surface, $allowed_surfaces, true)) return null;
+        if (!in_array($view, $allowed_views, true)) return null;
+        if (!in_array($source_host, $allowed_hosts, true)) return null;
+        return array(
+            'schema_version' => '1.0',
+            'surface' => $surface,
+            'view' => $view,
+            'source_host' => $source_host,
+        );
     }
 
     private static function length($value) {return function_exists('mb_strlen') ? mb_strlen($value, 'UTF-8') : strlen($value);}

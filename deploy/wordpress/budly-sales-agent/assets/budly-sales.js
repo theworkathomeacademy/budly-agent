@@ -25,8 +25,16 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
   product_or_topic:sanitizeParam(urlParams.get('product_or_topic'),100),
   published_post_id:sanitizeParam(urlParams.get('published_post_id'),100)
  };
+ const rawContextSurface=sanitizeParam(urlParams.get('page_context'),64);
+ const rawContextView=sanitizeParam(urlParams.get('view'),64);
+ const initialPageContext=(rawContextSurface==='wakenbake_lounge'||rawContextSurface==='wakenbake_lounge_home'||rawContextSurface==='wakenbake_lounge_membership')?{
+  schema_version:'1.0',
+  surface:'wakenbake_lounge',
+  view:(rawContextView&&['home','explore','detail','botanical','benefits','whats-new','account','membership_presentation'].includes(rawContextView))?rawContextView:(rawContextSurface==='wakenbake_lounge_membership'?'membership_presentation':'home'),
+  source_host:window.location.hostname||'cccultivate.com'
+ }:null;
  const hasAttribution=Boolean(initialAttribution.source||initialAttribution.content_id||initialAttribution.cta_id||initialAttribution.product_or_topic);
- let state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution};
+ let state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution,pageContext:initialPageContext};
  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
  const cleanText=s=>{if(!s)return'';let t=String(s).replace(/&#8217;/g,"'").replace(/&#8211;/g,'–').replace(/&#8230;/g,'…').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1');let h=esc(t);h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');h=h.replace(/\n/g,'<br>');return h};
  const bubble=(text,who='bot',label='')=>{const e=document.createElement('div');e.className='budly-message budly-'+who;e.innerHTML=(label?'<div class="budly-label">'+esc(label)+'</div>':'')+cleanText(text);messages.append(e);messages.scrollTop=messages.scrollHeight};
@@ -60,7 +68,7 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
   const conversationSummary=()=>[state.goal,...state.answers].filter(Boolean).join(' | ');
   const complete=(summary=conversationSummary())=>track('conversation_completed',{summary});
   const start=()=>{
-    state={step:'conversational',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution};
+    state={step:'conversational',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution,pageContext:initialPageContext};
     messages.innerHTML='';
     restart.hidden=true;
     bubble('Hi, I’m Budly! 👋 I’m here to help you understand your options before choosing a product, course, membership, or support path. What would you like help with today?');
@@ -116,6 +124,7 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
    const headers={'Content-Type':'application/json','X-WP-Nonce':cfg.conversationNonce||''};
    const payload={conversation_id:state.session,message};
    if(hasAttribution)payload.attribution=state.attribution;
+   if(state.pageContext)payload.page_context=state.pageContext;
    const r=await fetch(cfg.conversationUrl,{
     method:'POST',
     credentials:'same-origin',

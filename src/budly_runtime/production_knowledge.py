@@ -219,10 +219,36 @@ class ApprovedRepositoryKnowledgeAdapter:
         elif any(w in q_lower for w in ["is cannabis right for me", "consultation", "consult", "service", "appointment", "1-on-1"]):
             matched_records.extend([r for r in all_records if r.entity_type == "SERVICE"])
 
-        # Memberships / Legends / Torque / NFTs
-        elif any(w in q_lower for w in ["membership", "memberships", "nft", "legends", "torque", "pass", "tier", "tiers"]):
-            if "torque" in q_lower:
-                matched_records.extend([r for r in all_records if "torque" in r.canonical_id])
+        # Memberships / Legends / Torque & Characters / NFTs
+        elif any(w in q_lower for w in [
+            "membership", "memberships", "nft", "legends", "pass", "tier", "tiers",
+            "torque", "chemist", "the chemist", "berry bliss", "the don", "gamma blaze",
+            "original guardian", "the monarch", "monarch", "dizel", "cookie cutter",
+            "azurea", "azurea skye"
+        ]):
+            character_slug_map = {
+                "torque": "torque",
+                "chemist": "the-chemist",
+                "berry bliss": "berry-bliss",
+                "strawberry banana": "berry-bliss",
+                "the don": "the-don",
+                "godfather": "the-don",
+                "gamma blaze": "gamma-blaze",
+                "bruce banner": "gamma-blaze",
+                "original guardian": "the-original-guardian",
+                "guardian": "the-original-guardian",
+                "monarch": "the-monarch",
+                "dizel": "dizel",
+                "cookie cutter": "cookie-cutter",
+                "azurea": "azurea-skye",
+            }
+            matched_char = None
+            for char_term, char_id in character_slug_map.items():
+                if char_term in q_lower:
+                    matched_char = char_id
+                    break
+            if matched_char:
+                matched_records.extend([r for r in all_records if f"wnb:nft:{matched_char}" in r.canonical_id])
             else:
                 matched_records.extend([r for r in all_records if r.entity_type in ["NFT_MEMBERSHIP_PARENT", "NFT_MEMBERSHIP_TIER"]])
 
@@ -658,6 +684,74 @@ class ApprovedRepositoryKnowledgeAdapter:
                             "source_reference": f"offer_rel://{rel['offer_id']}",
                             "content": json.dumps(rel_record, separators=(",", ":")),
                         })
+
+        commercial_truth_candidates = [
+            self.policies_path.parent.parent / "deploy" / "wordpress" / "ccc-wnb-membership-entitlements" / "commercial-truth.json",
+            self.policies_path.parent / "commercial-truth.json",
+            Path("deploy/wordpress/ccc-wnb-membership-entitlements/commercial-truth.json"),
+        ]
+        truth_path = next((p for p in commercial_truth_candidates if p.exists()), None)
+        if truth_path is not None:
+            try:
+                truth = self._read_json(truth_path)
+                if truth.get("release_state") == "AVAILABLE" and truth.get("publicly_available"):
+                    items.append({
+                        "knowledge_id": "commercial_truth:wakenbake_lounge:membership",
+                        "title": "Wake'n'Bake Lounge Community Memberships",
+                        "version": str(truth.get("schema_version", "2.0")),
+                        "domain": "membership",
+                        "status": "Active",
+                        "classification": "Public",
+                        "source_reference": f"repository://{truth_path.as_posix()}",
+                        "content": json.dumps({
+                            "resource_type": "MEMBERSHIP_FAMILY",
+                            "membership_family": truth.get("membership_family"),
+                            "release_state": truth.get("release_state"),
+                            "public_response_rule": truth.get("public_response_rule"),
+                            "hierarchy": truth.get("hierarchy"),
+                            "discount_exclusions": truth.get("discount_exclusions"),
+                            "canonical_url": "https://cccultivate.com/wakenbake-lounge-community/",
+                            "link_label": "Explore Lounge Community",
+                        }, separators=(",", ":")),
+                    })
+                    for plan in truth.get("plans", []):
+                        level = str(plan.get("level", ""))
+                        items.append({
+                            "knowledge_id": f"commercial_truth:plan:{level}",
+                            "title": f"Wake'n'Bake Lounge {level.title()}",
+                            "version": str(truth.get("schema_version", "2.0")),
+                            "domain": "membership",
+                            "status": "Active",
+                            "classification": "Public",
+                            "source_reference": f"repository://{truth_path.as_posix()}#{level}",
+                            "content": json.dumps({
+                                "resource_type": "MEMBERSHIP_PLAN",
+                                "level": level,
+                                "price_usd": plan.get("price_usd"),
+                                "billing": plan.get("billing"),
+                                "benefits": plan.get("benefits"),
+                                "canonical_url": "https://cccultivate.com/product/lounge-pass/" if level == "pass" else "https://cccultivate.com/wakenbake-lounge-community/",
+                                "link_label": "Claim Free Lounge Pass" if level == "pass" else f"Wake'n'Bake Lounge {level.title()}",
+                            }, separators=(",", ":")),
+                        })
+                    items.append({
+                        "knowledge_id": "commercial_truth:wakenbake_lounge:discovery",
+                        "title": "Wake'n'Bake Lounge Public Discovery & Exploration",
+                        "version": str(truth.get("schema_version", "2.0")),
+                        "domain": "educational",
+                        "status": "Active",
+                        "classification": "Public",
+                        "source_reference": f"repository://{truth_path.as_posix()}#discovery",
+                        "content": json.dumps({
+                            "resource_type": "PUBLIC_DISCOVERY",
+                            "summary": "Wake'n'Bake Lounge public discovery: Educational guides, botanical recipes, and plant science exhibits are currently in editorial preparation and planned for future release. Currently accessible today are the community hub orientation and membership passes.",
+                            "canonical_url": "https://cccultivate.com/wakenbake-lounge-community/",
+                            "link_label": "Explore Lounge Community",
+                        }, separators=(",", ":")),
+                    })
+            except Exception:
+                pass
+
         if self.affiliate_path is not None:
             affiliate = self._read_json(self.affiliate_path)
             if affiliate.get("approval_status") != "owner_approved" or affiliate.get("program_state") != "PRIVATE_PILOT":
