@@ -231,9 +231,9 @@ class WordPressIntegrationContracts(unittest.TestCase):
         self.assertNotIn("conversationSecret", self.plugin)
 
     def test_caller_cannot_select_provider_or_tool(self):
-        self.assertIn("array('conversation_id','message','reset','attribution')", self.proxy)
-        self.assertNotIn("provider", "conversation_id,message,reset,attribution")
-        self.assertNotIn("tool", "conversation_id,message,reset,attribution")
+        self.assertIn("array('conversation_id','message','reset','attribution','page_context')", self.proxy)
+        self.assertNotIn("provider", "conversation_id,message,reset,attribution,page_context")
+        self.assertNotIn("tool", "conversation_id,message,reset,attribution,page_context")
 
     def test_wordpress_forces_durable_memory_false(self):
         self.assertIn("'use_durable_memory' => false", self.proxy)
