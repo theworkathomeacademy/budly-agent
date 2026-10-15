@@ -1260,6 +1260,18 @@ final class Lounge_UI {
 }
 .wnb-lounge-app * { box-sizing: border-box; }
 .wnb-lounge-app a { color: inherit; text-decoration: none; }
+.wnb-lounge-app h1,
+.wnb-lounge-app h2,
+.wnb-lounge-app h3,
+.wnb-lounge-app h4,
+.wnb-lounge-app h5,
+.wnb-lounge-app h6 {
+    color: var(--wnb-ink);
+    font-family: Georgia, serif;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    margin-top: 0;
+}
 
 /* Header */
 .wnb-header {
@@ -1356,29 +1368,43 @@ final class Lounge_UI {
 
 /* Welcome Hero */
 .wnb-welcome-hero {
-    background: linear-gradient(135deg, rgba(33, 54, 41, 0.9), rgba(13, 23, 17, 0.95));
-    border: 1px solid rgba(223, 189, 106, 0.3);
+    background: linear-gradient(135deg, rgba(33, 54, 41, 0.92), rgba(13, 23, 17, 0.98));
+    border: 1px solid rgba(223, 189, 106, 0.35);
     text-align: center;
-    padding: 48px 24px;
+    padding: 44px 24px;
+    position: relative;
+}
+.wnb-welcome-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--wnb-gold), transparent);
 }
 .wnb-welcome-kicker {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--wnb-gold);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 .wnb-hero-title {
     font-family: Georgia, serif;
     font-size: 2.6rem;
+    line-height: 1.15;
     margin: 0 0 16px;
     color: var(--wnb-ink);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 .wnb-hero-lede {
     font-size: 1.15rem;
     max-width: 720px;
-    margin: 0 auto 24px;
+    margin: 0 auto 28px;
     color: var(--wnb-muted);
     line-height: 1.6;
 }
@@ -1400,7 +1426,20 @@ final class Lounge_UI {
     font-family: Georgia, serif;
     font-size: 1.6rem;
     color: var(--wnb-ink);
-    margin: 28px 0 16px;
+    margin: 32px 0 20px;
+    padding-bottom: 12px;
+    position: relative;
+    letter-spacing: -0.01em;
+}
+.wnb-section-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 48px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--wnb-gold), rgba(223, 189, 106, 0.15));
+    border-radius: 2px;
 }
 .wnb-featured-card {
     background: linear-gradient(135deg, var(--wnb-surface), var(--wnb-panel));
@@ -1650,9 +1689,11 @@ final class Lounge_UI {
     background: rgba(13, 23, 17, 0.98);
     border-top: 1px solid var(--wnb-line);
     backdrop-filter: blur(16px);
-    z-index: 999;
-    padding: 6px 12px max(6px, env(safe-area-inset-bottom));
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 1000;
+    padding: 6px 12px max(8px, env(safe-area-inset-bottom, 8px));
     justify-content: space-around;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.45);
 }
 .wnb-mobile-tab {
     display: flex;
@@ -1684,36 +1725,62 @@ final class Lounge_UI {
 }
 @media (max-width: 820px) {
     .wnb-grid-2 { grid-template-columns: 1fr; }
-    .wnb-hero-title { font-size: 2.1rem; }
+    .wnb-hero-title { font-size: 2.1rem; line-height: 1.16; }
     .wnb-article { padding: 24px; }
     .wnb-article-title { font-size: 1.8rem; }
 }
 @media (max-width: 600px) {
-    .wnb-lounge-app { padding-bottom: 85px; }
-    .wnb-lounge-main { padding: 20px 16px; }
+    .wnb-lounge-app { padding-bottom: 95px; }
+    .wnb-lounge-main { padding: 20px 14px; }
     .wnb-desktop-nav { display: none; }
     .wnb-mobile-bottom-bar { display: flex; }
-    .wnb-grid-4, .wnb-grid-3, .wnb-grid-2 { grid-template-columns: 1fr; }
-    .wnb-hero-title { font-size: 1.75rem; }
-    .wnb-hero-lede { font-size: 1rem; }
-    .wnb-article { padding: 18px; }
-    .wnb-article-title { font-size: 1.5rem; }
-    .wnb-welcome-cta-group, .wnb-restricted-actions, .wnb-status-actions { flex-direction: column; }
+    .wnb-grid-4, .wnb-grid-3, .wnb-grid-2 { grid-template-columns: 1fr; gap: 16px; }
+    .wnb-hero-title { font-size: 1.85rem; line-height: 1.18; margin: 0 0 14px; }
+    .wnb-hero-lede { font-size: 1rem; margin: 0 auto 20px; }
+    .wnb-section-title { font-size: 1.35rem; margin: 24px 0 16px; padding-bottom: 10px; }
+    .wnb-section-title::after { width: 36px; }
+    .wnb-article { padding: 20px 16px; }
+    .wnb-article-title { font-size: 1.5rem; line-height: 1.22; }
+    .wnb-welcome-cta-group, .wnb-restricted-actions, .wnb-status-actions { flex-direction: column; width: 100%; gap: 12px; }
     .wnb-welcome-cta-group .wnb-btn, .wnb-restricted-actions .wnb-btn, .wnb-status-actions .wnb-btn { width: 100%; }
     .wnb-card-footer { flex-direction: column; align-items: flex-start; }
     .wnb-card-footer .wnb-btn { width: 100%; }
+
+    /* Prevent floating Ask Budly button from overlapping the mobile bottom bar */
+    .budly-floating-button,
+    #budly-floating-button,
+    [data-budly-floating] {
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+        right: 16px !important;
+        z-index: 998 !important;
+    }
 }
 @media (max-width: 400px) {
     .wnb-header { padding: 12px 10px; }
+    .wnb-header-inner { gap: 10px; }
     .wnb-brand { gap: 8px; }
     .wnb-brand-emblem { width: 34px; height: 34px; font-size: 1.2rem; }
     .wnb-brand-title { font-size: 1.05rem; }
     .wnb-brand-subtitle { font-size: 0.65rem; }
-    .wnb-lounge-main { padding: 16px 10px; }
-    .wnb-card { padding: 16px 12px; }
-    .wnb-welcome-hero { padding: 32px 12px; }
-    .wnb-hero-title { font-size: 1.5rem; }
-    .wnb-hero-lede { font-size: 0.95rem; }
+    .wnb-lounge-main { padding: 14px 10px; }
+    .wnb-card { padding: 16px 12px; margin-bottom: 18px; }
+    .wnb-welcome-hero { padding: 28px 12px; }
+    .wnb-welcome-kicker { font-size: 0.72rem; letter-spacing: 0.12em; margin-bottom: 8px; }
+    .wnb-hero-title { font-size: 1.55rem; line-height: 1.2; margin: 0 0 12px; }
+    .wnb-hero-lede { font-size: 0.92rem; line-height: 1.5; margin: 0 auto 18px; }
+    .wnb-section-title { font-size: 1.25rem; margin: 20px 0 14px; }
+    .wnb-mobile-bottom-bar { padding: 4px 6px max(6px, env(safe-area-inset-bottom, 6px)); }
+    .wnb-mobile-tab { font-size: 0.68rem; min-height: 44px; }
+    .wnb-tab-icon { font-size: 1.15rem; }
+}
+@media (max-width: 340px) {
+    .wnb-brand-title { font-size: 0.95rem; }
+    .wnb-brand-emblem { width: 30px; height: 30px; font-size: 1.1rem; }
+    .wnb-header-actions { gap: 8px; }
+    .wnb-header-link { font-size: 0.8rem; }
+    .wnb-guest-tag { display: none; }
+    .wnb-hero-title { font-size: 1.4rem; }
+    .wnb-btn { padding: 10px 16px; font-size: 0.9rem; }
 }
 ';
     }

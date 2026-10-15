@@ -30,7 +30,10 @@ with sync_playwright() as p:
         
         for fpath in html_files:
             fname = os.path.basename(fpath)
-            url = f"http://127.0.0.1:8888/html_fixtures/{fname}"
+            file_url = fpath.replace("\\", "/")
+            if not file_url.startswith("/"):
+                file_url = "/" + file_url
+            url = f"file://{file_url}"
             page.goto(url)
             page.wait_for_load_state("domcontentloaded")
             

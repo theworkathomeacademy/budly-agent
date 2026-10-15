@@ -56,6 +56,13 @@
   }
 }
 
+@media (max-width: 600px) {
+  body:has(.wnb-mobile-bottom-bar) .budly-floating-button,
+  .wnb-lounge-app ~ .budly-floating-button {
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
 .budly-starters {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
