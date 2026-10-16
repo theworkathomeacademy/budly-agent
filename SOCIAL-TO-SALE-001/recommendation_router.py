@@ -25,6 +25,8 @@ class RecommendationOutcome:
     rationale: str
     suggested_dialogue: str
     is_approved: bool
+    canonical_id: str | None = None
+    catalog_version: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -36,14 +38,79 @@ class RecommendationOutcome:
             "rationale": self.rationale,
             "suggested_dialogue": self.suggested_dialogue,
             "is_approved": self.is_approved,
+            "canonical_id": self.canonical_id,
+            "catalog_version": self.catalog_version,
         }
+
+    def build_correlated_url(
+        self,
+        session_id: str | None = None,
+        journey_id: str | None = None,
+        source: str | None = None,
+        platform: str | None = None,
+        content_id: str | None = None,
+        campaign_id: str | None = None,
+    ) -> str:
+        """Append safe non-PII correlation parameters to destination_url."""
+        from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
+        parsed = urlparse(self.destination_url)
+        query = dict(parse_qsl(parsed.query))
+        if session_id:
+            query["_budly_session_id"] = str(session_id)[:64]
+        if journey_id:
+            query["_budly_journey_id"] = str(journey_id)[:64]
+        if source:
+            query["_budly_source"] = str(source)[:32]
+        if platform:
+            query["_budly_platform"] = str(platform)[:32]
+        if content_id:
+            query["_budly_content_id"] = str(content_id)[:64]
+        if campaign_id:
+            query["_budly_campaign_id"] = str(campaign_id)[:64]
+        if self.cta_id:
+            query["_budly_cta_id"] = str(self.cta_id)[:64]
+        if self.canonical_id:
+            query["_budly_canonical_id"] = str(self.canonical_id)[:128]
+        if self.catalog_version:
+            query["_budly_catalog_version"] = str(self.catalog_version)[:32]
+        new_query = urlencode(query)
+        return urlunparse((
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            parsed.params,
+            new_query,
+            parsed.fragment,
+        ))
 
 
 class RecommendationRouter:
     """Maps (intent, product_or_topic, qualification_state) to verified CTAs from CTARegistry."""
 
-    def __init__(self, registry: CTARegistry | None = None) -> None:
+    def __init__(self, registry: CTARegistry | None = None, snapshot_loader: Any | None = None) -> None:
         self.registry = registry or CTARegistry()
+        self.snapshot_loader = snapshot_loader
+        self._init_snapshot()
+
+    def _init_snapshot(self) -> None:
+        if self.snapshot_loader is None:
+            try:
+                from pathlib import Path
+                from budly_runtime.commercial_snapshot.loader import CommercialSnapshotLoader
+                root = Path(__file__).resolve().parents[1]
+                catalog_dir = root / "config" / "commercial_catalog"
+                if (catalog_dir / "Current" / "budly-commercial-catalog.json").exists():
+                    self.snapshot_loader = CommercialSnapshotLoader(catalog_dir)
+            except Exception:
+                try:
+                    from pathlib import Path
+                    from src.budly_runtime.commercial_snapshot.loader import CommercialSnapshotLoader
+                    root = Path(__file__).resolve().parents[1]
+                    catalog_dir = root / "config" / "commercial_catalog"
+                    if (catalog_dir / "Current" / "budly-commercial-catalog.json").exists():
+                        self.snapshot_loader = CommercialSnapshotLoader(catalog_dir)
+                except Exception:
+                    self.snapshot_loader = None
 
     def route(
         self,
@@ -52,6 +119,13 @@ class RecommendationRouter:
         qualification_state: str,
         platform: str = "web",
     ) -> RecommendationOutcome:
+        cat_ver = getattr(self.snapshot_loader, "loaded_catalog_version", "1.0.0-public") if self.snapshot_loader else "1.0.0-public"
+
+        # CCS-006 Fail Closed: Excluded community products must never be recommended as purchasable products
+        excluded_topics = {"LOUNGE_MEMBER", "LOUNGE_PASS", "LOUNGE_ELITE", "wnb:community:lounge-member", "wnb:community:lounge-pass", "wnb:community:lounge-elite"}
+        if product_or_topic in excluded_topics:
+            raise ValueError(f"CCS-006: Product or topic '{product_or_topic}' is excluded from public commercial recommendation.")
+
         # 1. Purchase Intent + Botanical Collection
         if (
             intent == CommercialIntent.PURCHASE_INTENT.value
@@ -59,11 +133,17 @@ class RecommendationRouter:
         ):
             cta = self.registry.get_active_cta("CTA-BOTANICAL-VOL1-SHOP")
             if cta:
+                cid = "ccc:book:wakenbake-lounge-cannabis-botanical-collection-volume-1"
+                dest_url = cta.destination_url
+                if self.snapshot_loader:
+                    rec = self.snapshot_loader.get_by_canonical_id(cid)
+                    if rec and rec.canonical_url:
+                        dest_url = rec.canonical_url
                 return RecommendationOutcome(
                     cta_id=cta.cta_id,
                     cta_type=cta.cta_type,
                     display_label=cta.display_label,
-                    destination_url=cta.destination_url,
+                    destination_url=dest_url,
                     destination_type=cta.destination_type,
                     rationale="Direct checkout/shop destination for Botanical Collection Volume 1",
                     suggested_dialogue=(
@@ -71,6 +151,8 @@ class RecommendationRouter:
                         "CCCultivate product page here."
                     ),
                     is_approved=True,
+                    canonical_id=cid,
+                    catalog_version=cat_ver,
                 )
 
         # 2. Product Interest + Botanical Collection
@@ -95,6 +177,8 @@ class RecommendationRouter:
                         "detailed strain art and botanical education in print and digital formats."
                     ),
                     is_approved=True,
+                    canonical_id="ccc:book:wakenbake-lounge-cannabis-botanical-collection-volume-1",
+                    catalog_version=cat_ver,
                 )
 
         # 3. Education Interest
@@ -116,6 +200,8 @@ class RecommendationRouter:
                         "the Infused Basics guide covers beginner-friendly techniques."
                     ),
                     is_approved=True,
+                    canonical_id="ccc:book:infused-basics",
+                    catalog_version=cat_ver,
                 )
 
         # 4. Community Interest
@@ -137,6 +223,8 @@ class RecommendationRouter:
                         "lounge sessions, discussions, and wellness conversations."
                     ),
                     is_approved=True,
+                    canonical_id=None,
+                    catalog_version=cat_ver,
                 )
 
         # 5. General Product Shopping / Other approved products
@@ -154,6 +242,8 @@ class RecommendationRouter:
                         "You can browse the current verified catalog on the CCCultivate shop."
                     ),
                     is_approved=True,
+                    canonical_id=None,
+                    catalog_version=cat_ver,
                 )
 
         # 6. Fallback / General / Discovery: Continue Ask Budly Conversation
@@ -171,6 +261,8 @@ class RecommendationRouter:
                     "What would you like to focus on?"
                 ),
                 is_approved=True,
+                canonical_id=None,
+                catalog_version=cat_ver,
             )
 
         # Guardrail fallback: If no active CTA found in registry, fail closed (never invent)

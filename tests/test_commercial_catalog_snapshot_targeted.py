@@ -25,15 +25,16 @@ CATALOG_DIR = ROOT / "config" / "commercial_catalog"
 
 @pytest.fixture(scope="module")
 def snapshot_loader() -> CommercialSnapshotLoader:
-    # Ensure current snapshot is built
-    rebuild_catalog(
-        event_reason="TEST_INITIALIZATION",
-        triggering_entity="TEST_SUITE",
-        root_dir=CATALOG_DIR,
-        canonical_source_path=ROOT / "config" / "canonical_catalog.json",
-        catalog_version="1.9.0-test",
-    )
     loader = CommercialSnapshotLoader(CATALOG_DIR)
+    if loader.record_count == 0:
+        rebuild_catalog(
+            event_reason="TEST_INITIALIZATION",
+            triggering_entity="TEST_SUITE",
+            root_dir=CATALOG_DIR,
+            canonical_source_path=ROOT / "config" / "canonical_catalog.json",
+            catalog_version="1.9.0-test-rebuild",
+        )
+        loader = CommercialSnapshotLoader(CATALOG_DIR)
     assert loader.record_count > 0
     return loader
 
