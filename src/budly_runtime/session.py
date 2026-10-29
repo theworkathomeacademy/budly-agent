@@ -65,6 +65,38 @@ class ConversationSession:
     asked_email: bool = False
     asked_memory_consent: bool = False
     asked_follow_up_consent: bool = False
+    active_entity: str | None = None
+    active_request: str | None = None
+    task_state: str = "NONE"
+    follow_up_requested: bool = False
+    follow_up_consent: bool = False
+    follow_up_subject: str | None = None
+    marketing_consent: bool = False
+    action_truth_state: str = "INITIAL"
+    contact_phone: str | None = None
+    preferred_contact_channel: str | None = None
+    crm_write_state: str = "NOT_ATTEMPTED"
+    human_followup_state: str = "NOT_CREATED"
+    ingredient_evidence_type: str | None = None
+    verified_ingredients: set[str] = field(default_factory=set)
+
+    def active_task_dict(self) -> dict[str, Any]:
+        return {
+            "active_entity": self.active_entity,
+            "active_request": self.active_request,
+            "task_state": self.task_state,
+            "customer_name": self.customer_name,
+            "follow_up_requested": self.follow_up_requested,
+            "follow_up_consent": self.follow_up_consent,
+            "follow_up_subject": self.follow_up_subject,
+            "marketing_consent": self.marketing_consent,
+            "action_truth_state": self.action_truth_state,
+            "contact_email": self.customer_email,
+            "contact_phone": self.contact_phone,
+            "preferred_contact_channel": self.preferred_contact_channel,
+            "crm_write_state": self.crm_write_state,
+            "human_followup_state": self.human_followup_state,
+        }
 
     def runtime_variables(self) -> dict[str, Any]:
         keys = ("personality_intensity", "humor_intensity", "curiosity_intensity", "commercial_pressure", "education_depth", "customer_emotional_state", "customer_expertise", "conversation_mode")

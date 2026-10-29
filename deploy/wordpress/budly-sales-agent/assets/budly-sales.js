@@ -34,12 +34,21 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
   source_host:window.location.hostname||'cccultivate.com'
  }:null;
  const hasAttribution=Boolean(initialAttribution.source||initialAttribution.content_id||initialAttribution.cta_id||initialAttribution.product_or_topic);
- let state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution,pageContext:initialPageContext};
+ const internalLabels=new Set(['guided mode','consumer wellness','culinary','books and courses','nft memberships','wholesale','support','human review','notice','more information needed','privacy protected','membership terms']);
+  let state={step:'identity',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution,pageContext:initialPageContext,activeTask:null};
  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
  const cleanText=s=>{if(!s)return'';let t=String(s).replace(/&#8217;/g,"'").replace(/&#8211;/g,'–').replace(/&#8230;/g,'…').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1');let h=esc(t);h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');h=h.replace(/\n/g,'<br>');return h};
- const bubble=(text,who='bot',label='')=>{const e=document.createElement('div');e.className='budly-message budly-'+who;e.innerHTML=(label?'<div class="budly-label">'+esc(label)+'</div>':'')+cleanText(text);messages.append(e);messages.scrollTop=messages.scrollHeight};
+ const bubble=(text,who='bot',label='')=>{
+    const e=document.createElement('div');
+    e.className='budly-message budly-'+who;
+    const cleanLabel=String(label||'').trim();
+    const showLabel=cleanLabel&&!internalLabels.has(cleanLabel.toLowerCase());
+    e.innerHTML=(showLabel?'<div class="budly-label">'+esc(cleanLabel)+'</div>':'')+cleanText(text);
+    messages.append(e);
+    messages.scrollTop=messages.scrollHeight;
+  };
  const input=(html,label='Continue')=>{fields.innerHTML=html;send.hidden=false;send.textContent=label;fields.querySelector('input,select')?.focus()};
- const approvedLinkHosts=new Set(['cccultivate.com','wakenbakelounge.com','www.wakenbakelounge.com','dmckenzies.wixsite.com','learn.cccultivate.com']);
+ const approvedLinkHosts=new Set(['cccultivate.com','wakenbakelounge.com','www.wakenbakelounge.com','dmckenzies.wixsite.com','learn.cccultivate.com','buy.stripe.com']);
  const link=(url,label)=>{let parsed;try{parsed=new URL(url,window.location.href)}catch(e){return}if(parsed.protocol!=='https:'||!approvedLinkHosts.has(parsed.hostname))return;const card=document.createElement('div'),anchor=document.createElement('a');card.className='budly-card';anchor.href=parsed.href;anchor.target='_blank';anchor.rel='noopener noreferrer';anchor.textContent=String(label||'Learn more')+' ↗';card.append(anchor);messages.append(card);messages.scrollTop=messages.scrollHeight};
  const renderApprovedLinks=links=>Array.isArray(links)&&links.slice(0,3).forEach(item=>item&&link(item.url,item.label));
  const track=(event,extra={})=>{
@@ -68,7 +77,7 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
   const conversationSummary=()=>[state.goal,...state.answers].filter(Boolean).join(' | ');
   const complete=(summary=conversationSummary())=>track('conversation_completed',{summary});
   const start=()=>{
-    state={step:'conversational',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution,pageContext:initialPageContext};
+    state={step:'conversational',name:'',email:'',phone:'',memoryConsent:false,verified:false,decisionCsrf:'',goal:'',preselectedGoal:'',journey:null,answers:[],q:0,session:conversationId(),attribution:initialAttribution,pageContext:initialPageContext,activeTask:null};
     messages.innerHTML='';
     restart.hidden=true;
     bubble('Hi, I’m Budly! 👋 I’m here to help you understand your options before choosing a product, course, membership, or support path. What would you like help with today?');
@@ -107,13 +116,20 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
    return out.data;
   };
   const activateLegacy=(msg)=>{
-   bubble(msg||'I’m switching to the guided experience so we can keep going without interruption.','bot','Guided mode');
    state.conversationalActive=false;
+   if(state.activeTask && state.activeTask.task_state === 'UNRESOLVED'){
+     const entity = state.activeTask.active_entity || 'your request';
+     const req = state.activeTask.active_request ? ' ' + state.activeTask.active_request : '';
+     bubble('I’m having trouble completing that request right now, but I still have your ' + entity + req + '. I can help you connect with support or continue with other information I can verify.', 'bot');
+     offerHumanHelp();
+     return;
+   }
+   bubble(msg||'I’m switching to the guided experience so we can keep going without interruption.','bot');
    if(state.goal){
     const [,j]=route(state.goal);
     state.journey=j;
     state.step='questions';
-    bubble('I’ll use the '+j.label+' path so the next questions stay relevant.','bot',j.label);
+    bubble('I can help you explore options so the next questions stay relevant.','bot');
     ask();
    }else{
     state.step='goal';
@@ -125,6 +141,7 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
    const payload={conversation_id:state.session,message};
    if(hasAttribution)payload.attribution=state.attribution;
    if(state.pageContext)payload.page_context=state.pageContext;
+   if(state.activeTask)payload.active_task=state.activeTask;
    const r=await fetch(cfg.conversationUrl,{
     method:'POST',
     credentials:'same-origin',
@@ -169,13 +186,22 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
       else if(state.step==='conversational'||state.step==='goal'){
         const userMessage=d.answer;
         if(!userMessage||!userMessage.trim())return;
-        state.goal=userMessage;
+        if(state.activeTask && state.activeTask.task_state === 'UNRESOLVED'){
+          // keep active task as goal
+        }else{
+          state.goal=userMessage;
+        }
         bubble(userMessage,'user');
         restart.hidden=false;
         if(cfg.conversationEnabled){
           state.step='conversational';
           try{
             const turn=await conversationalTurn(userMessage);
+            if(turn.response?.active_task){
+              state.activeTask=turn.response.active_task;
+            }else if(turn.active_task){
+              state.activeTask=turn.active_task;
+            }
             bubble(turn.response.text,'bot');
             renderApprovedLinks(turn.response.links);
             if(turn.response.selected_product_id){
@@ -190,7 +216,7 @@ document.querySelectorAll('[data-budly-sales]').forEach(root=>{
               input('<input name="answer" aria-label="Ask Budly anything" placeholder="Ask Budly anything…" required><button type="button" class="budly-secondary" data-budly-returning>Returning customer? Verify your email</button>','Send');
             }
           }catch(err){
-            activateLegacy('I’m currently operating in guided mode. You can still explore products or connect with human support.');
+            activateLegacy();
           }
         }else{
           if(hasRisk(userMessage)){

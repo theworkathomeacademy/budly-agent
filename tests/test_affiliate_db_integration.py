@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SETUP_SQL = ROOT / "scripts" / "test_postgres_setup.sql"
 FOUNDATION_SQL = ROOT / "migrations" / "affiliate_mvp" / "001_affiliate_mvp_foundation.sql"
 ROLLBACK_SQL = ROOT / "migrations" / "affiliate_mvp" / "rollback_disable.sql"
-DB_URL = os.environ.get("AFFILIATE_TEST_DB_URL", "postgresql://postgres:postgres@localhost:5433/postgres")
+DB_URL = os.environ.get("AFFILIATE_TEST_DB_URL", "postgresql://postgres:postgres@localhost:5433/postgres?connect_timeout=1")
 
 
 class AffiliateDatabaseIntegrationTests(unittest.TestCase):

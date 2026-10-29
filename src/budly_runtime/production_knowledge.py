@@ -3,6 +3,8 @@ from __future__ import annotations
 import html
 import json
 import re
+import gzip
+import time
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,6 +13,7 @@ from typing import Any
 from .commercial_snapshot.contract import CommercialCatalogRecord
 from .commercial_snapshot.loader import CommercialSnapshotLoader
 from .commercial_snapshot.resolver import DeterministicEntityResolver
+from .eligibility import ProductEligibilityResolver, ProductEligibilityStatus
 from .tool_gateway import AdapterContext, ToolHealth
 
 
@@ -36,6 +39,9 @@ class ApprovedRepositoryKnowledgeAdapter:
     tool_id: str = "approved_repository_knowledge"
     tool_version: str = "1.0"
     last_context: AdapterContext | None = None
+    _cached_live_products: list[dict[str, Any]] | None = None
+    _cached_live_products_time: float = 0.0
+    _cache_ttl_seconds: float = 300.0
 
     def __post_init__(self) -> None:
         self.commercial_snapshot_loader: CommercialSnapshotLoader | None = None
@@ -44,7 +50,9 @@ class ApprovedRepositoryKnowledgeAdapter:
             snap_dir = self.commercial_snapshot_path or (self.policies_path.parent / "commercial_catalog")
             if snap_dir.exists():
                 self.commercial_snapshot_loader = CommercialSnapshotLoader(snap_dir)
+        self.product_overrides: dict[str, dict[str, Any]] = {}
         self._items = self._load()
+        self.eligibility_resolver = ProductEligibilityResolver(overrides_by_slug=self.product_overrides)
 
     def reload(self) -> bool:
         """Reload commercial snapshot and repository items from disk."""
@@ -306,6 +314,7 @@ class ApprovedRepositoryKnowledgeAdapter:
             "canonical_url": record.canonical_url,
             "checkout_url": record.checkout_url,
             "booking_url": record.booking_url,
+            "woo_product_id": record.woo_product_id,
             "payment_plan_available": record.payment_plan_available,
             "payment_plan_amount": record.payment_plan_amount,
             "payment_plan_url": record.payment_plan_url,
@@ -320,6 +329,7 @@ class ApprovedRepositoryKnowledgeAdapter:
             "status": "Active",
             "classification": "Public",
             "source_reference": f"commercial_snapshot://{record.canonical_id}",
+            "canonical_url": record.canonical_url,
             "content": json.dumps(data, separators=(",", ":")),
         }
 
@@ -335,9 +345,35 @@ class ApprovedRepositoryKnowledgeAdapter:
         return bool(specific_product_nouns.search(query))
 
     def _retrieve_live_catalog(self, context: AdapterContext) -> list[dict[str, Any]]:
-        allowed = {item["knowledge_id"].split(":", 1)[1] for item in self._items if item["domain"] == "product_catalog"}
-        with self.opener(self.commerce_url, timeout=8) as response:
-            products = json.loads(response.read().decode("utf-8"))
+        now = time.time()
+        products = None
+        if self._cached_live_products and (now - self._cached_live_products_time) < self._cache_ttl_seconds:
+            products = self._cached_live_products
+        else:
+            try:
+                req = self.commerce_url
+                if isinstance(req, str):
+                    req = urllib.request.Request(
+                        self.commerce_url,
+                        headers={
+                            "User-Agent": "BudlyRuntime/1.8.10",
+                            "Accept-Encoding": "gzip",
+                        }
+                    )
+                with self.opener(req, timeout=15) as response:
+                    raw_bytes = response.read()
+                    if raw_bytes.startswith(b"\x1f\x8b") or (hasattr(response, "info") and response.info() and response.info().get("Content-Encoding") == "gzip"):
+                        raw_bytes = gzip.decompress(raw_bytes)
+                    data = json.loads(raw_bytes.decode("utf-8"))
+                    if isinstance(data, list):
+                        products = data
+                        self._cached_live_products = products
+                        self._cached_live_products_time = now
+            except Exception as exc:
+                if self._cached_live_products:
+                    products = self._cached_live_products
+                else:
+                    raise RuntimeError(f"approved knowledge source unavailable: {exc}") from exc
         if not isinstance(products, list):
             raise RuntimeError("WooCommerce catalog response is invalid")
         
@@ -366,6 +402,12 @@ class ApprovedRepositoryKnowledgeAdapter:
             "oils": {"oil", "oils", "tincture", "tinctures", "drops", "spray"},
             "tincture": {"oil", "oils", "tincture", "tinctures", "drops", "spray"},
             "tinctures": {"oil", "oils", "tincture", "tinctures", "drops", "spray"},
+            "spray": {"spray", "sprays", "tincture", "tinctures", "oil", "oils"},
+            "sprays": {"spray", "sprays", "tincture", "tinctures", "oil", "oils"},
+            "combo": {"combo", "bundle", "therapeutic", "package"},
+            "botanical": {"botanical", "collection", "book", "books", "coloring", "guide"},
+            "collection": {"botanical", "collection", "book", "books", "coloring", "guide"},
+            "therapeutic": {"therapeutic", "spray", "butter", "oil", "tincture", "combo"},
             "book": {"book", "books", "guide", "guides", "botanical", "collection", "coloring"},
             "books": {"book", "books", "guide", "guides", "botanical", "collection", "coloring"},
             "guide": {"book", "books", "guide", "guides", "botanical", "collection", "coloring"},
@@ -415,9 +457,10 @@ class ApprovedRepositoryKnowledgeAdapter:
 
         results = []
         for product in products:
-            slug = str(product.get("slug", ""))
-            if slug not in allowed or not product.get("is_purchasable") or not product.get("is_in_stock"):
+            decision = self.eligibility_resolver.resolve(product)
+            if decision.status != ProductEligibilityStatus.PUBLIC_APPROVED:
                 continue
+            slug = decision.slug or str(product.get("slug", ""))
             name = str(product.get("name", ""))
             categories = [str(value.get("name", "")) for value in product.get("categories", []) if isinstance(value, dict)]
             
@@ -449,19 +492,48 @@ class ApprovedRepositoryKnowledgeAdapter:
             prices = product.get("prices", {})
             decimals = int(prices.get("currency_minor_unit", 2) or 2)
             price = int(prices.get("price", 0) or 0) / (10 ** decimals)
+            price_range = prices.get("price_range")
+            min_price = None
+            max_price = None
+            if isinstance(price_range, dict) and price_range.get("min_amount") is not None and price_range.get("max_amount") is not None:
+                min_price = int(price_range["min_amount"]) / (10 ** decimals)
+                max_price = int(price_range["max_amount"]) / (10 ** decimals)
+
+            prod_type = str(product.get("type", "simple")).lower()
+            variations_list = []
+            if prod_type == "variable" or product.get("has_options"):
+                for v in product.get("variations", []):
+                    if isinstance(v, dict):
+                        attrs = {a.get("name"): a.get("value") for a in v.get("attributes", []) if isinstance(a, dict)}
+                        variations_list.append({"variation_id": v.get("id"), "attributes": attrs})
+
             record = {
-                "resource_type": "PRODUCT", "product_id": str(product.get("id", "")),
-                "slug": slug, "name": html.unescape(re.sub(r"<[^>]+>", "", str(product.get("name", "")))),
-                "category": categories, "customer_lane": prod_lane,
+                "resource_type": "PRODUCT",
+                "product_type": prod_type,
+                "product_id": str(product.get("id", "")),
+                "slug": slug,
+                "canonical_id": decision.canonical_id,
+                "name": html.unescape(re.sub(r"<[^>]+>", "", str(product.get("name", "")))),
+                "category": categories,
+                "customer_lane": prod_lane,
                 "short_description": html.unescape(re.sub(r"<[^>]+>", " ", str(product.get("short_description", "")))).strip()[:500],
-                "canonical_url": str(product.get("permalink", "")), "current_price": price,
-                "currency": str(prices.get("currency_code", "USD")), "availability": "in_stock",
-                "approval_status": "approved_allowlist", "last_verified_at": "live_request",
+                "description": html.unescape(re.sub(r"<[^>]+>", " ", str(product.get("description", "")))).strip()[:2000],
+                "canonical_url": str(product.get("permalink", "")),
+                "current_price": price,
+                "price_range_min": min_price,
+                "price_range_max": max_price,
+                "currency": str(prices.get("currency_code", "USD")),
+                "availability": "in_stock" if product.get("is_in_stock") else "out_of_stock",
+                "approval_status": "PUBLIC_APPROVED",
+                "ingredient_evidence_type": "MARKETING_DESCRIPTION",
+                "variations": variations_list,
+                "last_verified_at": "live_request",
             }
             results.append({
                 "knowledge_id": f"product:{slug}", "title": record["name"], "version": "live",
                 "domain": "product_catalog", "status": "Active", "classification": "Public",
                 "source_reference": f"woocommerce-store-api://products/{record['product_id']}",
+                "canonical_url": record["canonical_url"],
                 "content": json.dumps(record, separators=(",", ":")),
             })
 
@@ -511,6 +583,15 @@ class ApprovedRepositoryKnowledgeAdapter:
                     score += 30
                 elif "botanical" in prod_slug or "collection" in prod_slug:
                     score += 30
+            if any(w in q for w in ["spray", "sprays"]):
+                if "spray" in prod_slug or "spray" in prod_name:
+                    score += 60
+            if any(w in q for w in ["combo", "bundle"]):
+                if "combo" in prod_slug or "combo" in prod_name:
+                    score += 60
+            if any(w in q for w in ["botanical", "collection"]):
+                if "botanical" in prod_slug or "botanical" in prod_name:
+                    score += 50
             elif any(w in q for w in ["oil", "oils", "cbd", "tincture", "tinctures", "drops"]):
                 if "tincture" in prod_slug or "tincture" in prod_name:
                     score += 35
@@ -527,6 +608,11 @@ class ApprovedRepositoryKnowledgeAdapter:
             elif any(w in q for w in ["cream", "creams", "butter", "topical", "topicals", "salve", "lotion"]):
                 if "body-butter" in prod_slug or "topical" in prod_slug:
                     score += 30
+
+            # Prefer standard one-time retail products over monthly subscription variants unless explicitly requested
+            if any(sub_token in prod_slug for sub_token in ["monthly", "subscription"]):
+                if not any(req_token in q for req_token in ["monthly", "subscription", "recurring", "auto-ship", "subscribe"]):
+                    score -= 15
             elif any(w in q for w in ["wholesale", "bulk", "white label"]):
                 if "bulk" in prod_slug:
                     score += 30
@@ -547,6 +633,7 @@ class ApprovedRepositoryKnowledgeAdapter:
     def _load(self) -> list[dict[str, Any]]:
         policies = self._read_json(self.policies_path)
         products = self._read_json(self.products_path)
+        self.product_overrides = {p['id']: p for p in products.get('products', []) if isinstance(p, dict) and p.get('id')}
         items: list[dict[str, Any]] = []
         if policies.get("status") != "owner_approved":
             raise ValueError("policy source is not owner approved")
@@ -608,17 +695,18 @@ class ApprovedRepositoryKnowledgeAdapter:
             commercial = self._read_json(self.commercial_path)
             if commercial.get("approval_status") != "owner_approved":
                 raise ValueError("commercial knowledge is not owner approved")
-            if not self.commercial_snapshot_enabled:
-                for resource in commercial.get("resources", []):
-                    if resource.get("approval_status") != "approved" or resource.get("active_status") != "active":
-                        continue
-                    items.append({
-                        "knowledge_id": str(resource["resource_id"]), "title": str(resource["title"]),
-                        "version": str(resource["last_verified_at"]), "domain": str(resource["knowledge_domain"]),
-                        "status": "Active", "classification": "Public",
-                        "source_reference": f"{resource['source_system']}://{resource['source_identifier']}",
-                        "content": json.dumps(resource, separators=(",", ":"))[:4000],
-                    })
+            for resource in commercial.get("resources", []):
+                if resource.get("approval_status") != "approved" or resource.get("active_status") != "active":
+                    continue
+                if self.commercial_snapshot_enabled and resource.get("resource_type") in {"PRODUCT", "COURSE", "COURSE_PAYMENT_PLAN", "MEMBERSHIP_TIER"}:
+                    continue
+                items.append({
+                    "knowledge_id": str(resource["resource_id"]), "title": str(resource["title"]),
+                    "version": str(resource["last_verified_at"]), "domain": str(resource["knowledge_domain"]),
+                    "status": "Active", "classification": "Public",
+                    "source_reference": f"{resource['source_system']}://{resource['source_identifier']}",
+                    "content": json.dumps(resource, separators=(",", ":"))[:4000],
+                })
             for entity in commercial.get("ecosystem_entities", []):
                 if entity.get("approval_status") != "approved" or entity.get("active_status") != "active":
                     continue

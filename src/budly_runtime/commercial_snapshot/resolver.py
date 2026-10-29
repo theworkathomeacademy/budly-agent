@@ -62,6 +62,13 @@ MANDATORY_CANONICAL_MAPPINGS: dict[str, str] = {
     "cook and grow with me": "ccc:course:grow-cook-with-me",
     "cook & grow with me": "ccc:course:grow-cook-with-me",
     "grow cook with me": "ccc:course:grow-cook-with-me",
+
+    "therapeutic body butter": "ccc:product:therapeutic-body-butter",
+    "therapeutic body butter 1-time": "ccc:product:therapeutic-body-butter",
+    "body butter": "ccc:product:therapeutic-body-butter",
+    "cbd body butter": "ccc:product:therapeutic-body-butter",
+    "therapeutic body butter monthly": "ccc:product:therapeutic-body-butter-monthly",
+    "body butter monthly": "ccc:product:therapeutic-body-butter-monthly",
 }
 
 # Ambiguous phrases that require clarification rather than semantic guessing

@@ -58,6 +58,8 @@ def raw_request():
 class TGP04AcceptanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        if "TG_P04_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P04_DATABASE_URL not configured; skipping live DB acceptance test")
         cls.dsn = os.environ["TG_P04_DATABASE_URL"]
         PostgresActivityAdapter(cls.dsn, environment="automated_test").apply_migration()
 

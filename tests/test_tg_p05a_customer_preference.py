@@ -57,6 +57,8 @@ def raw_request():
 class TGP05AAcceptanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        if "TG_P05A_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P05A_DATABASE_URL not configured; skipping live DB acceptance test")
         cls.dsn = os.environ["TG_P05A_DATABASE_URL"]
         PostgresPreferenceAdapter(cls.dsn, environment="automated_test").apply_migration()
 

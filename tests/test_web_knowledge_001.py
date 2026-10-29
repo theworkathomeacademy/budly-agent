@@ -21,13 +21,13 @@ class Response(io.BytesIO):
         self.close()
 
 
-def product_payload(*, active=True, slug="therapeutic-body-butter"):
+def product_payload(*, active=True, slug="therapeutic-body-butter", id=50, status="publish"):
     return [{
-        "id": 50, "slug": slug, "name": "Therapeutic Body Butter 1-time",
+        "id": id, "slug": slug, "name": "Therapeutic Body Butter 1-time",
         "permalink": "https://cccultivate.com/product/therapeutic-body-butter/",
         "short_description": "<p>A topical body butter.</p>",
         "categories": [{"name": "CBD"}, {"name": "Selfcare"}],
-        "is_purchasable": active, "is_in_stock": active,
+        "is_purchasable": active, "is_in_stock": active, "status": status,
         "prices": {"price": "7500", "currency_minor_unit": 2, "currency_code": "USD"},
     }]
 
@@ -54,8 +54,11 @@ class WebKnowledgeTests(unittest.TestCase):
         self.assertEqual(content["canonical_url"], "https://cccultivate.com/product/therapeutic-body-butter/")
 
     def test_unavailable_and_unapproved_products_are_excluded(self):
-        self.assertEqual(self.adapter(product_payload(active=False)).retrieve(self.context("cream")), [])
-        self.assertEqual(self.adapter(product_payload(slug="invented-cream")).retrieve(self.context("cream")), [])
+        out_of_stock = self.adapter(product_payload(active=False)).retrieve(self.context("cream"))
+        self.assertEqual(len(out_of_stock), 1)
+        self.assertEqual(json.loads(out_of_stock[0]["content"])["availability"], "out_of_stock")
+        self.assertEqual(self.adapter(product_payload(slug="invented-cream", status="draft")).retrieve(self.context("cream")), [])
+        self.assertEqual(self.adapter(product_payload(slug="lounge-pass")).retrieve(self.context("cream")), [])
 
     def test_policy_membership_affiliate_and_education_retrieval(self):
         adapter = self.adapter()

@@ -9,7 +9,14 @@
   "meta": {
     "templateCredsSetupCompleted": false
   },
-  "tags": [],
+  "tags": [
+    {
+      "name": "AFF-001"
+    },
+    {
+      "name": "NON-PRODUCTION"
+    }
+  ],
   "nodes": [
     {
       "id": "manual",
@@ -73,7 +80,5 @@
       ]
     }
   },
-  "pinData": {},
-  "id": "AFF-WF-008",
-  "versionId": "dd2534e3-011c-43ae-93d0-61d090977559"
+  "pinData": {}
 }

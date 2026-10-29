@@ -14,7 +14,7 @@ final class ConversationProxy {
     const NAMESPACE = 'budly-runtime/v1';
     const MAX_REQUEST_BYTES = 16384;
     const MAX_MESSAGE_CHARS = 4000;
-    const RUNTIME_TIMEOUT_SECONDS = 18;
+    const RUNTIME_TIMEOUT_SECONDS = 30;
 
     public static function register() {
         add_action('rest_api_init', array(__CLASS__, 'register_routes'));
@@ -100,7 +100,8 @@ final class ConversationProxy {
         if ($content_length < 2 || $content_length > self::MAX_REQUEST_BYTES) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         if (!self::rate_allowed()) return self::error('RATE_LIMITED', 'Please wait before sending more messages.', 429);
         $params = $request->get_json_params();
-        if (!is_array($params) || array_diff(array_keys($params), array('conversation_id','message','reset','attribution','page_context'))) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
+        $allowed_keys = array_merge(array('conversation_id','message','reset','attribution','page_context'), array('active_task'));
+        if (!is_array($params) || array_diff(array_keys($params), $allowed_keys)) return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         $conversation = sanitize_text_field((string)($params['conversation_id'] ?? ''));
         $message = sanitize_textarea_field((string)($params['message'] ?? ''));
         $reset = !empty($params['reset']);
@@ -112,13 +113,21 @@ final class ConversationProxy {
                 return self::error('INVALID_REQUEST', 'The request contains an invalid page context.', 400);
             }
         }
+        $raw_active_task = $params['active_task'] ?? null;
+        $active_task = null;
+        if ($raw_active_task !== null) {
+            $active_task = self::sanitize_active_task($raw_active_task);
+            if ($active_task === null) {
+                return self::error('INVALID_REQUEST', 'The request contains an invalid active task.', 400);
+            }
+        }
         if (!preg_match('/^conv_[A-Za-z0-9_-]{6,55}$/', $conversation) || self::length($message) < 1 || self::length($message) > self::MAX_MESSAGE_CHARS) {
             return self::error('INVALID_REQUEST', 'The request is invalid.', 400);
         }
         $configuration = self::configuration();
         if (isset($configuration['error'])) return self::error('RUNTIME_UNAVAILABLE', 'The conversational runtime is unavailable.', 503);
         $correlation = wp_generate_uuid4();
-        $decision = self::deterministic_context($conversation, $message, is_array($params['attribution'] ?? null) ? $params['attribution'] : array());
+        $decision = self::deterministic_context($conversation, $message, is_array($params['attribution'] ?? null) ? $params['attribution'] : array(), $active_task);
         $runtime_context = array_intersect_key($decision, array_flip(array('outcome','selected_product_id','confidence','resulting_action','journey')));
         $runtime_request = array(
             'conversation_id' => $conversation,
@@ -131,6 +140,9 @@ final class ConversationProxy {
         );
         if ($page_context !== null) {
             $runtime_request['page_context'] = $page_context;
+        }
+        if ($active_task !== null) {
+            $runtime_request['active_task'] = $active_task;
         }
         $body = wp_json_encode($runtime_request, JSON_UNESCAPED_SLASHES);
         $timestamp = (string) time();
@@ -184,6 +196,9 @@ final class ConversationProxy {
             ), array());
             if ($token !== null) { $response['commerce_correlation_token'] = $token; }
         }
+        if (isset($decoded['active_task']) && is_array($decoded['active_task'])) {
+            $response['active_task'] = $decoded['active_task'];
+        }
         return new \WP_REST_Response(array(
             'success' => true,
             'data' => array(
@@ -233,9 +248,16 @@ final class ConversationProxy {
         return strlen($current) >= 32 ? $current : '';
     }
 
-    private static function deterministic_context($conversation, $message, array $attribution = array()) {
+    private static function deterministic_context($conversation, $message, array $attribution = array(), $active_task = null) {
         $lower = strtolower($message);
         $risk = preg_match('/\b(diagnose|treat|treatment|cure|cancer|dosage|dose|medication|hospital|under 18|under 21|legal advice)\b/', $lower);
+        if ($risk) return array('outcome' => 'human_review', 'selected_product_id' => null, 'resulting_action' => 'human_escalation', 'confidence' => '1.0');
+
+        // Active unresolved customer task outranks generic journey classification
+        if (is_array($active_task) && ($active_task['task_state'] ?? '') === 'UNRESOLVED') {
+            return array('journey' => null, 'outcome' => 'conversation', 'selected_product_id' => null, 'resulting_action' => 'continue_conversation', 'active_task' => $active_task);
+        }
+
         $commercial = preg_match('/\b(product|book|course|coloring|buy|price|cost|membership|wholesale|tincture|butter|oil)\b/', $lower);
         $journey = self::journey($lower);
         if (!$risk && !$commercial) return array('journey' => $journey, 'outcome' => 'conversation', 'selected_product_id' => null, 'resulting_action' => 'continue_conversation');
@@ -277,7 +299,7 @@ final class ConversationProxy {
                 if (!is_array($link) || array_diff(array('label','url'), array_keys($link))) return false;
                 $url = esc_url_raw((string) $link['url']);
                 $host = strtolower((string) parse_url($url, PHP_URL_HOST));
-                if (!$url || !in_array($host, array('cccultivate.com','wakenbakelounge.com','www.wakenbakelounge.com','dmckenzies.wixsite.com','learn.cccultivate.com'), true)) return false;
+                if (!$url || !in_array($host, array('cccultivate.com','wakenbakelounge.com','www.wakenbakelounge.com','dmckenzies.wixsite.com','learn.cccultivate.com','buy.stripe.com'), true)) return false;
                 if (trim((string) $link['label']) === '' || self::length((string) $link['label']) > 80) return false;
             }
         }
@@ -324,6 +346,33 @@ final class ConversationProxy {
             'view' => $view,
             'source_host' => $source_host,
         );
+    }
+
+    private static function sanitize_active_task($raw) {
+        if (!is_array($raw)) return null;
+        $allowed = array(
+            'active_entity', 'active_request', 'task_state', 'customer_name',
+            'contact_email', 'contact_phone', 'preferred_contact_channel',
+            'follow_up_requested', 'follow_up_consent', 'follow_up_subject',
+            'marketing_consent', 'action_truth_state',
+            'crm_write_state', 'human_followup_state'
+        );
+        if (array_diff(array_keys($raw), $allowed)) return null;
+        $clean = array();
+        foreach ($allowed as $k) {
+            if (!array_key_exists($k, $raw)) continue;
+            $val = $raw[$k];
+            if (is_bool($val)) {
+                $clean[$k] = $val;
+            } elseif (is_string($val)) {
+                $clean[$k] = sanitize_text_field($val);
+            } elseif ($val === null) {
+                $clean[$k] = null;
+            } else {
+                return null;
+            }
+        }
+        return $clean;
     }
 
     private static function length($value) {return function_exists('mb_strlen') ? mb_strlen($value, 'UTF-8') : strlen($value);}

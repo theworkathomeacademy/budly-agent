@@ -10,8 +10,8 @@ from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE_ROOT = "budly-runtime"
-RUNTIME_VERSION = "1.8.10-rc-g9e4"
-RELEASE_CANDIDATE = "budly-runtime-v1.8.10-rc-g9e4"
+RUNTIME_VERSION = "1.8.10-rc-conversation-repair-001-ecosystem-r5"
+RELEASE_CANDIDATE = "budly-runtime-v1.8.10-rc-conversation-repair-001-ecosystem-r5"
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)
 FILES = (
     "src/budly_runtime/__init__.py",
@@ -27,6 +27,22 @@ FILES = (
     "src/budly_runtime/relationship_registry.py",
     "src/budly_runtime/session.py",
     "src/budly_runtime/tool_gateway.py",
+    "src/budly_runtime/eligibility.py",
+    "src/budly_runtime/commercial_snapshot/__init__.py",
+    "src/budly_runtime/commercial_snapshot/contract.py",
+    "src/budly_runtime/commercial_snapshot/enrichment.py",
+    "src/budly_runtime/commercial_snapshot/events.py",
+    "src/budly_runtime/commercial_snapshot/fetcher.py",
+    "src/budly_runtime/commercial_snapshot/generator.py",
+    "src/budly_runtime/commercial_snapshot/loader.py",
+    "src/budly_runtime/commercial_snapshot/rebuild.py",
+    "src/budly_runtime/commercial_snapshot/resolver.py",
+    "src/budly_runtime/commercial_snapshot/returning_customer.py",
+    "src/budly_runtime/commercial_snapshot/validator.py",
+    "config/commercial_catalog/Current/budly-commercial-catalog.json",
+    "config/commercial_catalog/Current/budly-commercial-catalog.csv",
+    "config/commercial_catalog/Current/catalog-manifest.json",
+    "config/canonical_catalog.json",
     "config/budly_runtime/affiliate-public-knowledge-g9d-v1.json",
     "config/budly_runtime/commercial-knowledge-v1.0.json",
     "config/budly_runtime/education-corpus-v0.1.json",

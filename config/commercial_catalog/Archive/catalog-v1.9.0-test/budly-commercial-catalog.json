@@ -59,19 +59,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 150,
     "woo_parent_product_id": 150,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "COURSE_FULL_15",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "62a77f9e49e6c1e1bd8f919c5adce01a4377f6eec77851b23a32d4a5fe794018"
+    "record_checksum": "439de10f7085bd34bc19f98d95765be2456d0054450036d8e85febc9d639086e"
   },
   {
     "canonical_id": "ccc:course:culinary-cannabis:payment-plan",
@@ -129,7 +129,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 455,
@@ -203,19 +203,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 151,
     "woo_parent_product_id": 151,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "COURSE_FULL_15",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "858a71d95245f692326e7faa746538417bd303baaf4fc7f15d37a00deea58866"
+    "record_checksum": "368a052c7e12c3f32aaf5a11842133ba1ab6ccb41fad8ff2e52be882152d9a81"
   },
   {
     "canonical_id": "ccc:course:grow-cannabis-home:payment-plan",
@@ -273,7 +273,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 457,
@@ -346,19 +346,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 152,
     "woo_parent_product_id": 152,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "COURSE_FULL_15",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "5021f7c02cdd94626eec348c371c442b3ea6858893d620e11f404f36faa2f163"
+    "record_checksum": "4a954af21a82ef2c588e9af895f9854aa3764d9ff52794a82ad1a28468c3c61e"
   },
   {
     "canonical_id": "ccc:course:grow-cook-with-me:payment-plan",
@@ -416,7 +416,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 460,
@@ -494,7 +494,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 87,
@@ -573,19 +573,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 1046,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "CONSULTATION_30",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "fd72c181a81f94ee8cab33eb2ba82abbfaff917855afe4227c55fd9685556a93"
+    "record_checksum": "664d3e9c5ed90a58ce747f59c0e5c1a4df23538cc1dcd16585b6e5e965a4963e"
   },
   {
     "canonical_id": "wnb:nft:azurea-skye",
@@ -632,7 +632,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
@@ -691,7 +691,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
@@ -750,7 +750,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
@@ -809,7 +809,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
@@ -868,7 +868,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 212,
@@ -927,7 +927,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
@@ -986,7 +986,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
@@ -1045,7 +1045,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
@@ -1104,7 +1104,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
@@ -1163,7 +1163,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 214,
@@ -1222,7 +1222,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
@@ -1281,7 +1281,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
@@ -1340,7 +1340,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
@@ -1399,7 +1399,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
@@ -1458,7 +1458,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 216,
@@ -1517,7 +1517,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
@@ -1576,7 +1576,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
@@ -1635,7 +1635,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
@@ -1694,7 +1694,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
@@ -1753,7 +1753,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 218,
@@ -1812,7 +1812,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
@@ -1871,7 +1871,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
@@ -1930,7 +1930,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
@@ -1989,7 +1989,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
@@ -2048,7 +2048,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 220,
@@ -2107,7 +2107,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
@@ -2166,7 +2166,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
@@ -2225,7 +2225,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
@@ -2284,7 +2284,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
@@ -2343,7 +2343,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 825,
@@ -2402,7 +2402,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
@@ -2461,7 +2461,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
@@ -2520,7 +2520,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
@@ -2579,7 +2579,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
@@ -2638,7 +2638,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 831,
@@ -2697,7 +2697,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
@@ -2756,7 +2756,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
@@ -2815,7 +2815,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
@@ -2874,7 +2874,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
@@ -2933,7 +2933,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 833,
@@ -3009,7 +3009,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
@@ -3081,7 +3081,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
@@ -3153,7 +3153,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
@@ -3225,7 +3225,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
@@ -3297,7 +3297,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 875,
@@ -3356,7 +3356,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
@@ -3415,7 +3415,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
@@ -3474,7 +3474,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
@@ -3533,7 +3533,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
@@ -3592,7 +3592,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": 882,
@@ -3651,7 +3651,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -3710,19 +3710,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "WELLNESS_SUB_30_5",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "a41768d2ee18eccb98cc0ef719b9ce3bd9da8ab302702c431ce1add57163ea00"
+    "record_checksum": "32aa62ce4dba27d8946abd5dc79966a01b5e8286c0882cb800ed8545ba4034e3"
   },
   {
     "canonical_id": "ccc:product:therapeutic-oil-tincture-1-time",
@@ -3769,7 +3769,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -3790,7 +3790,11 @@
     "name": "Therapeutic Body Butter monthly",
     "entity_type": "PRODUCT",
     "category": [
-      "General"
+      "Wellness",
+      "Topical",
+      "CBD",
+      "Body Butter",
+      "Subscription"
     ],
     "brand": "Compassionate Care Cultivators",
     "status": "ACTIVE",
@@ -3802,14 +3806,29 @@
     "price_usd": 65.0,
     "currency": "USD",
     "billing_model": "RECURRING_MONTHLY",
-    "short_summary": "",
-    "description": "",
-    "benefits": [],
-    "audience": [],
-    "customer_goals": [],
-    "eligibility_rules": [],
+    "short_summary": "Monthly subscription of our luxurious CBD body butter ($65/mo).",
+    "description": "Indulge your senses with Therapeutic Body Butter, a luxurious blend designed for ultimate relaxation and skin nourishment. Enriched with cocoa, kokum, and shea butters, it deeply moisturizes, while coconut and hemp seed oils soothe and calm. Infused with CBD distillate, this body butter helps relieve stress, making it perfect for a relaxing self-care routine. Ideal for silken, revitalized skin.",
+    "benefits": [
+      "Monthly recurring delivery of therapeutic body butter",
+      "Enriched with cocoa, kokum, and shea butters for deep moisture",
+      "Coconut and hemp seed oils soothe and calm skin",
+      "Infused with CBD distillate to help relieve stress"
+    ],
+    "audience": [
+      "Wellness seekers",
+      "Subscribers",
+      "Regular topical CBD users"
+    ],
+    "customer_goals": [
+      "Consistent monthly skincare",
+      "Topical relaxation",
+      "Stress relief"
+    ],
+    "eligibility_rules": [
+      "21+ or legal age"
+    ],
     "exclusions": [],
-    "fulfillment_type": "DIGITAL_DELIVERY",
+    "fulfillment_type": "PHYSICAL_SHIPPING",
     "fulfillment_platform": "WOOCOMMERCE",
     "canonical_url": "https://cccultivate.com/product/therapeutic-body-butter-monthly/",
     "checkout_url": null,
@@ -3828,19 +3847,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
-    "woo_product_id": null,
+    "woo_product_id": 51,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "WELLNESS_SUB_30_5",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "2ad6f471466a3948467ba25d5cefba59770ef22759ecbe79921551e498afe6be"
+    "record_checksum": "4c774a4a6b984c474372a5ce1012082d5dfd2a8d1dedac4c8e25bce4cbfa8743"
   },
   {
     "canonical_id": "ccc:product:therapeutic-combo-monthly-subscription",
@@ -3887,19 +3906,19 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
-    "affiliate_eligibility": "ELIGIBLE_RATE_REQUIRED",
-    "affiliate_commission_class": null,
+    "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
+    "affiliate_commission_class": "WELLNESS_SUB_30_5",
     "affiliate_campaign_restriction": [],
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "4e8f2165c00ec895909abedb34a51862a90ce5cce4fb6fdd153a84189c527a30"
+    "record_checksum": "5683b696ceeba9e2831dbdd400302a584c42eee48b1f743070863e5d80c529ae"
   },
   {
     "canonical_id": "ccc:product:therapeutic-combo-one-time-purchase",
@@ -3946,7 +3965,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4005,7 +4024,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4064,7 +4083,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4123,7 +4142,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4182,7 +4201,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4241,7 +4260,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4300,7 +4319,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4359,7 +4378,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4418,7 +4437,7 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
     "woo_product_id": null,
@@ -4439,7 +4458,10 @@
     "name": "Therapeutic Body Butter 1-time",
     "entity_type": "PRODUCT",
     "category": [
-      "General"
+      "Wellness",
+      "Topical",
+      "CBD",
+      "Body Butter"
     ],
     "brand": "Compassionate Care Cultivators",
     "status": "ACTIVE",
@@ -4451,17 +4473,32 @@
     "price_usd": 75.0,
     "currency": "USD",
     "billing_model": "ONE_TIME",
-    "short_summary": "",
-    "description": "",
-    "benefits": [],
-    "audience": [],
-    "customer_goals": [],
-    "eligibility_rules": [],
+    "short_summary": "Luxurious CBD body butter formulated with cocoa, kokum, and shea butters, coconut and hemp seed oils, and CBD distillate ($75 one-time).",
+    "description": "Indulge your senses with Therapeutic Body Butter, a luxurious blend designed for ultimate relaxation and skin nourishment. Enriched with cocoa, kokum, and shea butters, it deeply moisturizes, while coconut and hemp seed oils soothe and calm. Infused with CBD distillate, this body butter helps relieve stress, making it perfect for a relaxing self-care routine. Ideal for silken, revitalized skin.",
+    "benefits": [
+      "Enriched with cocoa, kokum, and shea butters for deep moisture",
+      "Coconut and hemp seed oils soothe and calm skin",
+      "Infused with CBD distillate to help relieve stress",
+      "Ideal for a relaxing self-care routine and silken, revitalized skin"
+    ],
+    "audience": [
+      "Wellness seekers",
+      "Skincare enthusiasts",
+      "Individuals seeking topical CBD relief"
+    ],
+    "customer_goals": [
+      "Deep skin nourishment",
+      "Topical relaxation",
+      "Stress relief"
+    ],
+    "eligibility_rules": [
+      "21+ or legal age"
+    ],
     "exclusions": [],
-    "fulfillment_type": "DIGITAL_DELIVERY",
+    "fulfillment_type": "PHYSICAL_SHIPPING",
     "fulfillment_platform": "WOOCOMMERCE",
     "canonical_url": "https://cccultivate.com/product/therapeutic-body-butter/",
-    "checkout_url": null,
+    "checkout_url": "https://cccultivate.com/cart/?add-to-cart=50",
     "booking_url": null,
     "payment_plan_available": false,
     "payment_plan_amount": null,
@@ -4477,10 +4514,10 @@
       "wix_entity": null
     },
     "source_updated_at": "2026-09-14T20:25:43.608003+00:00",
-    "snapshot_generated_at": "2026-10-03T07:21:23.020009+00:00",
+    "snapshot_generated_at": "2026-10-29T21:37:48.585925+00:00",
     "catalog_version": "1.9.0-test",
     "budly_visibility": "PUBLIC",
-    "woo_product_id": null,
+    "woo_product_id": 50,
     "woo_parent_product_id": null,
     "woo_variation_id": null,
     "affiliate_eligibility": "AFFILIATE_ELIGIBLE",
@@ -4489,6 +4526,6 @@
     "affiliate_class_restriction": [],
     "affiliate_effective_from": null,
     "affiliate_effective_until": null,
-    "record_checksum": "149897e34ee5e930d75ad61e8e731e4beed16a2686cb53849fd0632cc9576f5b"
+    "record_checksum": "515d59a79f6e984c0aad838b5238abfe3336eee2b713928e15f3dbf468904f88"
   }
 ]

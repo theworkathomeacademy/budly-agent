@@ -21,6 +21,14 @@ from tests import test_tg_p06_customer_memory_recall as tg_p06
 class TGP07AcceptanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        if "TG_P04_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P04_DATABASE_URL not configured; skipping live DB acceptance test")
+        if "TG_P05A_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P05A_DATABASE_URL not configured; skipping live DB acceptance test")
+        if "TG_P05B_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P05B_DATABASE_URL not configured; skipping live DB acceptance test")
+        if "TG_P06_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P06_DATABASE_URL not configured; skipping live DB acceptance test")
         cls.activity_dsn = os.environ["TG_P04_DATABASE_URL"]
         cls.preference_dsn = os.environ["TG_P05A_DATABASE_URL"]
         cls.relationship_dsn = os.environ["TG_P05B_DATABASE_URL"]

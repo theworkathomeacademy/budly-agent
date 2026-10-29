@@ -197,7 +197,7 @@ class TestMX5CLoungeHomeProof(unittest.TestCase):
 
         expected_links = [
             {"label": "Explore Lounge Community", "url": "https://cccultivate.com/wakenbake-lounge-community/"},
-            {"label": "Claim Free Lounge Pass", "url": "https://cccultivate.com/product/lounge-pass/"},
+            {"label": "Wake'n'Bake Legends", "url": "https://cccultivate.com/legends/"},
             {"label": "Wake'n'Bake Lounge Platform", "url": "https://dmckenzies.wixsite.com/wakenbakelounge"},
         ]
         self.assertEqual(links, expected_links)
@@ -240,7 +240,7 @@ class TestMX5CLoungeHomeProof(unittest.TestCase):
         response = result["response"]
         self.assertEqual(len(response["links"]), 3)
         self.assertEqual(response["links"][0]["url"], "https://cccultivate.com/wakenbake-lounge-community/")
-        self.assertEqual(response["links"][1]["url"], "https://cccultivate.com/product/lounge-pass/")
+        self.assertEqual(response["links"][1]["url"], "https://cccultivate.com/legends/")
         self.assertEqual(response["links"][2]["url"], "https://dmckenzies.wixsite.com/wakenbakelounge")
 
     def test_fails_safely_when_commercial_truth_missing(self) -> None:

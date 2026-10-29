@@ -9,3 +9,15 @@ deploy/wordpress/budly-sales-agent.zip
 deploy/wordpress/budly-sales-agent.zip.sha256
 deploy/wordpress/budly-sales-live-1.2.0.zip
 deploy/wordpress/budly-sales-live-1.2.0-active.zip
+*.zip
+*.zip.sha256
+.env.cloudflared
+deploy/runtime/.env.cloudflared
+scratch/
+secrets/
+scratch_*
+section*_output.txt
+docs/affiliate/pilot/evidence/
+config/commercial_catalog/Archive/catalog-v1.9.4-affiliate-g9b7c/
+config/commercial_catalog/Quarantine/
+.pytest_cache/

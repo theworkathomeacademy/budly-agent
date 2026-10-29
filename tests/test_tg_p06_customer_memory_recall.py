@@ -47,6 +47,12 @@ def recall_request(*, subject_id="P-TEST-001", identity_state="VERIFIED", use_st
 class TGP06AcceptanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        if "TG_P05A_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P05A_DATABASE_URL not configured; skipping live DB acceptance test")
+        if "TG_P05B_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P05B_DATABASE_URL not configured; skipping live DB acceptance test")
+        if "TG_P06_DATABASE_URL" not in os.environ:
+            raise unittest.SkipTest(f"TG_P06_DATABASE_URL not configured; skipping live DB acceptance test")
         cls.preference_dsn = os.environ["TG_P05A_DATABASE_URL"]
         cls.relationship_dsn = os.environ["TG_P05B_DATABASE_URL"]
         cls.audit_dsn = os.environ["TG_P06_DATABASE_URL"]
