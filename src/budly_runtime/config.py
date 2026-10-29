@@ -62,7 +62,7 @@ class ProductionSettings:
     model_api_key: str
     knowledge_path: Path
     commercial_snapshot_enabled: bool = False
-    request_timeout_seconds: float = 15.0
+    request_timeout_seconds: float = 25.0
     provider_retry_count: int = 1
     allow_unrestricted_bind: bool = False
 
@@ -82,7 +82,7 @@ class ProductionSettings:
             model_api_key=values.get("BUDLY_MODEL_API_KEY", ""),
             knowledge_path=Path(values.get("BUDLY_KNOWLEDGE_PATH", "config")),
             commercial_snapshot_enabled=commercial_snapshot,
-            request_timeout_seconds=float(values.get("BUDLY_MODEL_TIMEOUT_SECONDS", "15")),
+            request_timeout_seconds=float(values.get("BUDLY_MODEL_TIMEOUT_SECONDS", "25")),
             provider_retry_count=int(values.get("BUDLY_MODEL_RETRY_COUNT", "1")),
             allow_unrestricted_bind=allow_unrestricted,
         )
