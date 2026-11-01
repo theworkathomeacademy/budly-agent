@@ -7,7 +7,7 @@ COPY src/budly_runtime/ /app/src/budly_runtime/
 COPY config/budly_runtime/ /app/config/budly_runtime/
 COPY config/tool_gateway/ /app/config/tool_gateway/
 COPY config/commercial_catalog/ /app/config/commercial_catalog/
-COPY config/canonical_catalog.json config/policies.json config/products.json /app/config/
+COPY config/canonical_catalog.json config/policies.json config/products.json config/commercial-truth.json /app/config/
 RUN chown -R appuser:appuser /app
 
 USER appuser

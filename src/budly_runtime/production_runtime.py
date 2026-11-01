@@ -830,6 +830,8 @@ class ProductionConversationRuntime:
             knowledge_root.parent / "deploy" / "wordpress" / "ccc-wnb-membership-entitlements" / "commercial-truth.json",
             self.root / "commercial-truth.json",
             Path("deploy/wordpress/ccc-wnb-membership-entitlements/commercial-truth.json"),
+            self.root / "config" / "commercial-truth.json",
+            knowledge_root / "commercial-truth.json",
         ]
         target = next((p for p in candidates if p.is_file()), None)
         if target is None:

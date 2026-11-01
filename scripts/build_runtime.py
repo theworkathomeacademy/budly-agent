@@ -43,6 +43,7 @@ FILES = (
     "config/commercial_catalog/Current/budly-commercial-catalog.csv",
     "config/commercial_catalog/Current/catalog-manifest.json",
     "config/canonical_catalog.json",
+    "config/commercial-truth.json",
     "config/budly_runtime/affiliate-public-knowledge-g9d-v1.json",
     "config/budly_runtime/commercial-knowledge-v1.0.json",
     "config/budly_runtime/education-corpus-v0.1.json",
