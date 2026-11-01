@@ -239,8 +239,8 @@ def test_commercial_07_is_cannabis_right_for_me(snapshot_loader: CommercialSnaps
     assert rec is not None
     assert rec.entity_type == "SERVICE"
     assert rec.price_usd == 75.0
-    assert rec.canonical_url == "https://wakenbakelounge.com/service-page/is-cannabis-right-for-me"
-    assert rec.booking_url == "https://wakenbakelounge.com/service-page/is-cannabis-right-for-me"
+    assert rec.canonical_url == "https://cccultivate.com/product/is-cannabis-right-for-me/"
+    assert rec.booking_url == "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me"
     assert rec.payment_processor == "WIX_BOOKINGS"
     assert any("not medical advice" in exc.lower() for exc in rec.exclusions)
 

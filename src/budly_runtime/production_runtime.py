@@ -45,7 +45,7 @@ KNOWLEDGE_DOMAINS = {
     ),
     "membership": re.compile(r"\b(memberships?|nft\s*memberships?|member\s*tier|member\s*tiers|legends\s*memberships?|join\s+(?:the\s+)?(?:membership|legends|club)|free\s*membership|silver\s*legend|gold\s*legend|legend\s*og|all\s*3|torque|bronze|copper|titanium|platinum|lounge\s*(?:pass|member|elite))\b", re.I),
     "support": re.compile(r"\b(customer\s*support|contact\s*(?:us|support)|order\s*(?:status|help|issue|tracking|lookup)|where\s+is\s+my\s+order|my\s*account|billing\s*help|support\s*team)\b", re.I),
-    "product_catalog": re.compile(r"\b(product|products|available|carry|cream|creams|butter|butters|topical|topicals|oil|oils|tincture|tinctures|combo|combos|therapeutic|spray|sprays|book|books|course|courses|class|classes|formal|structured|coloring|buy|sell|price|prices|pricing|cost|costs|format|edition|catalog|shop|balm|balms|wholesale|white\s*label|payment\s*plans?|financing|installments?|infused\s*basics|cannabis\s*right\s*for\s*me|consultation|service)\b", re.I),
+    "product_catalog": re.compile(r"\b(product|products|available|carry|cream|creams|butter|butters|topical|topicals|oil|oils|tincture|tinctures|combo|combos|therapeutic|spray|sprays|book|books|course|courses|class|classes|formal|structured|coloring|buy|sell|price|prices|pricing|cost|costs|format|edition|catalog|shop|balm|balms|wholesale|white\s*label|payment\s*plans?|financing|installments?|infused\s*basics|cannabis\s*right\s*for\s*me|consultation|consultations|appointment|appointments|schedul(?:e|ing)|booking|bookings|1-on-1|one-on-one|service|services)\b", re.I),
     "educational": re.compile(r"\b(learn|education|article|articles|resource|resources|recipe|recipes|cultivation|endocannabinoid|ecs|terpenes?|cannabinoids?|cbd|entourage|blue dream|cannabis safety|impair|driv(?:e|ing)|pain|inflammation|sleep|benefits|effects?|dosage|dose|how\s+to\s+use|difference\s+between|what\s+is\s+(?:a|an)\s+|what\s+are\s+|parts\s+of\s+the\s+plant|parts\s+that\s+people\s+smoke|plant\s+anatomy|trichomes?|flowers?|buds?|medicine|newsletter|forum|community|wake'?n'?bake(?:\s*lounge)?|how\s+do\s+i\s+find|how\s+to\s+get\s+to|tell\s+me\s+how\s+to\s+get|find\s+them)\b", re.I),
 }
 UNAPPROVED_EDUCATIONAL_CLAIMS = re.compile(
@@ -356,7 +356,7 @@ class ProductionConversationRuntime:
                 "Authoritative Legends NFT memberships: 10 character collectible digital passes (including Torque, variable $5,000–$40,000) structured across 4 tier levels: Bronze ($5,000), Copper ($10,000), Titanium ($20,000), and Platinum ($40,000). Each tier includes collectible digital pass, community access on Wake'n'Bake Lounge platform, and enrollment choice of one structured educational class (Grow Cannabis @ Home or Culinary Cannabis)",
                 "Authoritative course and product prices: Always use exact active prices from retrieved snapshot knowledge: Grow Cannabis @ Home is $1,500, Culinary Cannabis is $1,000, Cook & Grow With Me is $2,500 (combining both courses), Infused Basics is $40, Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1 is $14.99, Is Cannabis Right For Me? consultation is $75, Therapeutic Body Butter is $75 (one-time), Therapeutic Oil Tincture is $55 (one-time), and Infused Cooking Oil is available in 4oz ($300), 8oz ($500), 12oz ($650), and 16oz ($750)",
                 "Authoritative course payment plans: Available via direct Stripe monthly plans for structured courses: Culinary Cannabis Payment Plan ($300/mo via Stripe), Grow Cannabis @ Home Payment Plan ($425/mo via Stripe), Cook & Grow With Me Payment Plan ($675/mo via Stripe)",
-                "Authoritative consultation service: Is Cannabis Right For Me? is a $75 1-on-1 consultation service booked through Wake'n'Bake Lounge Wix Bookings (https://wakenbakelounge.com/service-page/is-cannabis-right-for-me). Frame strictly as educational/safety guidance; never make medical diagnosis or prescription claims",
+                "Authoritative consultation service: Is Cannabis Right For Me? is a $75 1-on-1 consultation service booked through Wake'n'Bake Lounge Wix Bookings (https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me) or viewable at https://cccultivate.com/product/is-cannabis-right-for-me/. Frame strictly as educational/safety guidance; never make medical diagnosis or prescription claims. Never claim appointment slots are reserved without confirmed booking.",
                 "Excluded unreleased community products: Lounge Pass, Lounge Member, and Lounge Elite are unreleased internal drafts and NOT available for public purchase or inquiry; do not disclose unreleased pricing, benefits, Wix plan IDs, or planned coupon codes (e.g. LOUNGEMEMBER10, LOUNGEELITE25)",
                 "Query Mode Distinction: For INVENTORY / LIST queries (e.g. 'What classes do you offer?', 'What memberships do you have?', 'What books do you have?', 'What CBD oils do you sell?'), present the complete applicable active set from retrieved knowledge without omitting active courses or tiers. For RECOMMENDATION queries (e.g. 'Which class is best for learning to grow?', 'Which membership would fit me?', 'I want to learn how to cook with cannabis. What do you recommend?'), rank and explain the single best-fit option for the customer's goal while noting relevant alternatives",
                 "Books parity: Two books/guides are available in the public catalog: Infused Basics: The Beginner's Guide to Infuse Everything Edible for $40, and Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1 for $14.99",
@@ -386,6 +386,7 @@ class ProductionConversationRuntime:
                 "Deterministic authority wins",
                 "Use only supplied approved knowledge for business facts",
                 "Books parity: When asked what books or guides are available, clearly identify that two books/guides are available (Infused Basics: The Beginner's Guide to Infuse Everything Edible for $40, and Cannabis Botanical Collection Vol. 1 for $14.99), matching the rendered cards",
+                "Authoritative consultation service: Is Cannabis Right For Me? is a $75 1-on-1 consultation service booked through Wake'n'Bake Lounge Wix Bookings (https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me) or viewable at https://cccultivate.com/product/is-cannabis-right-for-me/. Frame strictly as educational/safety guidance; never make medical diagnosis or prescription claims. Never claim appointment slots are reserved without confirmed booking.",
                 "Four memory/identity states: Session Context (held during current chat), CRM Identity (name/email saved with customer consent), Durable Memory (DISABLED in production: NEVER say 'I will remember you next time' or promise persistent cross-session memory; safe wording: 'If you'd like, I can note what you're interested in for our team records'), and Follow-up Permission (voluntary permission)",
                 "Initiate name capture naturally: After providing initial useful value (e.g. Turn 1 or after answering an initial discovery question), if customer_name is null and name_capture_asked is false and name_capture_declined is false, warmly invite the customer to share their name (e.g. 'By the way, what should I call you?'). Once they share their name, use it naturally in subsequent turns. If they decline (e.g. 'I\\'d rather not'), respect their preference immediately and do not ask again.",
                 "Initiate email capture value-linked: When the customer asks about classes, courses, or newsletter/team updates, if customer_email is null and email_capture_declined is false, offer to have the details or updates sent to them and ask for their email (e.g. 'I can have the class details sent to you if you\\'d like. What email should we use?' or 'What email address should the team use?'). If customer has already provided an email, do NOT ask again. If they decline ('No thanks, I don\\'t want to provide my email'), continue normally without asking again.",
@@ -644,6 +645,13 @@ class ProductionConversationRuntime:
             session.preferred_contact_channel = "email"
 
         # Active Task Management (Contract: active_entity, active_request, task_state, follow_up_requested, etc.)
+        is_consultation_query = any(w in msg_lower for w in ["consultation", "consultations", "consult", "appointment", "appointments", "session", "sessions", "is cannabis right for me", "cannabis right for me"])
+        if is_consultation_query:
+            session.active_entity = "Is Cannabis Right For Me? Consultation"
+            session.active_request = "consultation booking and pricing"
+            session.task_state = "UNRESOLVED"
+            session.follow_up_subject = "Is Cannabis Right For Me? consultation details"
+
         is_ingredient_query = any(w in msg_lower for w in ["ingredient", "ingredients", "recipe", "what's in", "what is in", "contents", "formulation"])
         if is_ingredient_query:
             detected_entity = None
@@ -891,6 +899,18 @@ class ProductionConversationRuntime:
                 content = json.loads(item["content"])
             except (TypeError, ValueError, KeyError):
                 continue
+
+            # 1. Dedicated booking link for services if booking_url is present
+            booking_url = content.get("booking_url")
+            if isinstance(booking_url, str) and re.fullmatch(r"https://(?:cccultivate\.com|(?:www\.)?wakenbakelounge\.com|dmckenzies\.wixsite\.com|learn\.cccultivate\.com|buy\.stripe\.com)/[^\s]*", booking_url):
+                # Clean defective redirect URL if present
+                if "wakenbakelounge.com/service-page" in booking_url:
+                    booking_url = booking_url.replace("wakenbakelounge.com/service-page", "dmckenzies.wixsite.com/wakenbakelounge/service-page")
+                if booking_url not in seen_urls:
+                    seen_urls.add(booking_url)
+                    links.append({"label": "Book consultation", "url": booking_url})
+
+            # 2. Canonical store / content link
             url = content.get("canonical_url") or content.get("url")
             if not isinstance(url, str) or not re.fullmatch(r"https://(?:cccultivate\.com|(?:www\.)?wakenbakelounge\.com|dmckenzies\.wixsite\.com|learn\.cccultivate\.com|buy\.stripe\.com)/[^\s]*", url):
                 continue
@@ -899,7 +919,12 @@ class ProductionConversationRuntime:
             if url in seen_urls:
                 continue
             seen_urls.add(url)
-            label = content.get("link_label") or ("View product" if content.get("resource_type") == "PRODUCT" else "Learn more")
+            if content.get("resource_type") == "SERVICE" or "consultation" in url.lower() or "service-page" in url.lower():
+                label = content.get("link_label") or "View service"
+            elif content.get("resource_type") == "PRODUCT":
+                label = content.get("link_label") or "View product"
+            else:
+                label = content.get("link_label") or "Learn more"
             links.append({"label": str(label)[:80], "url": url})
         return links[:3]
 

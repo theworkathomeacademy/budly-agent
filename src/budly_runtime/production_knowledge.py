@@ -219,13 +219,13 @@ class ApprovedRepositoryKnowledgeAdapter:
         elif any(w in q_lower for w in ["payment plan", "payment plans", "financing", "installments", "installment", "monthly option"]):
             matched_records.extend([r for r in all_records if r.entity_type == "COURSE_PAYMENT_PLAN"])
 
-        # Books
-        elif any(w in q_lower for w in ["book", "books", "guide", "guides", "reading", "botanical", "basics", "infused basics"]):
-            matched_records.extend([r for r in all_records if r.entity_type == "BOOK"])
-
-        # Consultation Service
-        elif any(w in q_lower for w in ["is cannabis right for me", "consultation", "consult", "service", "appointment", "1-on-1"]):
+        # Consultation Service & Appointments
+        elif any(w in q_lower for w in ["is cannabis right for me", "consultation", "consultations", "consult", "consulting", "service", "services", "appointment", "appointments", "1-on-1", "one-on-one", "session", "sessions", "schedule", "scheduling", "book a consultation", "book consultation", "book an appointment", "book appointment", "booking a consultation"]):
             matched_records.extend([r for r in all_records if r.entity_type == "SERVICE"])
+
+        # Books
+        elif any(w in q_lower for w in ["book", "books", "guide", "guides", "reading", "botanical", "basics", "infused basics"]) and not any(w in q_lower for w in ["consultation", "consult", "appointment", "session", "service", "schedule", "scheduling", "1-on-1", "one-on-one"]):
+            matched_records.extend([r for r in all_records if r.entity_type == "BOOK"])
 
         # Memberships / Legends / Torque & Characters / NFTs
         elif any(w in q_lower for w in [
@@ -430,6 +430,23 @@ class ApprovedRepositoryKnowledgeAdapter:
             "balms": {"balm", "balms"},
             "wholesale": {"wholesale", "bulk", "white", "label"},
             "bulk": {"wholesale", "bulk", "white", "label"},
+            "consultation": {"consultation", "consultations", "consult", "consulting", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "consultations": {"consultation", "consultations", "consult", "consulting", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "consult": {"consultation", "consultations", "consult", "consulting", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "consulting": {"consultation", "consultations", "consult", "consulting", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "appointment": {"consultation", "consultations", "consult", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "appointments": {"consultation", "consultations", "consult", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "schedule": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "scheduling": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "booking": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "session": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "sessions": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "service": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "services": {"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"},
+            "one-on-one": {"consultation", "consultations", "appointment", "session", "1-on-1", "one-on-one", "service"},
+            "1-on-1": {"consultation", "consultations", "appointment", "session", "1-on-1", "one-on-one", "service"},
+            "cookbook": {"book", "books", "guide", "guides", "botanical", "collection", "basics", "cookbook"},
+            "cookbooks": {"book", "books", "guide", "guides", "botanical", "collection", "basics", "cookbook"},
         }
 
         # Resolve customer lane from query
@@ -485,6 +502,12 @@ class ApprovedRepositoryKnowledgeAdapter:
             for cat in categories:
                 if cat.lower() not in {"cbd", "cannabis", "hemp"}:
                     searchable_tokens.update(re.findall(r"[a-z0-9]+", cat.lower()))
+            service_descriptors = {"consultation", "consultations", "consult", "consulting", "appointment", "appointments", "session", "sessions", "service", "services", "booking", "schedule", "scheduling", "1-on-1", "one-on-one"}
+            short_desc_raw = str(product.get("short_description", "")).lower()
+            desc_raw = str(product.get("description", "")).lower()
+            for kw in service_descriptors:
+                if kw in short_desc_raw or kw in desc_raw:
+                    searchable_tokens.add(kw)
             
             if required_keywords and not required_keywords.intersection(searchable_tokens):
                 continue
@@ -507,8 +530,11 @@ class ApprovedRepositoryKnowledgeAdapter:
                         attrs = {a.get("name"): a.get("value") for a in v.get("attributes", []) if isinstance(a, dict)}
                         variations_list.append({"variation_id": v.get("id"), "attributes": attrs})
 
+            prod_res_type = "SERVICE" if (slug == "is-cannabis-right-for-me" or str(product.get("id")) == "1046" or "consultation" in slug) else "PRODUCT"
+            booking_url = "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me" if prod_res_type == "SERVICE" else None
+
             record = {
-                "resource_type": "PRODUCT",
+                "resource_type": prod_res_type,
                 "product_type": prod_type,
                 "product_id": str(product.get("id", "")),
                 "slug": slug,
@@ -529,6 +555,8 @@ class ApprovedRepositoryKnowledgeAdapter:
                 "variations": variations_list,
                 "last_verified_at": "live_request",
             }
+            if booking_url:
+                record["booking_url"] = booking_url
             results.append({
                 "knowledge_id": f"product:{slug}", "title": record["name"], "version": "live",
                 "domain": "product_catalog", "status": "Active", "classification": "Public",
@@ -578,7 +606,10 @@ class ApprovedRepositoryKnowledgeAdapter:
                         score += 33
                     elif "basics" in prod_slug:
                         score += 20
-            elif any(w in q for w in ["book", "books", "guide", "guides", "read", "coloring", "botanical"]):
+            if any(w in q for w in ["consultation", "consultations", "consult", "appointment", "appointments", "session", "sessions", "1-on-1", "one-on-one", "cannabis right for me", "cannabis-right-for-me"]):
+                if "cannabis-right-for-me" in prod_slug or "consultation" in prod_slug:
+                    score += 70
+            elif any(w in q for w in ["cookbook", "infused basics", "reading", "recipe", "guide book"]) or (any(w in q for w in ["book", "books"]) and not any(w in q for w in ["consultation", "consult", "appointment", "session", "service", "schedule", "scheduling", "1-on-1", "one-on-one", "book a", "booking"])):
                 if "basics" in prod_slug:
                     score += 30
                 elif "botanical" in prod_slug or "collection" in prod_slug:
