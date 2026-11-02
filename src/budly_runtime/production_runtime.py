@@ -895,6 +895,18 @@ class ProductionConversationRuntime:
                     return 1
                 return 2
             sorted_knowledge.sort(key=_link_priority)
+        else:
+            has_service_terms = any(w in msg_lower for w in ["consultation", "consultations", "consult", "appointment", "appointments", "session", "sessions", "1-on-1", "one-on-one", "right for me"])
+            has_product_terms = any(w in msg_lower for w in ["butter", "oil", "spray", "cookbook", "botanical", "collection", "balm", "wholesale", "bulk", "tincture"])
+            if has_service_terms and not has_product_terms:
+                def _is_service_item(item: dict[str, Any]) -> bool:
+                    try:
+                        c = json.loads(item.get("content", "{}"))
+                        return c.get("resource_type") == "SERVICE" or "consultation" in c.get("slug", "") or "consultation" in item.get("knowledge_id", "").lower()
+                    except (TypeError, ValueError):
+                        return False
+                if any(_is_service_item(it) for it in sorted_knowledge):
+                    sorted_knowledge = [it for it in sorted_knowledge if _is_service_item(it)]
 
         for item in sorted_knowledge:
             try:

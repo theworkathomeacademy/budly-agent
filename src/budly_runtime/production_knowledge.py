@@ -465,9 +465,16 @@ class ApprovedRepositoryKnowledgeAdapter:
         specific_terms = {t for t in raw_terms - stop_words if len(t) > 1 and not t.isdigit()}
         product_intent_terms = specific_terms - channel_tokens
 
+        is_service_booking_action = bool(
+            re.search(r"\b(book|booking|schedule|scheduling)\b", query_text)
+            and re.search(r"\b(consultation|consultations|consult|appointment|appointments|session|sessions|service|services|call|1-on-1|one-on-one|right\s+for\s+me)\b", query_text)
+        )
+
         required_keywords: set[str] = set()
         for term in product_intent_terms:
-            if term in synonyms:
+            if term in {"book", "booking"} and is_service_booking_action:
+                required_keywords.update({"consultation", "consultations", "appointment", "appointments", "session", "schedule", "booking", "service"})
+            elif term in synonyms:
                 required_keywords.update(synonyms[term])
             else:
                 required_keywords.add(term)
@@ -530,8 +537,26 @@ class ApprovedRepositoryKnowledgeAdapter:
                         attrs = {a.get("name"): a.get("value") for a in v.get("attributes", []) if isinstance(a, dict)}
                         variations_list.append({"variation_id": v.get("id"), "attributes": attrs})
 
-            prod_res_type = "SERVICE" if (slug == "is-cannabis-right-for-me" or str(product.get("id")) == "1046" or "consultation" in slug) else "PRODUCT"
-            booking_url = "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me" if prod_res_type == "SERVICE" else None
+            is_service = (
+                slug == "is-cannabis-right-for-me"
+                or str(product.get("id")) == "1046"
+                or "consultation" in slug
+                or "service" in slug
+                or any("service" in c.lower() or "consultation" in c.lower() for c in categories)
+            )
+            prod_res_type = "SERVICE" if is_service else "PRODUCT"
+
+            booking_url = None
+            if prod_res_type == "SERVICE":
+                if str(product.get("id")) == "1046" or slug == "is-cannabis-right-for-me":
+                    booking_url = "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me"
+                elif product.get("booking_url"):
+                    booking_url = str(product["booking_url"])
+                else:
+                    desc_text = f"{product.get('short_description', '')} {product.get('description', '')}"
+                    wix_match = re.search(r"https://(?:dmckenzies\.wixsite\.com|wakenbakelounge\.com)/service-page/[a-zA-Z0-9_\-]+", desc_text)
+                    if wix_match:
+                        booking_url = wix_match.group(0)
 
             record = {
                 "resource_type": prod_res_type,
@@ -607,8 +632,10 @@ class ApprovedRepositoryKnowledgeAdapter:
                     elif "basics" in prod_slug:
                         score += 20
             if any(w in q for w in ["consultation", "consultations", "consult", "appointment", "appointments", "session", "sessions", "1-on-1", "one-on-one", "cannabis right for me", "cannabis-right-for-me"]):
-                if "cannabis-right-for-me" in prod_slug or "consultation" in prod_slug:
-                    score += 70
+                if data.get("resource_type") == "SERVICE":
+                    score += 40
+                if ("cannabis-right-for-me" in prod_slug) and any(term in q for term in ["right for me", "right-for-me", "cannabis", "budly"]):
+                    score += 30
             elif any(w in q for w in ["cookbook", "infused basics", "reading", "recipe", "guide book"]) or (any(w in q for w in ["book", "books"]) and not any(w in q for w in ["consultation", "consult", "appointment", "session", "service", "schedule", "scheduling", "1-on-1", "one-on-one", "book a", "booking"])):
                 if "basics" in prod_slug:
                     score += 30

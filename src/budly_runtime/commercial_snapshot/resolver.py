@@ -188,12 +188,17 @@ class DeterministicEntityResolver:
                 confidence=1.0,
             )
 
-        # 3. Check for specific known sub-patterns (e.g. "what is infused basics", "what is torque")
-        for alias, cid in self._aliases.items():
+        # 3. Check for specific known sub-patterns (sorted by length descending for specificity)
+        sorted_aliases = sorted(self._aliases.items(), key=lambda x: len(x[0]), reverse=True)
+        for alias, cid in sorted_aliases:
             if re.search(r"\b" + re.escape(alias) + r"\b", cleaned):
                 # Ensure Community memberships NEVER resolve to Legends
                 if "community" in cid and "nft" in cleaned:
                     continue
+                # Do not force non-cannabis right for me service queries to 1046
+                if cid == "ccc:service:is-cannabis-right-for-me":
+                    if any(other in cleaned for other in ["grow", "growing", "cook", "cooking", "culinary", "kitchen"]):
+                        continue
                 if self.public_only and cid in self.excluded_ids:
                     return EntityResolutionResult(
                         status="NO_MATCH",

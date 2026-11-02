@@ -208,3 +208,140 @@ class TestServiceBookingRetrievalPhaseC2:
         assert session.active_request == "consultation booking and pricing"
         assert session.task_state == "UNRESOLVED"
         assert session.follow_up_subject == "Is Cannabis Right For Me? consultation details"
+
+    def test_direct_consultation_inquiry_emits_no_unrelated_product_cards(self, runtime):
+        """Verify direct consultation inquiry emits only service destinations, with zero unrelated cards."""
+        knowledge = [
+            {
+                "knowledge_id": "product:is-cannabis-right-for-me",
+                "title": "Is Cannabis Right For Me?",
+                "content": json.dumps({
+                    "resource_type": "SERVICE",
+                    "name": "Is Cannabis Right For Me?",
+                    "canonical_url": "https://cccultivate.com/product/is-cannabis-right-for-me/",
+                    "booking_url": "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me",
+                }),
+            },
+            {
+                "knowledge_id": "product:wakenbake-lounge-cannabis-botanical-collection-volume-1",
+                "title": "Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1",
+                "content": json.dumps({
+                    "resource_type": "PRODUCT",
+                    "name": "Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1",
+                    "canonical_url": "https://cccultivate.com/product/wakenbake-lounge-cannabis-botanical-collection-volume-1/",
+                }),
+            },
+            {
+                "knowledge_id": "product:infused-basics",
+                "title": "Infused Basics Cookbook",
+                "content": json.dumps({
+                    "resource_type": "PRODUCT",
+                    "name": "Infused Basics: The Beginner's Guide",
+                    "canonical_url": "https://cccultivate.com/product/infused-basics/",
+                }),
+            },
+        ]
+        links = runtime._approved_links(knowledge, message="Where can I book a consultation?")
+        assert len(links) == 2
+        labels = [l["label"] for l in links]
+        urls = [l["url"] for l in links]
+        assert "Book consultation" in labels
+        assert "View service" in labels
+        assert not any("View product" in l for l in labels)
+        assert not any("botanical" in u for u in urls)
+        assert not any("infused-basics" in u for u in urls)
+
+    def test_generalized_service_multi_service_distinguishable(self, knowledge_adapter):
+        """Verify multiple approved services remain distinguishable by governed identity and source evidence."""
+        synthetic_catalog = [
+            {
+                "id": 1046,
+                "name": "Is Cannabis Right For Me?",
+                "slug": "is-cannabis-right-for-me",
+                "permalink": "https://cccultivate.com/product/is-cannabis-right-for-me/",
+                "is_in_stock": True,
+                "type": "simple",
+                "categories": [{"name": "Services"}],
+                "prices": {"price": 7500, "currency_code": "USD", "currency_minor_unit": 2},
+                "short_description": "1-on-1 personalized cannabis consultation with Budly.",
+                "description": "Comprehensive cannabis consultation session.",
+            },
+            {
+                "id": 1050,
+                "name": "Personal Grow Coaching Consultation",
+                "slug": "personal-grow-coaching-consultation",
+                "permalink": "https://cccultivate.com/product/personal-grow-coaching-consultation/",
+                "booking_url": "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/grow-coaching",
+                "is_in_stock": True,
+                "type": "simple",
+                "categories": [{"name": "Services"}],
+                "prices": {"price": 12000, "currency_code": "USD", "currency_minor_unit": 2},
+                "short_description": "1-on-1 personalized grow coaching session for home growers.",
+                "description": "Master indoor or outdoor cultivation techniques in a private appointment.",
+            },
+            {
+                "id": 1055,
+                "name": "Culinary Kitchen Consultation",
+                "slug": "culinary-kitchen-consultation",
+                "permalink": "https://cccultivate.com/product/culinary-kitchen-consultation/",
+                "is_in_stock": True,
+                "type": "simple",
+                "categories": [{"name": "Services"}],
+                "prices": {"price": 9500, "currency_code": "USD", "currency_minor_unit": 2},
+                "short_description": "Private kitchen consultation for infused cooking.",
+                "description": "Learn custom dosage and decarboxylation.",
+            },
+        ]
+        
+        knowledge_adapter._cached_live_products = synthetic_catalog
+        knowledge_adapter._cached_live_products_time = time.time() + 1000
+
+        # Test grow coaching query
+        ctx_grow = AdapterContext(
+            query="Can I book personal grow coaching consultation?",
+            domain="product_catalog",
+            max_results=5,
+            access_classifications=frozenset({"Public"}),
+            request_id="req_grow",
+            correlation_id="corr_grow",
+        )
+        results_grow = knowledge_adapter._retrieve_live_catalog(ctx_grow)
+        assert len(results_grow) > 0
+        top_grow = json.loads(results_grow[0]["content"])
+        assert top_grow["product_id"] == "1050"
+        assert top_grow["slug"] == "personal-grow-coaching-consultation"
+        assert top_grow["current_price"] == 120.0
+        # Must have its OWN booking URL, NOT 1046's booking URL
+        assert top_grow["booking_url"] == "https://dmckenzies.wixsite.com/wakenbakelounge/service-page/grow-coaching"
+        assert "is-cannabis-right-for-me" not in top_grow["booking_url"]
+
+        # Test culinary consultation query
+        ctx_culinary = AdapterContext(
+            query="Do you offer culinary kitchen consultation?",
+            domain="product_catalog",
+            max_results=5,
+            access_classifications=frozenset({"Public"}),
+            request_id="req_culinary",
+            correlation_id="corr_culinary",
+        )
+        results_culinary = knowledge_adapter._retrieve_live_catalog(ctx_culinary)
+        assert len(results_culinary) > 0
+        top_culinary = json.loads(results_culinary[0]["content"])
+        assert top_culinary["product_id"] == "1055"
+        assert top_culinary["slug"] == "culinary-kitchen-consultation"
+        assert top_culinary["current_price"] == 95.0
+        # Service without booking URL must remain None, not inherit 1046's booking URL
+        assert top_culinary.get("booking_url") is None
+
+    def test_entity_resolver_does_not_force_other_service_inquiries_to_1046(self, entity_resolver):
+        """Verify specialized inquiries with qualifiers do not erroneously force to ID 1046."""
+        other_queries = [
+            "grow consultation",
+            "growing consultation",
+            "cooking session",
+            "culinary consultation",
+        ]
+        for q in other_queries:
+            match = entity_resolver.resolve(q)
+            # Must NOT force to ccc:service:is-cannabis-right-for-me
+            assert match.canonical_id != "ccc:service:is-cannabis-right-for-me", f"Query '{q}' was forced to 1046!"
