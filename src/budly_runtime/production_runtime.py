@@ -911,17 +911,63 @@ class ProductionConversationRuntime:
                 return 2
             sorted_knowledge.sort(key=_link_priority)
         else:
-            has_service_terms = any(w in msg_lower for w in ["consultation", "consultations", "consult", "appointment", "appointments", "session", "sessions", "1-on-1", "one-on-one", "right for me"])
-            has_product_terms = any(w in msg_lower for w in ["butter", "oil", "spray", "cookbook", "botanical", "collection", "balm", "wholesale", "bulk", "tincture"])
-            if has_service_terms and not has_product_terms:
-                def _is_service_item(item: dict[str, Any]) -> bool:
-                    try:
-                        c = json.loads(item.get("content", "{}"))
-                        return c.get("resource_type") == "SERVICE" or "consultation" in c.get("slug", "") or "consultation" in item.get("knowledge_id", "").lower()
-                    except (TypeError, ValueError):
-                        return False
-                if any(_is_service_item(it) for it in sorted_knowledge):
-                    sorted_knowledge = [it for it in sorted_knowledge if _is_service_item(it)]
+            # Generalized category relevance filter
+            is_broad = any(b in msg_lower for b in ["what products", "show me your products", "what do you sell", "all products", "catalog", "everything you have"])
+            if not is_broad:
+                has_service_intent = bool(re.search(r"\b(consultation|consultations|consult|appointment|appointments|session|sessions|1-on-1|one-on-one|right\s+for\s+me)\b", msg_lower)) or bool(re.search(r"\bbook\s+(?:an?\s+)?(?:appointment|consultation|session)\b", msg_lower)) or bool(re.search(r"\b(?:where|how)\s+can\s+i\s+book\b", msg_lower))
+                has_course_intent = bool(re.search(r"\b(course|courses|class|classes|curriculum|syllabus|grow\s+cannabis|culinary\s+cannabis)\b", msg_lower))
+                is_booking_action = bool(re.search(r"\b(?:where|how)\s+(?:can|do)\s+i\s+book\b", msg_lower)) or \
+                                    bool(re.search(r"\bto\s+book\b", msg_lower)) or \
+                                    bool(re.search(r"\bbook\s+(?:an?|the|my|your)?\s*(?:consultation|appointment|session|call|spot|time)\b", msg_lower)) or \
+                                    bool(re.search(r"\bbook\s+now\b", msg_lower))
+                is_noun_book = bool(re.search(r"\b(?:buy|purchase|read|get|order)\s+(?:a|the)?\s*book\b", msg_lower)) or \
+                               bool(re.search(r"\b(?:a|the|this|that)\s+book\b", msg_lower)) or \
+                               bool(re.search(r"\bbooks\b", msg_lower))
+
+                has_book_intent = bool(re.search(r"\b(cookbook|cookbooks|guide\s+book|botanical\s+collection|infused\s+basics)\b", msg_lower)) or \
+                                  (bool(re.search(r"\bbasics\b", msg_lower)) and not bool(re.search(r"\b(oil|butter|spray|tincture)\b", msg_lower))) or \
+                                  (is_noun_book or ("book" in msg_lower and not is_booking_action))
+                has_oil_intent = bool(re.search(r"\b(cooking\s+oil|cbd\s+oil|infused\s+oil|oil|oils|tincture|tinctures|spray|sprays|drops)\b", msg_lower))
+                has_butter_intent = bool(re.search(r"\b(body\s+butter|butter|balm|cream|salve|topical)\b", msg_lower))
+                has_combo_intent = bool(re.search(r"\b(combo|bundle)\b", msg_lower))
+
+                intents_active = any([has_service_intent, has_course_intent, has_book_intent, has_oil_intent, has_butter_intent, has_combo_intent])
+                if intents_active:
+                    def _is_relevant(item: dict[str, Any]) -> bool:
+                        try:
+                            c = json.loads(item.get("content", "{}"))
+                            slug = (c.get("slug") or item.get("knowledge_id", "")).lower()
+                        except Exception:
+                            return True
+                        if c.get("resource_type") == "SERVICE" or "consultation" in slug or "is-cannabis-right-for-me" in slug:
+                            return has_service_intent
+                        if "course" in slug or "culinary-cannabis" in slug or "grow-cannabis" in slug or "cook-grow" in slug:
+                            return has_course_intent
+                        if "basics" in slug or "botanical" in slug or "book" in slug:
+                            return has_book_intent
+                        if "cooking-oil" in slug or "infused-cooking-oil" in slug:
+                            return has_oil_intent
+                        if "tincture" in slug or "spray" in slug:
+                            return has_oil_intent
+                        if "body-butter" in slug or "butter" in slug:
+                            return has_butter_intent
+                        if "combo" in slug:
+                            return has_combo_intent
+                        return True
+
+                    sorted_knowledge = [it for it in sorted_knowledge if _is_relevant(it)]
+
+            # Explicit named-product prioritization
+            if "infused basics" in msg_lower:
+                def _name_priority(item: dict[str, Any]) -> int:
+                    s = item.get("knowledge_id", "").lower()
+                    return 0 if "infused-basics" in s else 1
+                sorted_knowledge.sort(key=_name_priority)
+            elif "botanical collection" in msg_lower or ("botanical" in msg_lower and "book" in msg_lower):
+                def _name_priority(item: dict[str, Any]) -> int:
+                    s = item.get("knowledge_id", "").lower()
+                    return 0 if "botanical" in s else 1
+                sorted_knowledge.sort(key=_name_priority)
 
         for item in sorted_knowledge:
             try:

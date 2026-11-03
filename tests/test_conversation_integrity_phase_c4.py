@@ -186,11 +186,35 @@ class TestConversationIntegrityPhaseC4:
         assert ctx["selected_product_id"] != "infused-cooking-oil-4oz"
 
     def test_d_can_i_buy_infused_basics_cookbook(self, runtime):
-        """Test D: 'Can I buy Infused Basics cookbook?' returns publication and approved product link."""
+        """Test D: 'Can I buy Infused Basics cookbook?' returns publication and approved product link without cooking oil."""
         query = "Can I buy Infused Basics cookbook?"
         ctx = proxy_deterministic_context(query)
         assert ctx["journey"] == "education"
         assert ctx["selected_product_id"] == "infused-basics"
+
+        knowledge = [
+            {"knowledge_id": "product:infused-basics", "title": "Infused Basics", "content": json.dumps({"resource_type": "PRODUCT", "slug": "infused-basics", "canonical_url": "https://cccultivate.com/product/infused-basics/"})},
+            {"knowledge_id": "product:wakenbake-lounge-cannabis-botanical-collection-volume-1", "title": "Botanical Collection", "content": json.dumps({"resource_type": "PRODUCT", "slug": "wakenbake-lounge-cannabis-botanical-collection-volume-1", "canonical_url": "https://cccultivate.com/product/wakenbake-lounge-cannabis-botanical-collection-volume-1/"})},
+            {"knowledge_id": "product:infused-cooking-oil-4oz", "title": "Infused Cooking Oil 4oz", "content": json.dumps({"resource_type": "PRODUCT", "slug": "infused-cooking-oil-4oz", "canonical_url": "https://cccultivate.com/product/infused-cooking-oil-4oz/"})},
+        ]
+        links = runtime._approved_links(knowledge, message=query)
+        urls = [l["url"] for l in links]
+        assert "https://cccultivate.com/product/infused-basics/" in urls
+        assert not any("infused-cooking-oil" in u for u in urls), "Unrelated cooking oil leaked into cookbook inquiry!"
+
+    def test_d2_can_i_buy_infused_basics_and_cbd_cooking_oil(self, runtime):
+        """Test D2: 'Can I buy Infused Basics and CBD cooking oil?' retains both explicitly requested products."""
+        query = "Can I buy Infused Basics and CBD cooking oil?"
+        knowledge = [
+            {"knowledge_id": "product:infused-basics", "title": "Infused Basics", "content": json.dumps({"resource_type": "PRODUCT", "slug": "infused-basics", "canonical_url": "https://cccultivate.com/product/infused-basics/"})},
+            {"knowledge_id": "product:infused-cooking-oil-4oz", "title": "Infused Cooking Oil 4oz", "content": json.dumps({"resource_type": "PRODUCT", "slug": "infused-cooking-oil-4oz", "canonical_url": "https://cccultivate.com/product/infused-cooking-oil-4oz/"})},
+            {"knowledge_id": "product:therapeutic-body-butter", "title": "Therapeutic Body Butter", "content": json.dumps({"resource_type": "PRODUCT", "slug": "therapeutic-body-butter", "canonical_url": "https://cccultivate.com/product/therapeutic-body-butter/"})},
+        ]
+        links = runtime._approved_links(knowledge, message=query)
+        urls = [l["url"] for l in links]
+        assert "https://cccultivate.com/product/infused-basics/" in urls
+        assert "https://cccultivate.com/product/infused-cooking-oil-4oz/" in urls
+        assert not any("body-butter" in u for u in urls)
 
     def test_e_what_does_cbd_oil_cost(self, runtime):
         """Test E: 'What does the CBD oil cost?' returns retail product selection and price."""
