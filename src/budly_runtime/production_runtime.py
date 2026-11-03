@@ -357,7 +357,7 @@ class ProductionConversationRuntime:
                 "Authoritative course and product prices: Always use exact active prices from retrieved snapshot knowledge: Grow Cannabis @ Home is $1,500, Culinary Cannabis is $1,000, Cook & Grow With Me is $2,500 (combining both courses), Infused Basics is $40, Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1 is $14.99, Is Cannabis Right For Me? consultation is $75, Therapeutic Body Butter is $75 (one-time), Therapeutic Oil Tincture is $55 (one-time), and Infused Cooking Oil is available in 4oz ($300), 8oz ($500), 12oz ($650), and 16oz ($750)",
                 "Authoritative course payment plans: Available via direct Stripe monthly plans for structured courses: Culinary Cannabis Payment Plan ($300/mo via Stripe), Grow Cannabis @ Home Payment Plan ($425/mo via Stripe), Cook & Grow With Me Payment Plan ($675/mo via Stripe)",
                 "Authoritative consultation service: Is Cannabis Right For Me? is a $75 1-on-1 consultation service booked through Wake'n'Bake Lounge Wix Bookings (https://dmckenzies.wixsite.com/wakenbakelounge/service-page/is-cannabis-right-for-me) or viewable at https://cccultivate.com/product/is-cannabis-right-for-me/. Frame strictly as educational/safety guidance; never make medical diagnosis or prescription claims. Never claim appointment slots are reserved without confirmed booking.",
-                "Excluded unreleased community products: Lounge Pass, Lounge Member, and Lounge Elite are unreleased internal drafts and NOT available for public purchase or inquiry; do not disclose unreleased pricing, benefits, Wix plan IDs, or planned coupon codes (e.g. LOUNGEMEMBER10, LOUNGEELITE25)",
+                "Wake'n'Bake Lounge Community Memberships: Three approved community tiers: Free Lounge Pass ($0, includes community access, claimable at https://cccultivate.com/product/lounge-pass/), Lounge Member ($9.99/mo, 10% discount on eligible purchases), and Lounge Elite ($24.99/mo, 25% discount on eligible purchases). Governed discount exclusions: another membership, bulk/wholesale products, payment-plan classes, sale/discounted items, coupon transactions. Checkout availability rule: Free Lounge Pass ($0) is claimable today at https://cccultivate.com/product/lounge-pass/. Lounge Member ($9.99/mo) and Lounge Elite ($24.99/mo) are approved upcoming community tiers; their prices, benefits, and discounts are publicly describable, but direct paid-tier checkout is not currently released. Never claim or imply that Lounge Member or Lounge Elite is currently available for direct purchase or checkout. Direct interested customers to claim the Free Lounge Pass and explore the community hub at https://cccultivate.com/wakenbake-lounge-community/. Separate commercial family: LEGENDS NFT memberships remain separate and unchanged.",
                 "Query Mode Distinction: For INVENTORY / LIST queries (e.g. 'What classes do you offer?', 'What memberships do you have?', 'What books do you have?', 'What CBD oils do you sell?'), present the complete applicable active set from retrieved knowledge without omitting active courses or tiers. For RECOMMENDATION queries (e.g. 'Which class is best for learning to grow?', 'Which membership would fit me?', 'I want to learn how to cook with cannabis. What do you recommend?'), rank and explain the single best-fit option for the customer's goal while noting relevant alternatives",
                 "Books parity: Two books/guides are available in the public catalog: Infused Basics: The Beginner's Guide to Infuse Everything Edible for $40, and Wake'n'Bake Lounge Cannabis Botanical Collection - Volume 1 for $14.99",
                 "Four memory/identity states: Session Context (held during current chat), CRM Identity (name/email saved with customer consent), Durable Memory (DISABLED in production: NEVER say 'I will remember you next time' or promise persistent cross-session memory; safe wording: 'If you'd like, I can note what you're interested in for our team records'), and Follow-up Permission (voluntary permission)",
@@ -480,7 +480,7 @@ class ProductionConversationRuntime:
             lounge_rules = [
                 f"Verified Wake'n'Bake Lounge Context: The customer is currently interacting on the Wake'n'Bake Lounge surface (view: {view}) at https://cccultivate.com/wakenbake-lounge-community/",
                 lounge_membership_rule,
-                "Publication Status & Exploration: Educational guides, botanical recipes, and plant-science exhibits are currently in editorial production / exhibit preparation and planned for future release. What is currently accessible today is the Lounge Community hub orientation (https://cccultivate.com/wakenbake-lounge-community/) and membership passes (Free Lounge Pass $0, Lounge Member $9.99/mo, Lounge Elite $24.99/mo). Never claim unpublished educational or botanical content is already live or publicly readable.",
+                "Publication Status & Exploration: Free Lounge Pass ($0) is claimable today at https://cccultivate.com/product/lounge-pass/. Lounge Member ($9.99/mo) and Lounge Elite ($24.99/mo) are approved community membership tiers currently in rollout preparation; visitors can explore the Lounge Community hub orientation (https://cccultivate.com/wakenbake-lounge-community/) and learn about their 10% and 25% discounts on eligible purchases, but do NOT state that Lounge Member or Lounge Elite is available for direct purchase or checkout today. Educational guides, botanical recipes, and plant-science exhibits are currently in editorial production / exhibit preparation and planned for future release.",
                 "Unauthenticated Visitor Integrity: If the customer is unauthenticated or has not proven active membership, do NOT claim or assume they hold a specific membership tier or entitlement; treat them as a guest/visitor and explain how they can claim or join",
                 "Unified Brand & Online Venue: Wake'n'Bake Lounge is an online digital educational and lifestyle platform (https://dmckenzies.wixsite.com/wakenbakelounge); clarify that there is no physical brick-and-mortar storefront",
                 "Approved Destination Links: Ground responses with the verified destinations: Lounge Community (https://cccultivate.com/wakenbake-lounge-community/), Free Lounge Pass (https://cccultivate.com/product/lounge-pass/), and Wake'n'Bake Lounge Platform (https://dmckenzies.wixsite.com/wakenbakelounge)",
@@ -505,10 +505,25 @@ class ProductionConversationRuntime:
         except (ConnectionError, LookupError, ValueError):
             return self._safe_result(request, session, deterministic, "I couldn’t form a reliable answer. The guided Budly experience is still available.", "legacy_guided_flow")
 
-        # Enforce "Deterministic authority wins" on selected_product_id
+        # Enforce "Deterministic authority wins" on selected_product_id with intent-consistency guard
         auth_spid = deterministic.get("selected_product_id")
         if auth_spid and deterministic.get("outcome") not in {"no_match", "consent_restricted"}:
-            generated["selected_product_id"] = auth_spid
+            msg_lower = request.message.lower()
+            has_service_terms = any(w in msg_lower for w in ["consultation", "consultations", "consult", "appointment", "appointments", "session", "sessions", "1-on-1", "one-on-one", "right for me"])
+            is_booking_verb = bool(re.search(r"\bbook\s+(?:an?\s+)?(?:appointment|consultation|session)\b", msg_lower)) or bool(re.search(r"\b(?:where|how)\s+can\s+i\s+book\b", msg_lower))
+            has_explicit_merch = bool(re.search(r"\b(buy|order|purchase|shop)\s+(?:a|an|the|some)?\s*(?:cookbook|book|tincture|spray|butter|cream|combo|oil)\b", msg_lower)) or bool(re.search(r"\b(infused basics|botanical collection)\b", msg_lower))
+
+            is_service_inquiry = (has_service_terms or is_booking_verb) and not has_explicit_merch
+            has_course_terms = any(w in msg_lower for w in ["course", "courses", "class", "classes", "curriculum", "syllabus"])
+            is_course_inquiry = has_course_terms and not has_explicit_merch
+
+            conflicts_service = is_service_inquiry and auth_spid in {"infused-basics", "wakenbake-lounge-cannabis-botanical-collection-volume-1", "therapeutic-body-butter", "therapeutic-oil-tincture-1-time", "therapeutic-combo-one-time-purchase", "infused-cooking-oil-4oz", "infused-cooking-oil-8oz", "infused-cooking-oil-12oz", "infused-cooking-oil-16oz"}
+            conflicts_course = is_course_inquiry and auth_spid in {"infused-cooking-oil-4oz", "infused-cooking-oil-8oz", "infused-cooking-oil-12oz", "infused-cooking-oil-16oz", "therapeutic-body-butter", "therapeutic-oil-tincture-1-time"}
+
+            if conflicts_service or conflicts_course:
+                generated["selected_product_id"] = None
+            else:
+                generated["selected_product_id"] = auth_spid
         else:
             generated["selected_product_id"] = None
 
@@ -842,7 +857,7 @@ class ProductionConversationRuntime:
                 return None
             if data.get("schema_version") not in (2, "2", "2.0"):
                 return None
-            if data.get("release_state") != "AVAILABLE":
+            if data.get("release_state") not in {"AVAILABLE", "APPROVED_NOT_RELEASED"}:
                 return None
             if not data.get("publicly_available"):
                 return None

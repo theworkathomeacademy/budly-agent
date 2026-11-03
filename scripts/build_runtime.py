@@ -10,8 +10,8 @@ from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE_ROOT = "budly-runtime"
-RUNTIME_VERSION = "1.8.10-rc-conversation-repair-001-ecosystem-r6"
-RELEASE_CANDIDATE = "budly-runtime-v1.8.10-rc-conversation-repair-001-ecosystem-r6"
+RUNTIME_VERSION = "1.8.10-rc-conversation-repair-001-ecosystem-r7"
+RELEASE_CANDIDATE = "budly-runtime-v1.8.10-rc-conversation-repair-001-ecosystem-r7"
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)
 FILES = (
     "src/budly_runtime/__init__.py",

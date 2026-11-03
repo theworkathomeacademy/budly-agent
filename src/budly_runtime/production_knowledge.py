@@ -840,7 +840,7 @@ class ApprovedRepositoryKnowledgeAdapter:
         if truth_path is not None:
             try:
                 truth = self._read_json(truth_path)
-                if truth.get("release_state") == "AVAILABLE" and truth.get("publicly_available"):
+                if truth.get("release_state") in {"AVAILABLE", "APPROVED_NOT_RELEASED"} and truth.get("publicly_available"):
                     items.append({
                         "knowledge_id": "commercial_truth:wakenbake_lounge:membership",
                         "title": "Wake'n'Bake Lounge Community Memberships",

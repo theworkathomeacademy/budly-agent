@@ -258,7 +258,23 @@ final class ConversationProxy {
             return array('journey' => null, 'outcome' => 'conversation', 'selected_product_id' => null, 'resulting_action' => 'continue_conversation', 'active_task' => $active_task);
         }
 
-        $commercial = preg_match('/\b(product|book|course|coloring|buy|price|cost|membership|wholesale|tincture|butter|oil)\b/', $lower);
+        // Service / appointment booking intent check
+        $is_service = (bool) preg_match('/\b(consultation|consultations|consult|appointment|appointments|session|sessions|1-on-1|one-on-one)\b/i', $lower)
+            || (bool) preg_match('/\bbook\s+(?:an?\s+)?(?:appointment|consultation|session)\b/i', $lower)
+            || (bool) preg_match('/\b(?:where|how|want\s+to|like\s+to|can\s+i|to)\s+book\b/i', $lower)
+            || (bool) preg_match('/^\s*(?:i\s+want\s+to\s+book|book|can\s+i\s+book)\s*$/i', $lower);
+
+        $has_explicit_merch = (bool) preg_match('/\b(buy|order|purchase|shop)\s+(?:a|an|the|some)?\s*(?:cookbook|book|tincture|spray|butter|cream|combo|oil)\b/i', $lower)
+            || (bool) preg_match('/\b(?:infused basics|botanical collection)\b/i', $lower);
+
+        if ($is_service && !$has_explicit_merch) {
+            return array('journey' => 'education', 'outcome' => 'conversation', 'selected_product_id' => null, 'resulting_action' => 'continue_conversation');
+        }
+
+        // Course inquiry check (courses are educational, not commodity culinary merchandise)
+        $is_course = (bool) preg_match('/\b(course|courses|class|classes|curriculum|syllabus)\b/i', $lower);
+
+        $commercial = preg_match('/\b(product|book|cookbook|course|coloring|buy|price|cost|membership|wholesale|tincture|butter|oil)\b/i', $lower);
         $journey = self::journey($lower);
         if (!$risk && !$commercial) return array('journey' => $journey, 'outcome' => 'conversation', 'selected_product_id' => null, 'resulting_action' => 'continue_conversation');
         try {
@@ -271,6 +287,12 @@ final class ConversationProxy {
                 'use_memory' => false,
                 'attribution' => $attribution,
             ), array());
+
+            // If query was asking about courses and DecisionService selected a culinary cooking oil, clear it
+            if ($is_course && !empty($decision['selected_product_id']) && strpos($decision['selected_product_id'], 'oil') !== false && !$has_explicit_merch) {
+                $decision['selected_product_id'] = null;
+            }
+
             return $decision + array('journey' => $journey);
         } catch (\Throwable $error) {
             return array('journey' => $journey, 'outcome' => 'human_review', 'selected_product_id' => null, 'resulting_action' => 'human_escalation');
@@ -278,10 +300,11 @@ final class ConversationProxy {
     }
 
     private static function journey($message) {
-        if (preg_match('/\b(wholesale|bulk|white label|resell|business)\b/', $message)) return 'wholesale';
-        if (preg_match('/\b(nft|membership|bronze|copper|titanium|platinum)\b/', $message)) return 'membership';
-        if (preg_match('/\b(cook|culinary|infused oil)\b/', $message)) return 'culinary';
-        if (preg_match('/\b(book|guide|learn|course|class|grow|botanical|coloring|terpene|endocannabinoid|ecs)\b/', $message)) return 'education';
+        if (preg_match('/\b(wholesale|bulk|white label|resell|business)\b/i', $message)) return 'wholesale';
+        if (preg_match('/\b(nft|membership|bronze|copper|titanium|platinum)\b/i', $message)) return 'membership';
+        if (preg_match('/\b(course|courses|class|classes|curriculum|grow|botanical|coloring|terpene|endocannabinoid|ecs)\b/i', $message)) return 'education';
+        if (preg_match('/\b(cook|culinary|infused oil)\b/i', $message)) return 'culinary';
+        if (preg_match('/\b(book|cookbook|guide|learn|infused basics)\b/i', $message)) return 'education';
         return 'wellness';
     }
 

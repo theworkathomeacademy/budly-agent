@@ -16,7 +16,7 @@ from .production_runtime import ProductionConversationRuntime
 
 MAX_BODY_BYTES = 16_384
 SIGNATURE_WINDOW_SECONDS = 300
-RUNTIME_VERSION = "1.8.10-rc-conversation-repair-001-ecosystem-r6"
+RUNTIME_VERSION = "1.8.10-rc-conversation-repair-001-ecosystem-r7"
 
 
 class RuntimeHTTPService:
