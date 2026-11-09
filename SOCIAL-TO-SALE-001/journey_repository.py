@@ -33,6 +33,13 @@ class ConversionJourney:
     recommended_destination: str | None
     conversion_state: str  # "initiated", "engaged", "qualified", "recommended", "converted", "closed"
     last_activity_at: str
+    order_id: str | None = None
+    gross_revenue: float | None = None
+    net_revenue: float | None = None
+    currency: str = "USD"
+    converted_at: str | None = None
+    canonical_id: str | None = None
+    catalog_version: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -99,7 +106,14 @@ class JourneyRepository:
                     lead_id TEXT,
                     recommended_destination TEXT,
                     conversion_state TEXT NOT NULL,
-                    last_activity_at TEXT NOT NULL
+                    last_activity_at TEXT NOT NULL,
+                    order_id TEXT,
+                    gross_revenue REAL,
+                    net_revenue REAL,
+                    currency TEXT DEFAULT 'USD',
+                    converted_at TEXT,
+                    canonical_id TEXT,
+                    catalog_version TEXT
                 );
 
                 CREATE INDEX IF NOT EXISTS idx_journey_content
@@ -108,6 +122,8 @@ class JourneyRepository:
                     ON conversion_journeys(campaign_id);
                 CREATE INDEX IF NOT EXISTS idx_journey_qualification
                     ON conversion_journeys(qualification_state);
+                CREATE INDEX IF NOT EXISTS idx_journey_order
+                    ON conversion_journeys(order_id);
 
                 CREATE TABLE IF NOT EXISTS conversion_leads (
                     lead_id TEXT PRIMARY KEY,
@@ -132,6 +148,20 @@ class JourneyRepository:
                 );
                 """
             )
+            # Automatic schema migration for existing SQLite databases
+            cursor = db.execute("PRAGMA table_info(conversion_journeys)")
+            existing_cols = {row["name"] for row in cursor.fetchall()}
+            for col_name, col_type in [
+                ("order_id", "TEXT"),
+                ("gross_revenue", "REAL"),
+                ("net_revenue", "REAL"),
+                ("currency", "TEXT DEFAULT 'USD'"),
+                ("converted_at", "TEXT"),
+                ("canonical_id", "TEXT"),
+                ("catalog_version", "TEXT"),
+            ]:
+                if col_name not in existing_cols:
+                    db.execute(f"ALTER TABLE conversion_journeys ADD COLUMN {col_name} {col_type}")
 
     def save_journey(self, journey: ConversionJourney) -> None:
         now = self._now()
@@ -142,8 +172,10 @@ class JourneyRepository:
                     journey_id, session_id, source, platform, content_id,
                     campaign_id, cta_id, entry_timestamp, intent, product_or_topic,
                     qualification_state, lead_id, recommended_destination,
-                    conversion_state, last_activity_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    conversion_state, last_activity_at,
+                    order_id, gross_revenue, net_revenue, currency,
+                    converted_at, canonical_id, catalog_version
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(session_id) DO UPDATE SET
                     intent = excluded.intent,
                     product_or_topic = excluded.product_or_topic,
@@ -151,7 +183,14 @@ class JourneyRepository:
                     lead_id = COALESCE(excluded.lead_id, conversion_journeys.lead_id),
                     recommended_destination = COALESCE(excluded.recommended_destination, conversion_journeys.recommended_destination),
                     conversion_state = excluded.conversion_state,
-                    last_activity_at = excluded.last_activity_at
+                    last_activity_at = excluded.last_activity_at,
+                    order_id = COALESCE(excluded.order_id, conversion_journeys.order_id),
+                    gross_revenue = COALESCE(excluded.gross_revenue, conversion_journeys.gross_revenue),
+                    net_revenue = COALESCE(excluded.net_revenue, conversion_journeys.net_revenue),
+                    currency = COALESCE(excluded.currency, conversion_journeys.currency),
+                    converted_at = COALESCE(excluded.converted_at, conversion_journeys.converted_at),
+                    canonical_id = COALESCE(excluded.canonical_id, conversion_journeys.canonical_id),
+                    catalog_version = COALESCE(excluded.catalog_version, conversion_journeys.catalog_version)
                 """,
                 (
                     journey.journey_id,
@@ -169,6 +208,13 @@ class JourneyRepository:
                     journey.recommended_destination,
                     journey.conversion_state,
                     journey.last_activity_at or now,
+                    journey.order_id,
+                    journey.gross_revenue,
+                    journey.net_revenue,
+                    journey.currency,
+                    journey.converted_at,
+                    journey.canonical_id,
+                    journey.catalog_version,
                 ),
             )
         self.audit_event(journey.journey_id, "journey_updated", journey.to_dict())
@@ -186,6 +232,103 @@ class JourneyRepository:
         if not row:
             return None
         return ConversionJourney(**dict(row))
+
+    def get_by_order_id(self, order_id: str) -> ConversionJourney | None:
+        with self._connect() as db:
+            row = db.execute("SELECT * FROM conversion_journeys WHERE order_id=?", (order_id,)).fetchone()
+        if not row:
+            return None
+        return ConversionJourney(**dict(row))
+
+    def record_conversion(
+        self,
+        order_id: str,
+        gross_revenue: float,
+        net_revenue: float | None = None,
+        session_id: str | None = None,
+        journey_id: str | None = None,
+        currency: str = "USD",
+        canonical_id: str | None = None,
+        catalog_version: str | None = None,
+    ) -> ConversionJourney:
+        """Deterministically records an attributed conversion event for a journey.
+        
+        Strict Identity & Privacy Rules:
+        - Replay safe: Identical order_id conversion events return existing state idempotently.
+        - Anonymous visitor protection: Never automatically generates a ConversionLead.
+        """
+        journey: ConversionJourney | None = None
+        if session_id:
+            journey = self.get_by_session(session_id)
+        if not journey and journey_id:
+            journey = self.get_journey(journey_id)
+        if not journey and order_id:
+            journey = self.get_by_order_id(order_id)
+
+        if not journey:
+            raise KeyError(f"No journey found for session_id='{session_id}' or journey_id='{journey_id}'")
+
+        # Idempotency / replay check: If this order has already been recorded for this journey, do not mutate/duplicate
+        if journey.order_id == str(order_id) and journey.conversion_state == "converted":
+            self.audit_event(journey.journey_id, "conversion_replay_suppressed", {
+                "order_id": order_id,
+                "gross_revenue": gross_revenue,
+            })
+            return journey
+
+        now = self._now()
+        calculated_net = float(net_revenue if net_revenue is not None else gross_revenue)
+
+        journey.order_id = str(order_id)
+        journey.gross_revenue = float(gross_revenue)
+        journey.net_revenue = calculated_net
+        journey.currency = str(currency).upper()
+        journey.converted_at = now
+        journey.conversion_state = "converted"
+        journey.last_activity_at = now
+        if canonical_id:
+            journey.canonical_id = str(canonical_id)
+        if catalog_version:
+            journey.catalog_version = str(catalog_version)
+
+        self.save_journey(journey)
+        self.audit_event(journey.journey_id, "journey_converted", {
+            "order_id": str(order_id),
+            "gross_revenue": float(gross_revenue),
+            "net_revenue": calculated_net,
+            "currency": journey.currency,
+            "canonical_id": journey.canonical_id,
+            "catalog_version": journey.catalog_version,
+            "converted_at": now,
+        })
+        return journey
+
+    def record_refund(
+        self,
+        order_id: str,
+        refund_amount: float,
+        reason: str = "order_refunded",
+    ) -> ConversionJourney | None:
+        """Adjusts net revenue on refund while preserving historical conversion audit trail."""
+        journey = self.get_by_order_id(str(order_id))
+        if not journey:
+            return None
+
+        now = self._now()
+        current_net = float(journey.net_revenue if journey.net_revenue is not None else journey.gross_revenue or 0.0)
+        new_net = max(0.0, current_net - float(refund_amount))
+        journey.net_revenue = new_net
+        journey.last_activity_at = now
+
+        self.save_journey(journey)
+        self.audit_event(journey.journey_id, "journey_refunded", {
+            "order_id": str(order_id),
+            "refund_amount": float(refund_amount),
+            "adjusted_net_revenue": new_net,
+            "reason": reason,
+            "refunded_at": now,
+        })
+        return journey
 
     def promote_to_lead(
         self,

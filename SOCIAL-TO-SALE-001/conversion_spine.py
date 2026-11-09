@@ -40,6 +40,7 @@ class SpineTurnResponse:
     display_label: str
     bot_message: str
     evidence: dict[str, Any]
+    correlated_destination_url: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -130,7 +131,21 @@ class ConversionSpine:
             platform=journey.platform,
         )
 
-        # 5. Persist updated journey record
+        # 5. Build correlated destination URL with safe non-PII params
+        correlated_dest = (
+            rec_outcome.build_correlated_url(
+                session_id=journey.session_id,
+                journey_id=journey.journey_id,
+                source=journey.source,
+                platform=journey.platform,
+                content_id=journey.content_id,
+                campaign_id=journey.campaign_id,
+            )
+            if rec_outcome.is_approved
+            else rec_outcome.destination_url
+        )
+
+        # 6. Persist updated journey record
         updated_journey = ConversionJourney(
             journey_id=journey.journey_id,
             session_id=journey.session_id,
@@ -145,8 +160,15 @@ class ConversionSpine:
             qualification_state=qual_decision.state,
             lead_id=lead_id,
             recommended_destination=rec_outcome.destination_url,
-            conversion_state="recommended" if rec_outcome.is_approved else "engaged",
+            conversion_state=journey.conversion_state if journey.conversion_state == "converted" else ("recommended" if rec_outcome.is_approved else "engaged"),
             last_activity_at=JourneyRepository._now(),
+            order_id=journey.order_id,
+            gross_revenue=journey.gross_revenue,
+            net_revenue=journey.net_revenue,
+            currency=journey.currency,
+            converted_at=journey.converted_at,
+            canonical_id=rec_outcome.canonical_id or journey.canonical_id,
+            catalog_version=rec_outcome.catalog_version or journey.catalog_version,
         )
         self.repository.save_journey(updated_journey)
 
@@ -160,6 +182,8 @@ class ConversionSpine:
             "qualification_rationale": qual_decision.rationale,
             "lead_promotion_rationale": lead_decision.rationale,
             "recommendation_rationale": rec_outcome.rationale,
+            "canonical_id": rec_outcome.canonical_id,
+            "catalog_version": rec_outcome.catalog_version,
         }
 
         return SpineTurnResponse(
@@ -176,4 +200,37 @@ class ConversionSpine:
             display_label=rec_outcome.display_label,
             bot_message=rec_outcome.suggested_dialogue,
             evidence=evidence,
+            correlated_destination_url=correlated_dest,
         )
+
+    def record_revenue_conversion(
+        self,
+        order_id: str,
+        gross_revenue: float,
+        net_revenue: float | None = None,
+        session_id: str | None = None,
+        journey_id: str | None = None,
+        currency: str = "USD",
+        canonical_id: str | None = None,
+        catalog_version: str | None = None,
+    ) -> ConversionJourney:
+        """Records deterministic revenue conversion on the underlying journey repository."""
+        return self.repository.record_conversion(
+            order_id=order_id,
+            gross_revenue=gross_revenue,
+            net_revenue=net_revenue,
+            session_id=session_id,
+            journey_id=journey_id,
+            currency=currency,
+            canonical_id=canonical_id,
+            catalog_version=catalog_version,
+        )
+
+    def record_refund(
+        self,
+        order_id: str,
+        refund_amount: float,
+        reason: str = "order_refunded",
+    ) -> ConversionJourney | None:
+        """Records refund against an existing order attribution."""
+        return self.repository.record_refund(order_id, refund_amount, reason)

@@ -298,14 +298,26 @@ def rebuild_catalog(
                 all_records.append(v_rec)
     else:
         # Load from canonical catalog seed source
-        source_path = Path(canonical_source_path) if canonical_source_path else root_path.parent / "canonical_catalog.json"
+        source_path = Path(canonical_source_path) if canonical_source_path else None
+        if not source_path or not source_path.exists():
+            source_path = root_path.parent / "canonical_catalog.json"
         if not source_path.exists():
             source_path = root_path / "canonical_catalog.json"
+        if not source_path.exists():
+            source_path = root_path / "Internal" / "budly-canonical-inventory.json"
+        if not source_path.exists():
+            repo_root = Path(__file__).resolve().parents[3]
+            source_path = repo_root / "config" / "commercial_catalog" / "Internal" / "budly-canonical-inventory.json"
         
         if source_path.exists():
             with open(source_path, "r", encoding="utf-8") as f:
                 source_data = json.load(f)
-            raw_entries = source_data.get("entries", []) if isinstance(source_data, dict) else source_data
+            if isinstance(source_data, dict):
+                raw_entries = source_data.get("entries", [])
+            elif isinstance(source_data, list):
+                raw_entries = source_data
+            else:
+                raw_entries = []
             for entry in raw_entries:
                 rec = normalize_catalog_entry(entry, version, now_iso)
                 all_records.append(rec)
