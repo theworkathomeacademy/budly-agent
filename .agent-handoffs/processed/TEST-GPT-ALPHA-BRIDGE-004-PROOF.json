@@ -1,0 +1,14 @@
+{
+  "handoff_id": "TEST-GPT-ALPHA-BRIDGE-004-PROOF",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "09d3400d-bf20-4a04-b9c9-3598564aa41a",
+  "from_agent": "TEST-GPT-ALPHA",
+  "from_agent_instance": "TEST-GPT-ALPHA-INSTANCE-001",
+  "return_to_agent": "TEST-GPT-ALPHA",
+  "return_agent_instance": "TEST-GPT-ALPHA-INSTANCE-001",
+  "received_commit": "1d9281214e23f260a0774100c8f0cf4d4fe3018d",
+  "return_commit": "a16e5defee729d88e29430b377d5f0ec9ddeba02",
+  "completed_at": "2026-11-12T01:36:28.114977+00:00",
+  "result": "RETURNED_TO_AGENT"
+}
