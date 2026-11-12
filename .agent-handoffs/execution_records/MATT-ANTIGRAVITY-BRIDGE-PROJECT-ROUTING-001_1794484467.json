@@ -1,0 +1,24 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-PROJECT-ROUTING-001",
+  "source": "supabase",
+  "supabase_id": "5e0a79c4-bed2-493a-a1a1-d1a9237afcab",
+  "routing": {
+    "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-PROJECT-ROUTING-001",
+    "from_agent": "MATT-006",
+    "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+    "to_agent": "ANTIGRAVITY",
+    "owner": "d-mac",
+    "return_to_agent": "MATT-006",
+    "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+    "return_channel": "SUPABASE+GITHUB",
+    "status": "AUTHORIZED"
+  },
+  "received_commit": "9be5f2fd7fd484bc71060bbf590966c37f75ffc9",
+  "validation": "PASSED",
+  "started_at": "2026-11-12T11:54:27.624616+00:00",
+  "completed_at": "2026-11-12T11:54:27.934578+00:00",
+  "proof_passed": true,
+  "cleanup_passed": true,
+  "result": "RETURNED_TO_MATT",
+  "notes": "Proof action completed and verified cleanly"
+}
