@@ -1,0 +1,24 @@
+{
+  "handoff_id": "TEST-GPT-ALPHA-BRIDGE-004-PROOF",
+  "source": "supabase",
+  "supabase_id": "09d3400d-bf20-4a04-b9c9-3598564aa41a",
+  "routing": {
+    "handoff_id": "TEST-GPT-ALPHA-BRIDGE-004-PROOF",
+    "from_agent": "TEST-GPT-ALPHA",
+    "from_agent_instance": "TEST-GPT-ALPHA-INSTANCE-001",
+    "to_agent": "ANTIGRAVITY",
+    "owner": "d-mac",
+    "return_to_agent": "TEST-GPT-ALPHA",
+    "return_agent_instance": "TEST-GPT-ALPHA-INSTANCE-001",
+    "return_channel": "SUPABASE+GITHUB",
+    "status": "AUTHORIZED"
+  },
+  "received_commit": "1d9281214e23f260a0774100c8f0cf4d4fe3018d",
+  "validation": "PASSED",
+  "started_at": "2026-11-12T01:36:27.937137+00:00",
+  "completed_at": "2026-11-12T01:36:28.114977+00:00",
+  "proof_passed": true,
+  "cleanup_passed": true,
+  "result": "RETURNED_TO_AGENT",
+  "notes": "Proof action completed and verified cleanly"
+}
