@@ -1,0 +1,40 @@
+HANDOFF_ID: TEST-GPT-REAL-CANNA-001
+PROJECT_EXECUTION_ID: proj_exec_77f4ebcd5b6f
+EXECUTOR: ANTIGRAVITY
+ANTIGRAVITY_CONVERSATION_ID: ff7c4f76-676b-42a8-9bde-8925a233c065
+EXECUTION_MODE: PROJECT_WORKSPACE
+PROJECT_FOLDER_REQUESTED: CannaCalendar
+PROJECT_FOLDER_RESOLVED: C:\Users\19196\CannaCalendar
+PROJECT_AREA_REQUESTED: Core Server
+PROJECT_AREA_RESOLVED: Core Server
+PROJECT_CONTEXT_VALIDATED: YES
+PROJECT_EXECUTION_STARTED_AT: 2026-11-12T15:34:23.382276+00:00
+PROJECT_EXECUTION_COMPLETED_AT: 2026-11-12T15:35:15.956491+00:00
+ANTIGRAVITY_EXIT_CODE: 0
+ANTIGRAVITY_STATUS: CASCADE_RUN_STATUS_IDLE
+FILES_INSPECTED: []
+FILES_CHANGED: []
+FILES_CREATED: []
+FILES_DELETED: []
+COMMANDS_RUN: ["\"Get-ChildItem -File -Recurse | Select-Object -First 10 -Property FullName, Name, Length\"", "\"Get-ChildItem -Recurse -Include *.py,*.js,*.ts,*.json,*.html,*.css | Select-Object -Property FullName, Name, Length | Format-Table -AutoSize\"", "\"Get-ChildItem -Path . | Select-Object Name, Mode, Length\"", "\"Get-ChildItem -Path src | Select-Object Name, Mode, Length\"", "\"Get-FileHash -Path .\\\\server.js -Algorithm SHA256 | Format-List\"", "\"git status\""]
+TESTS_RUN: []
+TEST_RESULTS: EXECUTED
+FINAL_AGENT_RESPONSE:
+EXACT_FILENAME: server.js
+SHA256: 10A06A1E09FAD4E099A0EDF9088AF39050857CA1B47E697128908558D11AA90D
+
+File inspected: [server.js](file:///c:/Users/19196/CannaCalendar/server.js) (No modifications made)
+
+PRODUCTION_CHANGED: NO
+BLOCKERS: NONE
+PROJECT_EXECUTION_COMPLETE: TRUE
+RETURN_STATUS: RETURNED_TO_AGENT
+
+## EXECUTION EVIDENCE
+- Handoff Queue ID: 512f0747-f1d3-420d-a18a-4f54bc002c8f
+- Originating Identity: TEST-GPT-DISPATCHER / TEST-GPT-DISPATCHER-001
+- Return Destination: TEST-GPT-DISPATCHER / TEST-GPT-DISPATCHER-001
+- Received Commit: c58798a12351b513d154827a298ffbf11cd5bc10
+- Started At: 2026-11-12T15:34:23.229386+00:00
+- Completed At: 2026-11-12T15:35:15.956491+00:00
+- Execution Notes: Real Antigravity project workspace execution
