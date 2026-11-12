@@ -1,0 +1,14 @@
+{
+  "handoff_id": "TEST-GPT-PERSISTENCE-BRIDGE-005-PROOF",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "ae2d36d5-cb4c-4765-87aa-179c868a4c0e",
+  "from_agent": "TEST-GPT-PERSISTENCE",
+  "from_agent_instance": "TEST-GPT-PERSISTENCE-INSTANCE-001",
+  "return_to_agent": "TEST-GPT-PERSISTENCE",
+  "return_agent_instance": "TEST-GPT-PERSISTENCE-INSTANCE-001",
+  "received_commit": "9b49280c5f528311ded4b3091ee1e78a9915485c",
+  "return_commit": "a423b46ec799a9cf5dece998303d6cb38f3bd9c5",
+  "completed_at": "2026-11-12T01:51:06.974995+00:00",
+  "result": "RETURNED_TO_AGENT"
+}
