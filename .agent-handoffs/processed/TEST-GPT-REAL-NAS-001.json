@@ -1,0 +1,14 @@
+{
+  "handoff_id": "TEST-GPT-REAL-NAS-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "9df97b72-c32d-4c71-ad45-862b9198eedf",
+  "from_agent": "TEST-GPT-DISPATCHER",
+  "from_agent_instance": "TEST-GPT-DISPATCHER-001",
+  "return_to_agent": "TEST-GPT-DISPATCHER",
+  "return_agent_instance": "TEST-GPT-DISPATCHER-001",
+  "received_commit": "35d1ccb254ab6c8c64e26c65fee2aea4b2657e4f",
+  "return_commit": "2b6962837a082b4e04d45aeb4a6fc29a893b98d4",
+  "completed_at": "2026-11-12T15:28:09.439960+00:00",
+  "result": "BLOCKED"
+}
