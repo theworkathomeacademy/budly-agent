@@ -1,0 +1,24 @@
+{
+  "handoff_id": "TEST-GPT-PERSISTENCE-BRIDGE-005-PROOF",
+  "source": "supabase",
+  "supabase_id": "ae2d36d5-cb4c-4765-87aa-179c868a4c0e",
+  "routing": {
+    "handoff_id": "TEST-GPT-PERSISTENCE-BRIDGE-005-PROOF",
+    "from_agent": "TEST-GPT-PERSISTENCE",
+    "from_agent_instance": "TEST-GPT-PERSISTENCE-INSTANCE-001",
+    "to_agent": "ANTIGRAVITY",
+    "owner": "d-mac",
+    "return_to_agent": "TEST-GPT-PERSISTENCE",
+    "return_agent_instance": "TEST-GPT-PERSISTENCE-INSTANCE-001",
+    "return_channel": "SUPABASE+GITHUB",
+    "status": "AUTHORIZED"
+  },
+  "received_commit": "9b49280c5f528311ded4b3091ee1e78a9915485c",
+  "validation": "PASSED",
+  "started_at": "2026-11-12T01:51:06.787970+00:00",
+  "completed_at": "2026-11-12T01:51:06.974995+00:00",
+  "proof_passed": true,
+  "cleanup_passed": true,
+  "result": "RETURNED_TO_AGENT",
+  "notes": "Proof action completed and verified cleanly"
+}
