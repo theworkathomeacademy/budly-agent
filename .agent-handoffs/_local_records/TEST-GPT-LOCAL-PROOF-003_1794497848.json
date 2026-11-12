@@ -1,0 +1,27 @@
+{
+  "handoff_id": "TEST-GPT-LOCAL-PROOF-003",
+  "source": "supabase",
+  "supabase_id": "27f87a24-2e22-436b-a5ac-0e7c0ecd8ec1",
+  "routing": {
+    "handoff_id": "TEST-GPT-LOCAL-PROOF-003",
+    "from_agent": "MATT-006",
+    "from_agent_instance": "MATT-006-DEFAULT",
+    "to_agent": "ANTIGRAVITY",
+    "owner": "d-mac",
+    "return_to_agent": "MATT-006",
+    "return_agent_instance": "MATT-006-DEFAULT",
+    "return_channel": "SUPABASE+GITHUB",
+    "status": "AUTHORIZED",
+    "execution_mode": "BRIDGE_LOCAL_PROOF",
+    "project_folder_req": "NAS",
+    "project_area_req": "Matt Antigravity Bridge Setup"
+  },
+  "received_commit": "01cac24995130c42003ae0f26d09610083078ec3",
+  "execution_mode": "BRIDGE_LOCAL_PROOF",
+  "proof_passed": true,
+  "cleanup_passed": true,
+  "started_at": "2026-11-12T15:37:28.153510+00:00",
+  "completed_at": "2026-11-12T15:37:28.322803+00:00",
+  "result": "RETURNED_TO_MATT",
+  "notes": "Proof action completed and verified cleanly"
+}
