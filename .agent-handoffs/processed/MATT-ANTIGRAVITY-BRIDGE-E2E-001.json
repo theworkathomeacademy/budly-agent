@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-E2E-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "39544483-2cbe-4c41-917b-e77e318a82a8",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "aa0e4104c542893df44f49e55507a48517955184",
+  "return_commit": "779a3cccf00afdad4984350cb8223384cefb67ff",
+  "completed_at": "2026-11-12T23:51:30.922012+00:00",
+  "result": "BLOCKED"
+}
