@@ -1,0 +1,14 @@
+{
+  "handoff_id": "TEST-GPT-LOCAL-PROOF-003",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "27f87a24-2e22-436b-a5ac-0e7c0ecd8ec1",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-DEFAULT",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-DEFAULT",
+  "received_commit": "01cac24995130c42003ae0f26d09610083078ec3",
+  "return_commit": "fd04e700f396f4f6f1acc5f4688c7c9411aec9fd",
+  "completed_at": "2026-11-12T15:37:28.322803+00:00",
+  "result": "RETURNED_TO_MATT"
+}
