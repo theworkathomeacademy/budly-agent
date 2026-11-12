@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-PROJECT-ROUTING-001-NAS",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "fbef13fc-c071-4436-817b-0694f765ae6a",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "701f63ebfdb60cf68ef6ad91e40e39dd3c60dd86",
+  "return_commit": "f2975ec7450d3200286e1f95e8934adb60a7e7bc",
+  "completed_at": "2026-11-12T12:03:30.667657+00:00",
+  "result": "RETURNED_TO_MATT"
+}
