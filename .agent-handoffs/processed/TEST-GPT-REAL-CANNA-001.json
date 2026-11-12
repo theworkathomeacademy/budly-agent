@@ -1,0 +1,14 @@
+{
+  "handoff_id": "TEST-GPT-REAL-CANNA-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "512f0747-f1d3-420d-a18a-4f54bc002c8f",
+  "from_agent": "TEST-GPT-DISPATCHER",
+  "from_agent_instance": "TEST-GPT-DISPATCHER-001",
+  "return_to_agent": "TEST-GPT-DISPATCHER",
+  "return_agent_instance": "TEST-GPT-DISPATCHER-001",
+  "received_commit": "c58798a12351b513d154827a298ffbf11cd5bc10",
+  "return_commit": "03a0b40a8878c06e2eafe1e0f47457ef753421f4",
+  "completed_at": "2026-11-12T15:35:15.956491+00:00",
+  "result": "RETURNED_TO_AGENT"
+}
