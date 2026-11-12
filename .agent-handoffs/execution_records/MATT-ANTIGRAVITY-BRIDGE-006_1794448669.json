@@ -1,0 +1,24 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-006",
+  "source": "supabase",
+  "supabase_id": "92e455d0-7866-4c87-a6f2-6f069b83c070",
+  "routing": {
+    "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-006",
+    "from_agent": "MATT-006",
+    "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+    "to_agent": "ANTIGRAVITY",
+    "owner": "d-mac",
+    "return_to_agent": "MATT-006",
+    "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+    "return_channel": "SUPABASE+GITHUB",
+    "status": "AUTHORIZED"
+  },
+  "received_commit": "b7d20c636ce14f1566e5c452c74783f50a9f2513",
+  "validation": "PASSED",
+  "started_at": "2026-11-12T01:57:49.508844+00:00",
+  "completed_at": "2026-11-12T01:57:49.680729+00:00",
+  "proof_passed": true,
+  "cleanup_passed": true,
+  "result": "RETURNED_TO_MATT",
+  "notes": "Proof action completed and verified cleanly"
+}
