@@ -1,0 +1,14 @@
+{
+  "handoff_id": "TEST-GPT-CROSS-DENIAL-004",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "547e5a69-d6cb-44bb-9019-5e547270fd47",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-DEFAULT",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-DEFAULT",
+  "received_commit": "1f61a17e7ff33f3da069f46eb9cbc4b84ed776ea",
+  "return_commit": "faee1b4a542299e8337efad31226648c2ddcaf80",
+  "completed_at": "2026-11-12T15:39:06.391505+00:00",
+  "result": "BLOCKED"
+}
