@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-BRIDGE-PROJECT-ROUTING-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "5e0a79c4-bed2-493a-a1a1-d1a9237afcab",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "9be5f2fd7fd484bc71060bbf590966c37f75ffc9",
+  "return_commit": "4997e74fb671e77810a0d72d2483716db85b68c2",
+  "completed_at": "2026-11-12T11:54:27.934578+00:00",
+  "result": "RETURNED_TO_MATT"
+}
