@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-POST-RESTART-DIAG-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "968a2e72-38da-4f9d-a828-328e4e12d3d3",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "414143021fc591a79a2c6ffb899e3c37f18fe9a5",
+  "return_commit": "83bdcd12b25fb277d89be2747d78a438126d94d2",
+  "completed_at": "2026-11-13T01:02:03.705517+00:00",
+  "result": "BLOCKED"
+}
