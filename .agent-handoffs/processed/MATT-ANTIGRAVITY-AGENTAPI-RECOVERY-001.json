@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-AGENTAPI-RECOVERY-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "5351c5ca-2f94-4dc3-82c1-a2c51ee889db",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "04eb8d4c408c0ba7d21a9f42f27e344bf5ce382b",
+  "return_commit": "9e6bd04129e14b1cf8daded009e161132f38c891",
+  "completed_at": "2026-11-14T23:47:17.311299+00:00",
+  "result": "BLOCKED"
+}
