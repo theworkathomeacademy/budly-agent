@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-NOTIFICATION-ACCEPTANCE-002",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "468bcddc-772e-427f-9d29-733f184a9829",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "d807d6fba39a6587aaedbe06bdddf9af7901708b",
+  "return_commit": "994f149051cb3972ee9028c5d2600962daeed086",
+  "completed_at": "2026-11-15T22:26:21.634245+00:00",
+  "result": "RETURNED_TO_MATT"
+}
