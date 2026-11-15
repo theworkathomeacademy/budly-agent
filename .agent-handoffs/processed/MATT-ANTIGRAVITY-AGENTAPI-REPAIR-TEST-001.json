@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-AGENTAPI-REPAIR-TEST-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "d6be26f6-efe5-4e6b-b811-d12aa635de68",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "f73167a85e02e3c13d4d4ce6ff573b02a52c8ca5",
+  "return_commit": "e6998aada502424271ba04cf1abaa0e5a95a8fca",
+  "completed_at": "2026-11-15T21:15:21.954849+00:00",
+  "result": "RETURNED_TO_MATT"
+}
