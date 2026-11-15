@@ -1,0 +1,54 @@
+HANDOFF_ID: MATT-ANTIGRAVITY-UTF8-DECODE-REPAIR-001
+PROJECT_EXECUTION_ID: proj_exec_298ed9617ae1
+EXECUTOR: ANTIGRAVITY
+ANTIGRAVITY_CONVERSATION_ID: b5317065-c54d-43cf-b6ff-b887fdc304ac
+EXECUTION_MODE: PROJECT_WORKSPACE
+PROJECT_FOLDER_REQUESTED: NAS
+PROJECT_FOLDER_RESOLVED: C:\Users\19196\My Drive\NAS
+PROJECT_AREA_REQUESTED: Matt Antigravity Bridge Setup
+PROJECT_AREA_RESOLVED: Matt Antigravity Bridge Setup
+PROJECT_CONTEXT_VALIDATED: YES
+PROJECT_EXECUTION_STARTED_AT: 2026-11-15T22:14:31.241006+00:00
+PROJECT_EXECUTION_COMPLETED_AT: 2026-11-15T22:24:33.119024+00:00
+ANTIGRAVITY_EXIT_CODE: 1
+ANTIGRAVITY_STATUS: TIMEOUT
+FILES_INSPECTED: []
+FILES_CHANGED: []
+FILES_CREATED: []
+FILES_DELETED: []
+COMMANDS_RUN: []
+TESTS_RUN: []
+TEST_RESULTS: N/A
+FINAL_AGENT_RESPONSE:
+{
+  "status": "TIMEOUT",
+  "conversation_id": "b5317065-c54d-43cf-b6ff-b887fdc304ac",
+  "project_id": "04a4455f-3f52-42c6-9475-d10fbe64039a",
+  "project_folder": "NAS",
+  "terminal_status": "TIMEOUT",
+  "started_at": "2026-11-15T22:14:31Z",
+  "completed_at": "2026-11-15T22:24:33Z",
+  "duration_seconds": 601.66,
+  "steps_count": 209,
+  "files_inspected": [],
+  "files_changed": [],
+  "files_created": [],
+  "files_deleted": [],
+  "commands_run": [],
+  "final_response": "",
+  "exit_code": 124
+}
+
+PRODUCTION_CHANGED: NO
+BLOCKERS: Terminal status: TIMEOUT
+PROJECT_EXECUTION_COMPLETE: FALSE
+RETURN_STATUS: BLOCKED
+
+## EXECUTION EVIDENCE
+- Handoff Queue ID: 19f00892-a515-4040-add2-c38bdc6a0a74
+- Originating Identity: MATT-006 / MATT-006-BRIDGE-GOVERNANCE
+- Return Destination: MATT-006 / MATT-006-BRIDGE-GOVERNANCE
+- Received Commit: d807d6fba39a6587aaedbe06bdddf9af7901708b
+- Started At: 2026-11-15T22:14:31.020467+00:00
+- Completed At: 2026-11-15T22:24:33.119024+00:00
+- Execution Notes: Real Antigravity project workspace execution
