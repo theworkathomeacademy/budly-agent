@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-NOTIFICATION-MONITOR-002",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "912dccce-c136-49fe-9884-c34e6b731865",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "1e7aef952ba3c3ee3f3181080c18cf22c1bce538",
+  "return_commit": "5019cade485c76473b94c71f154b03464a301d8b",
+  "completed_at": "2026-11-15T21:38:34.963905+00:00",
+  "result": "BLOCKED"
+}
