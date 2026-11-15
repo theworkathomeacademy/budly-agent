@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-UTF8-DECODE-REPAIR-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "19f00892-a515-4040-add2-c38bdc6a0a74",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "d807d6fba39a6587aaedbe06bdddf9af7901708b",
+  "return_commit": "164840034a8b4e151df24f8e48512c6cfd71f25e",
+  "completed_at": "2026-11-15T22:24:33.119024+00:00",
+  "result": "BLOCKED"
+}
