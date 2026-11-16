@@ -1,0 +1,13 @@
+{
+  "handoff_id": "TEST-CONT-SYNTH-1794873226-001-STEP-2",
+  "processed": true,
+  "source": "github",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "225c901fed182953a42e6686f59df20787b499d6",
+  "return_commit": "78e0de217773b1aa369501ff58de479a88860d50",
+  "completed_at": "2026-11-16T23:56:55.788907+00:00",
+  "result": "RETURNED_TO_MATT"
+}
