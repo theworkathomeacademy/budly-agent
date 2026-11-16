@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-GOVERNED-CONTINUATION-STAGE1-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "ade8dcc2-f0d1-4208-9838-af6d79f773bf",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "f2079725e3fe319a5ebe744facfa0d7b238e9fa2",
+  "return_commit": "aca0888cb3215f407717db0e40ccc060b905d5b5",
+  "completed_at": "2026-11-16T23:31:51.502515+00:00",
+  "result": "RETURNED_TO_MATT"
+}
