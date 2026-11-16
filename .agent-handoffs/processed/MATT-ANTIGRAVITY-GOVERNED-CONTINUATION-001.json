@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-GOVERNED-CONTINUATION-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "ebb2e0ab-7c43-44fa-a62e-8479ec90fdfa",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "89966652d17a086ada5b752fae07d4fc03d9d4d5",
+  "return_commit": "8084da8a5645e242cd4a3780c43b236e793d9f0a",
+  "completed_at": "2026-11-16T00:15:33.667244+00:00",
+  "result": "BLOCKED"
+}
