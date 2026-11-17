@@ -1,0 +1,13 @@
+{
+  "handoff_id": "TEST-2A-ACT2-NEXT",
+  "processed": true,
+  "source": "github",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "2a8ba7b5b762ede25a6f7efcc2e0f02004e45a9f",
+  "return_commit": "72154b684337f363be86f22d2d4bd4f68eaa028f",
+  "completed_at": "2026-11-17T00:47:18.889343+00:00",
+  "result": "RETURNED_TO_MATT"
+}
