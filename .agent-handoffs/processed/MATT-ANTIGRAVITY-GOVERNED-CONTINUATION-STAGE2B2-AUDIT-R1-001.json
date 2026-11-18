@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-GOVERNED-CONTINUATION-STAGE2B2-AUDIT-R1-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "007c51fb-f2a5-40ce-8ea0-744d7cee17dc",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "5836e8d487145d1759a9d5455eab672739bad83e",
+  "return_commit": "e4c8ae6506fcbdb6906a265ab8666b00ead30f03",
+  "completed_at": "2026-11-18T22:56:46.455787+00:00",
+  "result": "RETURNED_TO_MATT"
+}
