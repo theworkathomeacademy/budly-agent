@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-STAGE2B2-CHAIN-TEST-A",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "e00f58f7-207e-451d-a53c-9f6ad084bf15",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "01b12b457130517a73cb5a0c5269d1ae920fb9bc",
+  "return_commit": "f50746a19e16c573b33bc72470b8a179fec86dcb",
+  "completed_at": "2026-11-18T22:26:55.973981+00:00",
+  "result": "RETURNED_TO_MATT"
+}
