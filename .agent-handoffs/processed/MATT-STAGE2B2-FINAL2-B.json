@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-STAGE2B2-FINAL2-B",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "da8b1e36-6745-4fcf-9bd3-803cce9fa7fc",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "29ffff096445f94052724565617884dd4111e869",
+  "return_commit": "d41d73bf8a4d9c5a57927c6bfce99adaa22bb4a7",
+  "completed_at": "2026-11-21T00:32:14.597296+00:00",
+  "result": "RETURNED_TO_MATT"
+}
