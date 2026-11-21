@@ -1,0 +1,14 @@
+{
+  "handoff_id": "CANNACALENDAR-003-COMMERCE-003-20261121",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "50517674-576a-43ae-8ca2-b6a37e9a2c20",
+  "from_agent": "CANNACALENDAR-003",
+  "from_agent_instance": "CANNACALENDAR-003-2027-LAUNCH",
+  "return_to_agent": "CANNACALENDAR-003",
+  "return_agent_instance": "CANNACALENDAR-003-2027-LAUNCH",
+  "received_commit": "f536c262b7a9e38eea8aa4d371643ca3b5aa8ad4",
+  "return_commit": "2ee578fd8fe3143d4f4efaf362bd4a7ec4cb22d6",
+  "completed_at": "2026-11-21T12:34:12.445246+00:00",
+  "result": "BLOCKED"
+}
