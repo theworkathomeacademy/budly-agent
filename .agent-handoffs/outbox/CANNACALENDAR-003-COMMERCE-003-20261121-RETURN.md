@@ -1,0 +1,54 @@
+HANDOFF_ID: CANNACALENDAR-003-COMMERCE-003-20261121
+PROJECT_EXECUTION_ID: proj_exec_d8a12d8c7e71
+EXECUTOR: ANTIGRAVITY
+ANTIGRAVITY_CONVERSATION_ID: c9011315-0770-44ad-82b1-a9bddd80c4a9
+EXECUTION_MODE: PROJECT_WORKSPACE
+PROJECT_FOLDER_REQUESTED: CannaCalendar
+PROJECT_FOLDER_RESOLVED: C:\Users\19196\CannaCalendar
+PROJECT_AREA_REQUESTED: CannaCalendar 2027 public launch and 60-day trial
+PROJECT_AREA_RESOLVED: CannaCalendar 2027 public launch and 60-day trial
+PROJECT_CONTEXT_VALIDATED: YES
+PROJECT_EXECUTION_STARTED_AT: 2026-11-21T12:24:12.046211+00:00
+PROJECT_EXECUTION_COMPLETED_AT: 2026-11-21T12:34:12.445246+00:00
+ANTIGRAVITY_EXIT_CODE: 1
+ANTIGRAVITY_STATUS: TIMEOUT
+FILES_INSPECTED: []
+FILES_CHANGED: []
+FILES_CREATED: []
+FILES_DELETED: []
+COMMANDS_RUN: []
+TESTS_RUN: []
+TEST_RESULTS: N/A
+FINAL_AGENT_RESPONSE:
+{
+  "status": "TIMEOUT",
+  "conversation_id": "c9011315-0770-44ad-82b1-a9bddd80c4a9",
+  "project_id": "7db20a28-8cf1-499c-b020-8220079ee862",
+  "project_folder": "CANNACALENDAR",
+  "terminal_status": "TIMEOUT",
+  "started_at": "2026-11-21T12:24:12Z",
+  "completed_at": "2026-11-21T12:34:12Z",
+  "duration_seconds": 600.12,
+  "steps_count": 163,
+  "files_inspected": [],
+  "files_changed": [],
+  "files_created": [],
+  "files_deleted": [],
+  "commands_run": [],
+  "final_response": "",
+  "exit_code": 124
+}
+
+PRODUCTION_CHANGED: NO
+BLOCKERS: Terminal status: TIMEOUT
+PROJECT_EXECUTION_COMPLETE: FALSE
+RETURN_STATUS: BLOCKED
+
+## EXECUTION EVIDENCE
+- Handoff Queue ID: 50517674-576a-43ae-8ca2-b6a37e9a2c20
+- Originating Identity: CANNACALENDAR-003 / CANNACALENDAR-003-2027-LAUNCH
+- Return Destination: CANNACALENDAR-003 / CANNACALENDAR-003-2027-LAUNCH
+- Received Commit: f536c262b7a9e38eea8aa4d371643ca3b5aa8ad4
+- Started At: 2026-11-21T12:24:11.557405+00:00
+- Completed At: 2026-11-21T12:34:12.445246+00:00
+- Execution Notes: Real Antigravity project workspace execution
