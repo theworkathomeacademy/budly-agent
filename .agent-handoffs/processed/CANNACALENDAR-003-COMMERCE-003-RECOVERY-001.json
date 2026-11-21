@@ -1,0 +1,14 @@
+{
+  "handoff_id": "CANNACALENDAR-003-COMMERCE-003-RECOVERY-001",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "63cb7058-e3b0-40f8-92f0-4482d8883209",
+  "from_agent": "CANNACALENDAR-003",
+  "from_agent_instance": "CANNACALENDAR-003-2027-LAUNCH",
+  "return_to_agent": "CANNACALENDAR-003",
+  "return_agent_instance": "CANNACALENDAR-003-2027-LAUNCH",
+  "received_commit": "ab6d282dde15c4582943e46492064464bacc7ecd",
+  "return_commit": "ea3ce9ef0e2233ed90f9f0ec5ffc1ce2e41f2a28",
+  "completed_at": "2026-11-21T14:16:00.588403+00:00",
+  "result": "RETURNED_TO_AGENT"
+}
