@@ -1,0 +1,14 @@
+{
+  "handoff_id": "MATT-ANTIGRAVITY-STAGE3A-HARI-PILOT-B",
+  "processed": true,
+  "source": "supabase",
+  "supabase_id": "1fb4d15a-3d36-481b-ae30-afc5a52c83d5",
+  "from_agent": "MATT-006",
+  "from_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "return_to_agent": "MATT-006",
+  "return_agent_instance": "MATT-006-BRIDGE-GOVERNANCE",
+  "received_commit": "bc04cd3c159330ce3063395a9ee92c9481fb40ce",
+  "return_commit": "3fd8c0ccd19cc619e1e565946e72c3b2651ad2b6",
+  "completed_at": "2026-11-21T00:54:00.954935+00:00",
+  "result": "RETURNED_TO_MATT"
+}
